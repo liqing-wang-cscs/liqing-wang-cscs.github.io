@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 欢迎学习 · 数学模型</title>
+    <!-- 引入 marked.js 用于解析 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <!-- 引入 KaTeX 用于渲染数学公式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        /* ===== 全局重置 & 布局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f8fafc;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+         /* 强制 KaTeX 渲染被 <p> 标签包裹的块级公式 */
+        .katex-display { display: block !important; }
+
+        /* 顶栏 */
+        .navbar {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #334155;
+            flex-shrink: 0;
+        }
+
+        .navbar h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar h1 small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
+
+        .navbar .badge {
+            background: #3b82f6;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+        }
+
+        .toggle-toc-btn {
+            background: #f1f5f9;
+            border: 1px solid #d1d9e6;
+            border-radius: 20px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #1e293b;
+            transition: 0.1s;
+            margin-left: auto;
+        }
+
+        .toggle-toc-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* 主体：左栏 + 中间 + 右栏 */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            /* height: calc(100vh - 60px); */
+        }
+
+        /* ===== 左侧栏 (章列表) ===== */
+        .sidebar-left {
+            width: 300px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            padding: 1rem 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-left::-webkit-scrollbar { width: 5px; }
+        .sidebar-left::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .chapter-item {
+            margin-bottom: 0.2rem;
+            border-radius: 6px;
+        }
+
+        .chapter-title {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            font-weight: 600;
+            color: #0f172a;
+            cursor: pointer;
+            border-radius: 6px;
+            background: #f1f5f9;
+            transition: background 0.15s;
+            font-size: 0.95rem;
+        }
+
+        .chapter-title:hover {
+            background: #e2e8f0;
+        }
+
+        .chapter-title .arrow {
+            margin-right: 0.6rem;
+            font-size: 0.7rem;
+            transition: transform 0.15s;
+            display: inline-block;
+            width: 1.2rem;
+            color: #64748b;
+        }
+
+        .chapter-title .arrow.open {
+            transform: rotate(90deg);
+        }
+
+        /* 节列表 (默认隐藏) */
+        .section-list {
+            margin-left: 1.2rem;
+            padding-left: 0.2rem;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.25s ease, opacity 0.2s ease;
+        }
+
+        .section-list.open {
+            max-height: 900px;
+            opacity: 1;
+        }
+
+        .section-item {
+            padding: 0.45rem 0.8rem 0.45rem 1.8rem;
+            margin: 0.1rem 0;
+            font-size: 0.9rem;
+            color: #334155;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.1s, color 0.1s;
+            border-left: 3px solid transparent;
+        }
+
+        .section-item:hover {
+            background: #eef2f6;
+            color: #0f172a;
+        }
+
+        .section-item.active {
+            background: #dbeafe;
+            border-left-color: #3b82f6;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        /* ===== 中间内容区 ===== */
+        .main-content {
+            flex: 1;
+            min-height: 0;       /* 关键：允许 flex 子元素收缩到小于其内容的高度 */
+            background: #ffffff;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+
+         #content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2.5rem; 
+            /* 可选：为了确保 padding 不会撑大元素，可以加上 box-sizing */
+            box-sizing: border-box;
+        }
+
+        /* 内容通用样式 */
+        #content-area h1, #content-area h2, #content-area h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        #content-area p {
+            margin: 0.8rem 0;
+            line-height: 1.7;
+            color: #1e293b;
+        }
+
+        #content-area ul, #content-area ol {
+            margin: 0.8rem 0 0.8rem 1.5rem;
+        }
+
+        #content-area pre {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        #content-area code {
+            background: #f1f5f9;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        #content-area img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        #content-area blockquote {
+            border-left: 4px solid #3b82f6;
+            background: #f8fafc;
+            padding: 0.5rem 1.2rem;
+            margin: 1rem 0;
+            color: #334155;
+        }
+
+        #content-area table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        #content-area th, #content-area td {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+        }
+
+        #content-area th {
+            background: #f1f5f9;
+        }
+
+        #content-area .note {
+            background: #f0f9ff;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin: 1rem 0;
+        }
+
+        .placeholder-text {
+            color: #94a3b8;
+            text-align: center;
+            padding: 4rem 1rem;
+            font-size: 1.1rem;
+        }
+
+        .loading-text {
+            color: #64748b;
+            text-align: center;
+            padding: 3rem 1rem;
+            font-style: italic;
+        }
+
+        /* ===== 右侧栏 (小节目录) ===== */
+        .sidebar-right {
+            width: 240px;
+            background: #fafcff;
+            border-left: 1px solid #e2e8f0;
+            padding: 1.2rem 0.8rem;
+            min-height: 0;       /* 关键：允许收缩 */
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: width 0.2s, padding 0.2s, opacity 0.2s;
+        }
+
+        .sidebar-right.collapsed {
+            width: 0;
+            padding: 0;
+            border-left: none;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .sidebar-right h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin-bottom: 1rem;
+            padding-left: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list li {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.88rem;
+            border-left: 2px solid transparent;
+            margin-bottom: 0.1rem;
+            color: #334155;
+            cursor: default;
+            border-radius: 0 4px 4px 0;
+            transition: background 0.1s;
+        }
+
+        .toc-list li:hover {
+            background: #eef2f6;
+        }
+
+        .toc-list li.toc-h1 {
+            font-weight: 600;
+            color: #0f172a;
+            border-left-color: #3b82f6;
+        }
+        .toc-list li.toc-h2 {
+            padding-left: 1.2rem;
+            font-weight: 500;
+        }
+        .toc-list li.toc-h3 {
+            padding-left: 2rem;
+            font-size: 0.82rem;
+            color: #475569;
+        }
+        .toc-list li.toc-h4 {
+            padding-left: 2.8rem;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .toc-empty {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            padding: 0.5rem 0.3rem;
+            font-style: italic;
+        }
+
+        /* 响应式 */
+        @media (max-width: 800px) {
+            .sidebar-right { width: 180px; }
+            .sidebar-left { width: 210px; }
+        }
+
+        @media (max-width: 640px) {
+            .app-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar-left {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                max-height: 280px;
+            }
+            .sidebar-right {
+                width: 100% !important;
+                border-left: none;
+                border-top: 1px solid #e2e8f0;
+                max-height: 200px;
+            }
+            .sidebar-right.collapsed {
+                display: none;
+            }
+            .main-content {
+                padding: 1.2rem;
+            }
+        }
+
+        /* ===== 优化折叠面板 (details) 样式 ===== */
+        details {
+            margin-bottom: 1.5rem; /* 增加底部外边距，拉开与下方横线(---)的距离 */
+            border: 1px solid #e2e8f0; /* 可选：加个边框让折叠区更有层次感 */
+            border-radius: 6px; /* 可选：圆角 */
+            padding: 0.5rem 1rem; /* 可选：增加一点内边距 */
+        }
+
+        /* 标题区域 (summary) */
+        details summary {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0.5rem 0; /* 给标题上下留点呼吸空间 */
+        }
+
+        /* 展开后的内容区域 */
+        details > *:not(summary) {
+            margin-top: 0.8rem; /* 内容与标题之间留出间距 */
+            line-height: 1.6;   /* 关键：增加行高，让上下行距更舒适 */
+            padding-bottom: 0.5rem; /* 底部留白 */
+        }
+
+        /* ===== 代码块一键复制样式 ===== */
+        .code-wrapper {
+            position: relative; /* 作为按钮定位的基准 */
+            margin-bottom: 1.5rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;           /* 纯白文字 */
+            background-color: rgba(0, 0, 0, 0.6); /* 关键：默认背景改为深灰色半透明 */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;            /* 默认隐藏，鼠标悬停时显示 */
+            transition: opacity 0.2s ease, background-color 0.2s ease;
+            z-index: 10;
+        }
+        .copy-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8); /* 鼠标悬停时背景变得更深 */
+        }
+
+        .code-wrapper:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ===== 侧边栏切换按钮样式 ===== */
+        #toggle-sidebar-btn {
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 15px; /* 与右侧文字保持间距 */
+            padding: 0 5px;
+            transition: color 0.2s;
+        }
+        #toggle-sidebar-btn:hover {
+            color: #ffffff;
+        }
+
+        /* ===== 左侧目录过渡动画 ===== */
+        .sidebar-left {
+            /* 添加平滑过渡效果，让隐藏/显示更自然 */
+            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+            /* 保留你原有的其他样式... */
+        }
+
+        /* 隐藏状态下的左侧目录 */
+        .sidebar-left.hidden {
+            width: 0;
+            padding: 0;
+            opacity: 0;
+            overflow: hidden; /* 隐藏溢出的内容 */
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<header class="navbar">
+   <!-- 新增：侧边栏切换按钮 -->
+    <button id="toggle-sidebar-btn" title="隐藏/显示目录">☰</button>
+    <h1>
+        📖 数学模型
+        <!-- <small>· 在线教材</small> -->
+        <!-- <span class="badge">v0.4</span> -->
+    </h1>
+    <div style="margin-left: auto; display: flex; gap: 0.5rem; align-items: center;">
+        <!-- <span style="font-size:0.8rem; color:#94a3b8;">📂 支持 HTML / Markdown</span> -->
+        <button class="toggle-toc-btn" id="toggleTocBtn" title="切换右栏目录">📑 目录</button>
+    </div>
+</header>
+
+<!-- 主体 -->
+<div class="app-container">
+    <!-- 左侧：章 + 节 -->
+    <nav class="sidebar-left" id="sidebarLeft">
+        <div id="chapterList"></div>
+    </nav>
+
+    <!-- 中间：内容 -->
+    <main class="main-content" id="mainContent">
+        <div id="content-area">
+            <div class="placeholder-text">
+                📘 请从左侧选择章节<br>
+                <span style="font-size:0.9rem; color:#94a3b8;">点击章名称展开，点击节名称阅读</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- 右侧：小节目录 -->
+    <aside class="sidebar-right" id="sidebarRight">
+        <h4>
+            📋 本节目录
+            <button class="toggle-toc-btn" id="toggleTocBtnInner" style="margin-left: auto;">✕</button>
+        </h4>
+        <div id="tocContainer">
+            <div class="toc-empty">选择一节后显示目录</div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    (function() {
+        // ==============================================================
+        // 1. 课程数据 —— 支持 HTML 和 Markdown 文件
+        //    type: 'html' 或 'md'，默认 'html'
+        // ==============================================================
+        const courseData = [
+            {
+                id: 'ch1',
+                title: '第一章 · 金融数学模型',
+                sections: [
+                    { id: 'ch1s1', title: '1.1 均值方差模型', file: 'fm/ch1-1/ch1-1.md', type: 'md' },
+                    { id: 'ch1s2', title: '1.2 资本资产定价模型', file: 'fm/ch1-2/ch1-2.md', type: 'md' },
+                    { id: 'ch1s3', title: '1.3 套利定价模型', file: 'fm/ch1-3/ch1-3.md', type: 'md' },
+                    { id: 'ch1s4', title: '1.4 二项式期权定价模型', file: 'fm/ch1-4/ch1-4.md', type: 'md' },
+                    { id: 'ch1s5', title: '1.5 BS期权定价模型', file: 'fm/ch1-5/ch1-5.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch2',
+                title: '第二章 · 线性代数模型',
+                sections: [
+                    { id: 'ch2s1', title: '2.1 斐波那契数列问题', file: 'ch2-1.md', type: 'md' },
+                    { id: 'ch2s2', title: '2.2 莱斯利种群模型', file: 'ch2-2.md', type: 'md' },
+                    { id: 'ch2s3', title: '2.3 图像压缩', file: 'ch2-3.md', type: 'md' },
+                    { id: 'ch2s4', title: '2.4 美食推荐系统', file: 'ch2-4.md', type: 'md' },
+                    { id: 'ch2s5', title: '2.5 奇异值分解', file: 'ch2-5.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch3',
+                title: '第三章 · 常微分方程模型',
+                sections: [
+                    { id: 'ch3s1', title: '3.1 单摆模型', file: 'ch3-1.md', type: 'md' },
+                    { id: 'ch3s2', title: '3.2 目标跟踪问题', file: 'ch3-2.md', type: 'md' },
+                    { id: 'ch3s3', title: '3.3 人口增长模型', file: 'ch3-3.md', type: 'md' },
+                    { id: 'ch3s4', title: '3.4 种群竞争与捕食模型', file: 'ch3-4.md', type: 'md' },
+                    { id: 'ch3s5', title: '3.5 最速下降线', file: 'ch3-5.md', type: 'md' },
+                    { id: 'ch3s6', title: '3.6 悬链线问题', file: 'ch3-6.md', type: 'md' },
+                    { id: 'ch3s7', title: '3.7 洛伦兹模型', file: 'ch3-7.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch4',
+                title: '第四章 · 偏微分方程模型',
+                sections: [
+                    { id: 'ch4s1', title: '4.1 波动方程', file: 'ch4-1.md', type: 'md' },
+                    { id: 'ch4s2', title: '4.2 热传导方程', file: 'ch4-2.md', type: 'md' },
+                    { id: 'ch4s3', title: '4.3 静电场方程', file: 'ch4-3.md', type: 'md' },
+                    { id: 'ch4s4', title: '4.4 最优传输问题', file: 'ch4-4.md', type: 'md' },
+                    { id: 'ch4s5', title: '4.5 最优控制问题', file: 'ch4-5.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch5',
+                title: '第五章 · 图论模型',
+                sections: [
+                    { id: 'ch5s1', title: '5.1 最短路径问题', file: 'ch5-1.md', type: 'md' },
+                    { id: 'ch5s2', title: '5.2 最小生成树问题', file: 'ch5-2.md', type: 'md' },
+                    { id: 'ch5s3', title: '5.3 最小费用最大流问题', file: 'ch5-3.md', type: 'md' },
+                    { id: 'ch5s4', title: '5.4 关键路径', file: 'ch5-4.md', type: 'md' },
+                    { id: 'ch5s5', title: '5.5 旅行商问题', file: 'ch5-5.md', type: 'md' },
+                    { id: 'ch5s6', title: '5.6 背包问题', file: 'ch5-6.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch6',
+                title: '第六章 · 运筹优化模型',
+                sections: [
+                    { id: 'ch6s1', title: '6.1 线性规划', file: 'ch6-1.md', type: 'md' },
+                    { id: 'ch6s2', title: '6.2 整数规划', file: 'ch6-2.md', type: 'md' },
+                    { id: 'ch6s3', title: '6.3 非线性规划', file: 'ch6-3.md', type: 'md' },
+                    { id: 'ch6s4', title: '6.4 二次规划', file: 'ch6-4.md', type: 'md' },
+                    { id: 'ch6s5', title: '6.5 动态规划', file: 'ch6-5.md', type: 'md' },
+                    { id: 'ch6s6', title: '6.6 马尔可夫决策过程', file: 'ch6-6.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch7',
+                title: '第七章 · 统计模型',
+                sections: [
+                    { id: 'ch7s1', title: '7.1 方差分析', file: 'ch7-1.md', type: 'md' },
+                    { id: 'ch7s2', title: '7.2 线性回归模型', file: 'ch7-2.md', type: 'md' },
+                    { id: 'ch7s3', title: '7.3 逻辑回归模型', file: 'ch7-3.md', type: 'md' },
+                    { id: 'ch7s4', title: '7.4 聚类分析', file: 'ch7-4.md', type: 'md' },
+                    { id: 'ch7s5', title: '7.5 判别分析', file: 'ch7-5.md', type: 'md' },
+                    { id: 'ch7s6', title: '7.6 主成分分析', file: 'ch7-6.md', type: 'md' },
+                    { id: 'ch7s7', title: '7.7 因子分析', file: 'ch7-7.md', type: 'md' }
+                ]
+            },
+            {
+                id: 'ch8',
+                title: '第八章 · 神经网络模型',
+                sections: [
+                    { id: 'ch8s1', title: '8.1 感知机', file: 'ch8-1.md', type: 'md' },
+                    { id: 'ch8s2', title: '8.2 多层感知机', file: 'ch8-2.md', type: 'md' },
+                    { id: 'ch8s3', title: '8.3 卷积神经网络', file: 'ch8-3.md', type: 'md' },
+                    { id: 'ch8s4', title: '8.4 循环神经网络', file: 'ch8-4.md', type: 'md' },
+                    { id: 'ch8s5', title: '8.5 混合密度网络', file: 'ch8-5.md', type: 'md' },
+                    { id: 'ch8s6', title: '8.6 Transformer语言模型', file: 'ch8-6.md', type: 'md' },
+                    { id: 'ch8s7', title: '8.7 扩散模型', file: 'ch8-7.md', type: 'md' }
+                    
+                ]
+            },
+            {
+                id: 'ch9',
+                title: '第九章 · 随机过程模型',
+                sections: [
+                    { id: 'ch9s1', title: '9.1 泊松过程', file: 'ch9-1.md', type: 'md' },
+                    { id: 'ch9s2', title: '9.2 马尔科夫过程', file: 'ch9-2.md', type: 'md' },
+                    { id: 'ch9s3', title: '9.3 更新过程', file: 'ch9-3.md', type: 'md' },
+                    { id: 'ch9s4', title: '9.4 维纳过程', file: 'ch9-4.md', type: 'md' },
+                    { id: 'ch9s5', title: '9.5 随机游走', file: 'ch9-5.md', type: 'md' }
+                ]
+            }
+
+
+        ];
+
+        // 扁平映射
+        const sectionMap = {};
+        courseData.forEach(chapter => {
+            chapter.sections.forEach(section => {
+                sectionMap[section.id] = section;
+            });
+        });
+
+        // DOM 引用
+        const chapterListEl = document.getElementById('chapterList');
+        const contentArea = document.getElementById('content-area');
+        const tocContainer = document.getElementById('tocContainer');
+        const sidebarRight = document.getElementById('sidebarRight');
+        const toggleTocBtn = document.getElementById('toggleTocBtn');
+        const toggleTocBtnInner = document.getElementById('toggleTocBtnInner');
+
+        let currentSectionId = null;
+        let tocVisible = true;
+
+        // ==============================================================
+        // 2. 渲染左侧章列表
+        // ==============================================================
+        function renderChapters() {
+            let html = '';
+            courseData.forEach((chapter, idx) => {
+                const chapId = chapter.id;
+                const isOpen = (idx === 0) ? 'open' : '';
+                const arrowClass = (idx === 0) ? 'open' : '';
+
+                html += `<div class="chapter-item" data-chapter-id="${chapId}">`;
+                html += `<div class="chapter-title" data-chapter-id="${chapId}">`;
+                html += `<span class="arrow ${arrowClass}">▶</span>`;
+                html += `<span>${chapter.title}</span>`;
+                html += `</div>`;
+
+                html += `<div class="section-list ${isOpen}" data-chapter-id="${chapId}">`;
+                chapter.sections.forEach(section => {
+                    const activeClass = (currentSectionId === section.id) ? 'active' : '';
+                    // 显示文件类型标签
+                    const typeLabel = section.type === 'md' ? ' 📝' : ' 📄';
+                    html += `<div class="section-item ${activeClass}" data-section-id="${section.id}" data-chapter-id="${chapId}">`;
+                    html += `${section.title}${typeLabel}`;
+                    html += `</div>`;
+                });
+                html += `</div>`;
+                html += `</div>`;
+            });
+            chapterListEl.innerHTML = html;
+
+            // 章点击展开/折叠
+            document.querySelectorAll('.chapter-title').forEach(titleEl => {
+                titleEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const chapId = this.dataset.chapterId;
+                    const listEl = document.querySelector(`.section-list[data-chapter-id="${chapId}"]`);
+                    const arrow = this.querySelector('.arrow');
+                    if (listEl) {
+                        listEl.classList.toggle('open');
+                        if (arrow) arrow.classList.toggle('open');
+                    }
+                });
+            });
+
+            // 节点击 -> 加载文件
+            document.querySelectorAll('.section-item').forEach(sectionEl => {
+                sectionEl.addEventListener('click', function() {
+                    const sectionId = this.dataset.sectionId;
+                    if (sectionId) {
+                        loadSectionFromFile(sectionId);
+                    }
+                });
+            });
+        }
+
+        // ==============================================================
+        // 3. 从外部文件加载节内容 (支持 HTML 和 Markdown)
+        // ==============================================================
+        function loadSectionFromFile(sectionId) {
+            const section = sectionMap[sectionId];
+            if (!section) {
+                contentArea.innerHTML = `<div class="placeholder-text">❌ 未找到章节数据</div>`;
+                return;
+            }
+
+            currentSectionId = sectionId;
+
+            // 更新左侧高亮
+            document.querySelectorAll('.section-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.sectionId === sectionId);
+            });
+
+            // 显示加载中
+            contentArea.innerHTML = `<div class="loading-text">⏳ 正在加载 ${section.title} ...</div>`;
+
+            const filePath = section.file;
+            if (!filePath) {
+                contentArea.innerHTML = `<div class="placeholder-text">⚠️ 该节未指定文件路径</div>`;
+                updateTOC(contentArea);
+                return;
+            }
+
+            // 使用 fetch 加载文件
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(content => {
+                    let htmlContent = content;
+                    
+                    // 根据 type 字段决定如何渲染
+                    const fileType = section.type || 'html'; // 默认为 html
+                    
+                    // if (fileType === 'md') {
+                    //     // 使用 marked 将 Markdown 转换为 HTML
+                    //     htmlContent = marked.parse(content);
+                    // }
+
+                    if (fileType === 'md') {
+                        // --- 第一步：保护公式 ---
+                        // 1. 创建一个数组来存储找到的公式
+                        const mathBlocks = [];
+                        // 2. 使用正则表达式找到所有 $$...$$ 公式，并用占位符替换
+                        // 占位符格式为：MATH_BLOCK_0, MATH_BLOCK_1, ...
+                        const protectedContent = content.replace(/\$\$([\s\S]+?)\$\$/g, (match, formula) => {
+                            mathBlocks.push(formula); // 将公式存入数组
+                            return `MATH_BLOCK_${mathBlocks.length - 1}`; // 返回占位符
+                        });
+
+                        // --- 第二步：处理 Markdown ---
+                        // 1. 预处理：修正图片路径
+                        const mdFilePath = section.file;
+                        const mdFileDir = mdFilePath.substring(0, mdFilePath.lastIndexOf('/') + 1);
+                        let processedContent = protectedContent.replace(/src="((?!http)[^"]+)"/g, `src="${mdFileDir}$1"`);
+
+                        // 2. 配置 marked
+                        marked.setOptions({
+                            gfm: true,
+                            breaks: true,
+                            headerIds: true,
+                            mangle: false,
+                            sanitizer: false,
+                        });
+
+                        // 3. 使用 marked 将 Markdown 转换为 HTML
+                        // 此时，公式部分还是占位符，不会被 <p> 标签包裹
+                        htmlContent = marked.parse(processedContent);
+
+                        // --- 第三步：恢复并渲染公式 ---
+                        // 1. 将占位符替换回原始的 $$...$$ 公式
+                        htmlContent = htmlContent.replace(/MATH_BLOCK_(\d+)/g, (match, index) => {
+                            return `$$${mathBlocks[parseInt(index)]}$$`;
+                        });
+
+                        // 2. 将处理好的 HTML 放入页面
+                        contentArea.innerHTML = htmlContent;
+
+                        // 3. 调用 KaTeX 渲染所有公式
+                        // 使用 setTimeout 确保 DOM 更新后再执行
+                        setTimeout(() => {
+                            renderMathInElement(contentArea, {
+                                delimiters: [
+                                    {left: "$$", right: "$$", display: true},
+                                    {left: "$", right: "$", display: false},
+                                    {left: "\\[", right: "\\]", display: true},
+                                    {left: "\\(", right: "\\)", display: false}
+                                ],
+                                throwOnError: false
+                            });
+
+                            // 2. 为代码块添加复制按钮 (新增代码)
+                            const codeBlocks = contentArea.querySelectorAll('pre');
+                            codeBlocks.forEach(pre => {
+                                // 避免重复添加按钮
+                                if (pre.querySelector('.copy-btn')) return;
+
+                                // 用 div 包裹 pre，用于按钮的绝对定位
+                                const wrapper = document.createElement('div');
+                                wrapper.className = 'code-wrapper';
+                                pre.parentNode.insertBefore(wrapper, pre);
+                                wrapper.appendChild(pre);
+
+                                // 创建复制按钮
+                                const btn = document.createElement('button');
+                                btn.className = 'copy-btn';
+                                btn.textContent = '复制';
+                                btn.onclick = () => {
+                                    const codeText = pre.querySelector('code')?.innerText || pre.innerText;
+                                    navigator.clipboard.writeText(codeText).then(() => {
+                                        btn.textContent = '已复制!';
+                                        setTimeout(() => { btn.textContent = '复制'; }, 1500);
+                                    }).catch(() => {
+                                        btn.textContent = '失败';
+                                    });
+                                };
+                                wrapper.appendChild(btn);
+                            });
+                        }, 0);
+                    }
+
+                    // 如果是 'html'，直接使用原始内容
+                    
+                    contentArea.innerHTML = htmlContent;
+                    updateTOC(contentArea);
+                    if (!tocVisible) {
+                        toggleTocVisibility(true);
+                    }
+                    if (history.pushState) {
+                        history.pushState(null, '', '#' + sectionId);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载文件失败:', error);
+                    contentArea.innerHTML = `
+                        <div class="placeholder-text" style="color:#b91c1c;">
+                            ❌ 加载失败: ${filePath}<br>
+                            <span style="font-size:0.9rem; color:#64748b;">${error.message}</span>
+                            <br><br>
+                            <span style="font-size:0.85rem; color:#94a3b8;">
+                                💡 提示：请使用 HTTP 服务器打开此页面
+                            </span>
+                            <br><br>
+                            <span style="font-size:0.85rem; color:#94a3b8;">
+                                在终端运行：<code style="background:#f1f5f9; padding:0.2rem 0.6rem; border-radius:4px;">python -m http.server 8000</code><br>
+                                然后访问 <code style="background:#f1f5f9; padding:0.2rem 0.6rem; border-radius:4px;">http://localhost:8000</code>
+                            </span>
+                        </div>
+                    `;
+                    updateTOC(contentArea);
+                });
+        }
+
+        // ==============================================================
+        // 4. 生成小节目录
+        // ==============================================================
+        function updateTOC(container) {
+            const headings = container.querySelectorAll('h1, h2, h3, h4');
+            if (headings.length === 0) {
+                tocContainer.innerHTML = `<div class="toc-empty">📭 本节无标题</div>`;
+                return;
+            }
+
+            let tocHtml = `<ul class="toc-list">`;
+            headings.forEach(heading => {
+                const level = heading.tagName.toLowerCase();
+                const text = heading.textContent.trim() || '标题';
+                if (!heading.id) {
+                    heading.id = 'toc-' + Date.now() + '-' + Math.random().toString(36).substring(2,6);
+                }
+                const id = heading.id;
+                tocHtml += `<li class="toc-${level}"><a href="#${id}" style="text-decoration:none; color:inherit; display:block;">${text}</a></li>`;
+            });
+            tocHtml += `</ul>`;
+            tocContainer.innerHTML = tocHtml;
+
+            // 点击目录锚点平滑滚动
+            tocContainer.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetEl = document.getElementById(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        // ==============================================================
+        // 5. 切换右栏可见性
+        // ==============================================================
+        function toggleTocVisibility(forceVisible) {
+            const shouldShow = (forceVisible !== undefined) ? forceVisible : !tocVisible;
+            tocVisible = shouldShow;
+            sidebarRight.classList.toggle('collapsed', !tocVisible);
+        }
+
+        // ==============================================================
+        // 6. 初始化
+        // ==============================================================
+        function init() {
+            renderChapters();
+
+            // 默认加载第一节
+            if (courseData.length > 0 && courseData[0].sections.length > 0) {
+                const firstSection = courseData[0].sections[0];
+                loadSectionFromFile(firstSection.id);
+            }
+
+            // 右栏切换
+            toggleTocBtn.addEventListener('click', () => toggleTocVisibility());
+            toggleTocBtnInner.addEventListener('click', () => toggleTocVisibility());
+
+            // 获取按钮和侧边栏元素
+            const toggleBtn = document.getElementById('toggle-sidebar-btn');
+            const sidebarLeft = document.querySelector('.sidebar-left');
+
+            // 绑定点击事件
+            toggleBtn.addEventListener('click', () => {
+                sidebarLeft.classList.toggle('hidden');
+            });
+
+            // URL hash 定位
+            if (window.location.hash) {
+                const id = window.location.hash.substring(1);
+                if (sectionMap[id]) {
+                    loadSectionFromFile(id);
+                    const sectionEl = document.querySelector(`.section-item[data-section-id="${id}"]`);
+                    if (sectionEl) {
+                        const chapId = sectionEl.dataset.chapterId;
+                        const listEl = document.querySelector(`.section-list[data-chapter-id="${chapId}"]`);
+                        const arrow = document.querySelector(`.chapter-title[data-chapter-id="${chapId}"] .arrow`);
+                        if (listEl && !listEl.classList.contains('open')) {
+                            listEl.classList.add('open');
+                            if (arrow) arrow.classList.add('open');
+                        }
+                    }
+                }
+            }
+
+            window.addEventListener('popstate', function(e) {
+                if (window.location.hash) {
+                    const id = window.location.hash.substring(1);
+                    if (sectionMap[id]) {
+                        loadSectionFromFile(id);
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    })();
+</script>
+</body>
+</html>
