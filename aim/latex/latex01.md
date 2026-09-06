@@ -32,6 +32,8 @@
 
 在搜索引擎搜索"TeX Live 清华镜像"进入 TUNA 镜像站，找到 `texlive/Images/` 目录，选择最新年份的 `texlive.iso` 文件进行下载即可。
 
+<img src="tuna-texlive.png">
+
 </details>
 
 ---
@@ -85,6 +87,8 @@ TeX Live 包含数千个宏包，全量安装耗时 1-2 小时属正常现象。
 <summary>解答：</summary>
 
 在开始菜单或安装目录找到并打开 TeXworks。新建 `.tex` 文件，在左上角将排版引擎下拉框切换为 `XeLaTeX`（推荐用于中文），点击绿色的"Typeset"按钮即可编译并预览 PDF。
+
+<img src="use-texworks.png">
 
 </details>
 
@@ -194,10 +198,11 @@ TeX Live 包含数千个宏包，全量安装耗时 1-2 小时属正常现象。
 <details>
 <summary>解答：</summary>
 
-有两种主要方式：
+有几种主要方式：
 
 1. **行内公式**：使用 `$...$` 将公式包裹起来，公式会与文字在同一行显示。
-2. **独立公式**：使用 `\begin{equation}...\end{equation}` 环境，公式会单独成行、居中显示，并自动在右侧添加编号。
+2. **独立公式**：使用 `$$...$$` 将公式包裹起来，公式会单独成行，居中显示，没有编号。
+3. **独立公式**：使用 `\begin{equation}...\end{equation}` 环境，公式会单独成行、居中显示，并自动在右侧添加编号。
 
 </details>
 
