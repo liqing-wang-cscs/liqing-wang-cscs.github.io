@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry}
+\geometry{a4paper, margin=1.5cm}
+\usepackage{titling}\setlength{\droptitle}{-2cm}
+
+\author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
+\title{马科维茨投资组合理论：数学基础部分}
+\date{2026年9月9日}
+\begin{document}
+\maketitle
+
+\begin{enumerate}\itemsep0cm 
+
+% ===================== Working Problem 1 =====================
+\item \textbf{组合风险分解与比较：}
+给定表1中两只股票在三种经济状态下的收益率：
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{cccc}
+\toprule
+状态 & 概率 & $R_A$ (\%) & $R_B$ (\%) \\
+\midrule
+衰退 ($\omega_1$) & 0.4 & $-10$ & 20 \\
+萧条 ($\omega_2$) & 0.2 & 0 & 20 \\
+繁荣 ($\omega_3$) & 0.4 & 20 & 10 \\
+\bottomrule
+\end{tabular}
+\caption{两只股票的收益率分布}
+\end{table}
+
+\begin{enumerate}
+\item 计算每只股票的期望收益率与方差。
+\item 对以下两种投资组合，计算其期望收益率与方差，并与单只股票的风险进行比较：
+  \begin{enumerate}
+    \item $w_A = 0.4,\; w_B = 0.6$；
+    \item $w_A = -0.5,\; w_B = 1.5$。
+  \end{enumerate}
+\item 解释权重为负值时的经济含义，并说明其对组合风险与收益的影响。
+\end{enumerate}
+
+% ===================== Working Problem 2 =====================
+\item \textbf{相关系数对组合均值-方差前沿的影响：}
+设随机变量 $X$ 与 $Y$ 满足：
+\[
+E(X)=0.10,\quad \operatorname{Var}(X)=0.05^2,\qquad
+E(Y)=0.04,\quad \operatorname{Var}(Y)=0.10^2.
+\]
+考虑线性组合 $Z_w = wX + (1-w)Y$，其中 $w \in [-1,2]$。取离散权重 $w = -1, -0.5, 0, 0.5, 1, 1.5, 2$，针对以下三种相关系数情形，分别绘制 $Z_w$ 的“标准差（或方差）—均值”散点图：
+\begin{enumerate}
+\item $\rho_{X,Y} = 0$；
+\item $\rho_{X,Y} = 1$；
+\item $\rho_{X,Y} = -1$。
+\end{enumerate}
+讨论相关系数如何影响组合的风险—收益权衡关系。
+
+% ===================== Working Problem 3 =====================
+\item \textbf{两资产组合的均值-方差函数关系：}
+设 $X,Y$ 为两个随机变量，$Z_w = wX + (1-w)Y$，权重 $w \in \mathbb{R}$。导出 $Z_w$ 的方差 $\operatorname{Var}(Z_w)$ 与期望 $E(Z_w)$ 之间的函数关系式（即均值-方差前沿的解析表达式），并说明该曲线的几何形状。
+
+% ===================== Working Problem 4 =====================
+\item \textbf{多资产组合的矩阵表示：}
+设随机向量 $\mathbf{X} = (X_1, X_2, \dots, X_n)^T$，权重向量 $\mathbf{w} = (w_1, w_2, \dots, w_n)^T$，\\ 满足 $\sum_{i=1}^n w_i = 1$。定义组合收益 $Z_{\mathbf{w}} = \mathbf{w}^T \mathbf{X}$。
+\begin{enumerate}
+\item 用矩阵形式表示 $E(Z_{\mathbf{w}})$。
+\item 用矩阵形式表示 $\operatorname{Var}(Z_{\mathbf{w}})$。
+\item 说明协方差矩阵的正定性在组合方差分析中的意义。
+\end{enumerate}
+
+% ===================== Working Problem 5 =====================
+\item \textbf{总体与样本的协方差矩阵：}
+设随机向量 $(X,Y,Z)^T$。
+\begin{enumerate}
+\item 写出其总体均值向量 $\boldsymbol{\mu}$ 和总体协方差矩阵 $\Sigma$ 的定义式。
+\item 基于容量为 $n$ 的样本 $\{(x_i, y_i, z_i)\}_{i=1}^n$，写出样本均值向量 $\hat{\boldsymbol{\mu}}$ 和样本协方差矩阵 $\hat{\Sigma}$（无偏估计形式）的计算公式。
+\end{enumerate}
+
+% ===================== Working Problem 6 =====================
+\item \textbf{二次曲线与投资组合可行集：}
+\begin{enumerate}
+\item 在 $(x,y)$ 平面上绘制曲线 $x = 2(y-3)^2 + 4$。
+\item 在 $(x,y)$ 平面上绘制曲线 $x^2 = 2(y-3)^2 + 4$。
+\item 讨论上述两种曲线与马科维茨有效前沿的相似性及区别。
+\end{enumerate}
+
+% ===================== 复习题1 =====================
+\item \textbf{二次型与最小方差组合（拉格朗日方法）：}
+设 $\mathbf{w} = (w_1, w_2, w_3)^T$，$\Sigma = (\sigma_{ij})$ 为 $3\times 3$ 正定矩阵。
+\begin{enumerate}
+\item 证明 $\mathbf{w}^T \Sigma \mathbf{w}$ 是 $\mathbf{w}$ 的二次型。
+\item 在约束 $\mathbf{1}^T \mathbf{w} = 1$（其中 $\mathbf{1} = (1,1,1)^T$）下，利用拉格朗日乘数法求使 $\mathbf{w}^T \Sigma \mathbf{w}$ 最小的权重 $\mathbf{w}$。
+\item 讨论 $\Sigma$ 的正定性对该优化问题解的存在性与唯一性的影响。
+\end{enumerate}
+
+% ===================== 复习题2 =====================
+\item \textbf{两资产组合方差的凸性分析：}
+考虑函数
+\[
+f(w_A, w_B) = w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2 w_A w_B \rho \sigma_A \sigma_B,
+\]
+约束为 $w_A + w_B = 1$。
+\begin{enumerate}
+\item 将 $f$ 化为关于 $w_A$ 的单变量函数 $g(w_A)$。
+\item 求 $g'(w_A)$ 与 $g''(w_A)$。
+\item 证明当 $-1 < \rho < 1$ 时，$g''(w_A) > 0$，说明 $g$ 是凸函数，从而其驻点为全局最小值点。
+\end{enumerate}
+
+% ===================== 复习题3 =====================
+\item \textbf{协方差与相关系数计算：}
+设随机变量 $X$ 与 $Y$ 的方差分别为 $\sigma_X^2 = 25$，$\sigma_Y^2 = 36$，协方差 $\operatorname{Cov}(X,Y) = 15$。
+\begin{enumerate}
+\item 计算相关系数 $\rho_{XY}$。
+\item 计算 $\operatorname{Var}(2X - 3Y)$。
+\item 若 $Z = aX + bY$，求使 $\operatorname{Var}(Z)$ 最小的比值 $a/b$（假设 $b \neq 0$）。
+\end{enumerate}
+
+% ===================== 复习题4 =====================
+\item \textbf{样本统计量与置信区间：}
+某资产的历史回报率样本为：$0.08, 0.12, 0.06, 0.10, 0.14$。
+\begin{enumerate}
+\item 计算样本均值 $\bar{x}$ 和样本方差 $s^2$（无偏估计）。
+\item 计算样本标准差 $s$。
+\item 若该资产回报率服从正态分布，利用 $t$ 分布（$t_{0.025,4} = 2.776$）估计其总体均值的 $95\%$ 置信区间。
+\end{enumerate}
+
+% ===================== 复习题5 =====================
+\item \textbf{矩阵求逆与全局最小方差组合：}
+给定协方差矩阵
+\[
+\Sigma = \begin{pmatrix} 0.04 & 0.006 \\ 0.006 & 0.09 \end{pmatrix},
+\quad \mathbf{1} = (1,1)^T.
+\]
+\begin{enumerate}
+\item 求 $\Sigma^{-1}$。
+\item 全局最小方差组合的权重为 $\mathbf{w}_{mv} = \dfrac{\Sigma^{-1} \mathbf{1}}{\mathbf{1}^T \Sigma^{-1} \mathbf{1}}$，计算该权重向量。
+\item 验证 $\mathbf{w}_{mv}^T \mathbf{1} = 1$。
+\end{enumerate}
+
+% ===================== 复习题6 =====================
+\item \textbf{风险溢价与资产定价：}
+设某风险资产的期末现金流为随机变量 $C$，其概率密度为
+\[
+f(c) = \frac{1}{100000}, \quad c \in [50000, 150000],
+\]
+即服从该区间上的均匀分布。
+\begin{enumerate}
+\item 计算期望现金流 $E(C)$。
+\item 若投资者要求的风险溢价为 $r_p$，无风险利率为 $r_f$，定价公式为
+\[
+P = \frac{E(C)}{1 + r_f + r_p}.
+\]
+推导该定价公式并解释其经济含义。
+\item 若 $r_f = 0.03$，且风险溢价从 $5\%$ 上升到 $10\%$，计算价格变化的百分比。
+\end{enumerate}
+
+\end{enumerate}
+\end{document}
