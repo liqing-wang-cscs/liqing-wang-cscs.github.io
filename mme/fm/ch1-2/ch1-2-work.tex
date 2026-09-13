@@ -1,0 +1,173 @@
+\documentclass{article}
+\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
+\geometry{a4paper, margin=1.5cm}
+\usepackage{titling}\setlength{\droptitle}{-2cm}
+
+\author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
+\title{资本资产定价模型(CAPM)}
+\date{2026年9月16日}
+\begin{document}
+\maketitle
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+
+\item 分别用1-2句话解释与CAPM模型相关的基本概念：
+
+% \begin{tasks}(3)
+\begin{tasks}[label=(\arabic*), label-width=2em](3)
+\task 均值—方差效用
+\task 风险厌恶
+\task 无风险资产
+\task 风险资产
+\task 投资组合
+\task 有效前沿
+\task 切点组合%（最优风险资产组合）
+\task 资本市场线（CML）
+\task 市场投资组合%（市场组合）
+\task 市场均衡
+\task 两基金分离定理
+\task 均衡条件 \(w_t=w_M\)
+\task 系统性风险
+\task 非系统性风险
+\task \(\beta\) 系数（Beta）
+\task 市场风险溢价
+\task 证券市场线（SML）
+\task CAPM 定价公式
+\task \(\alpha\)（Alpha）
+\task 回归形式 CAPM
+\task 夏普比率
+\end{tasks}
+
+\item 简述证券市场线 SML 与资本市场线 CML 的区别。
+
+\item 简述 CAPM（资本资产定价模型）的基本思想。写出 CAPM 的核心公式，并解释其中 \(E(R_i)\)、\(R_f\)、\(E(R_M)-R_f\)、\(\beta_i\) 的含义。进一步说明 \(\beta=1\)、\(\beta>1\)、\(0<\beta<1\)、\(\beta<0\) 分别代表什么。
+
+\item 设无风险利率 \(R_f=3\%\)，市场组合预期收益率 \(E(R_M)=10\%\)。某股票的 \(\beta=1.4\)。
+\begin{enumerate}[label=(\alph*)]
+\item 根据 CAPM 计算该股票的预期收益率。
+\item 若该股票的实际预期收益率为 \(13\%\)，计算
+\(
+\alpha=E(R_i)-[R_f+\beta(E(R_M)-R_f)],
+\) \\ 
+并判断该股票被高估还是低估。
+\end{enumerate}
+
+\item 下表给出某资产和市场组合的 5 期超额收益率（单位：\%）：
+\begin{center}
+\begin{tabular}{c|ccccc}
+期数 & 1 & 2 & 3 & 4 & 5  \\
+\hline
+市场超额收益 \(X=R_M-R_f\) & 2 & \(-1\) & 3 & 0 & 1 \\
+资产超额收益 \(Y=R_i-R_f\) & 3 & \(-2\) & 5 & \(-1\) & 2 \\
+\end{tabular}
+\end{center}
+请计算 \(X\) 和 \(Y\) 的样本均值、样本协方差 \(\operatorname{Cov}(X,Y)\)、市场超额收益的样本方差 \(\operatorname{Var}(X)\)，并用
+\[
+\beta_i=\frac{\operatorname{Cov}(X,Y)}{\operatorname{Var}(X)}
+\]
+计算该资产的 Beta 系数。
+
+\item 从线性回归角度理解 CAPM。设
+\(
+Y=R_i-R_f,\, X=R_M-R_f,
+\)
+回归模型为
+\(
+Y=\alpha+\beta X+\varepsilon.
+\)
+请用最小二乘法，通过最小化残差平方和
+\[
+S(\alpha,\beta)=\sum_{t=1}^n (Y_t-\alpha-\beta X_t)^2,
+\]
+推导回归斜率估计量
+\[
+\hat\beta=\frac{\sum_{t=1}^n (X_t-\bar X)(Y_t-\bar Y)}{\sum_{t=1}^n (X_t-\bar X)^2},
+\]
+并说明它为什么等于 \(\operatorname{Cov}(X,Y)/\operatorname{Var}(X)\)。最后说明 CAPM 对回归截距 \(\alpha\) 的预测是什么。
+
+\newpage
+
+\item 从欧氏空间和统计角度回答下列问题：
+\begin{enumerate}[label=(\alph*)]
+\item 设 \(X\) 和 \(e\) 为 \(n\) 期观测向量，中心化后为 \(\tilde X\) 和 \(\tilde e\)。说明样本协方差 \(\operatorname{Cov}(X,e)=0\) 为什么等价于 \(\tilde X^T\tilde e=0\)，即两个中心化向量正交。
+\item 在带截距的线性回归中，为什么残差与解释变量正交会推出残差与解释变量的样本协方差为零？
+\item 举例说明：即使 \(e\) 与 \(1,X,X^2,X^3,\ldots\) 都不相关，也不能推出 \(e\) 与 \(X\) 独立。
+\end{enumerate}
+
+\item 假设市场上只有 3 种资产：
+\begin{center}
+\begin{tabular}{c|cc}
+资产 & 价格 \(P_i\) & 市场上可交易数量 \(\bar N_i\) \\
+\hline
+无风险资产 \(X_0\) & 1 元 & 2000 份 \\
+风险资产 \(X_1\) & 10 元 & 300 份 \\
+风险资产 \(X_2\) & 20 元 & 100 份 \\
+\end{tabular}
+\end{center}
+请根据
+\(\displaystyle 
+\text{mkt}_i=\frac{\bar N_i P_i}{\sum_{i=0}^{2}\bar N_i P_i}
+\) 
+计算市场投资组合中三类资产的权重 \(\text{mkt}_0,\text{mkt}_1,\text{mkt}_2\)，\\ 
+并解释市场投资组合的含义。
+
+\item 假设市场上只有两种风险资产。已知：
+\(\displaystyle 
+E(R)=\begin{pmatrix}12\%\\18\%\end{pmatrix},\, 
+R_f=4\%,\, 
+\Sigma=\begin{pmatrix}0.04&0.01\\0.01&0.09\end{pmatrix}.
+\) 
+请完成：
+\begin{enumerate}[label=(\alph*)]
+\item 计算超额收益向量 \(E(R)-R_f I\)。
+\item 计算协方差矩阵的逆 \(\Sigma^{-1}\)。
+\item 利用切点组合公式
+\( 
+w_t\propto \Sigma^{-1}[E(R)-R_f I]
+\) 
+求切点组合方向，并将其归一化为权重 \(w_t\)。
+\item 计算该切点组合的期望收益率和夏普比率。
+\end{enumerate}
+
+\item 设风险资产期望收益向量为 \(\mu\)，协方差矩阵为 \(\Sigma\) 且正定，无风险利率为 \(R_f\)。任意风险资产组合权重为 \(w\)，满足 \(w^T I=1\)，其夏普比率为
+\[
+S(w)=\frac{w^T\mu-R_f}{\sqrt{w^T\Sigma w}}.
+\]
+请用柯西—施瓦茨不等式证明：
+\[
+S(w)\le \sqrt{(\mu-R_f I)^T\Sigma^{-1}(\mu-R_f I)},
+\]
+且等号成立当且仅当
+\[
+w\propto \Sigma^{-1}(\mu-R_f I).
+\]
+由此说明切点组合的夏普比率最高。
+
+\item 设切点组合为 \(w_t\)，其夏普比率最高。考虑在切点组合中加入少量资产 \(i\)，构造新组合
+\[
+w(\alpha)=(1-\alpha)w_t+\alpha e_i,
+\]
+其中 \(e_i\) 是第 \(i\) 个单位向量。利用 \(\alpha=0\) 时夏普比率取极值的一阶条件，证明：
+\[
+E(R_i)-R_f
+=
+\frac{\operatorname{Cov}(R_i,R_{w_t})}{w_t^T\Sigma w_t}
+[E(R_{w_t})-R_f].
+\]
+写成向量形式：
+\[
+E(R)-R_f I
+=
+\frac{\Sigma w_t}{w_t^T\Sigma w_t}
+[E(R_{w_t})-R_f].
+\]
+最后说明：当市场均衡 \(w_t=w_M\) 时，如何由此得到标准 CAPM 公式
+\[
+E(R_i)-R_f=\beta_i[E(R_M)-R_f].
+\]
+其中 \(\beta_i=\frac{\operatorname{Cov}(R_i,R_M)}{\operatorname{Var}(R_M)}. \)
+
+
+\end{enumerate}
+
+\end{document}
