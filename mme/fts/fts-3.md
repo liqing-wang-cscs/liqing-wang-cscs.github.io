@@ -54,7 +54,7 @@ plt.tight_layout(); plt.show()
 
 结果表明刀具厚度大约每小时减少 0.3 个单位，线性模型可以很好地描述这一磨损过程。
 
-<img src='./python/fts-prob-11.png'>
+<img src='/mme/fts/python/fts-prob-11.png'>
 
 </details>
 
@@ -133,7 +133,7 @@ plt.tight_layout(); plt.show()
 a1=0.050766, a2=-0.070219, a3=0.038126, a4=-0.453091, a5=0.264257
 ```
 
-<img src='./python/fts-prob-12.png'>
+<img src='/mme/fts/python/fts-prob-12.png'>
 
 画出的曲线即为小行星绕太阳运行的椭圆轨道，5 个观测点都落在曲线上。
 
@@ -274,7 +274,7 @@ plt.tight_layout(); plt.show()
 
 指数模型很好地描述了反应物随时间衰减的规律，$m$ 为负值表示衰减速率。
 
-<img src='./python/fts-prob-14.png'>
+<img src='/mme/fts/python/fts-prob-14.png'>
 
 </details>
 
@@ -404,7 +404,7 @@ plt.tight_layout(); plt.show()
 2025 年预测人口 ≈ 1919.8 万人
 ```
 
-<img src='./python/fts-prob-16.png'>
+<img src='/mme/fts/python/fts-prob-16.png'>
 
 指数模型在早期人口增长阶段拟合较好；若人口趋于饱和，应考虑 Logistic 模型。
 
@@ -468,7 +468,7 @@ plt.tight_layout(); plt.show()
 
 拟合得到的 $\mu$ 即吸收峰中心波长，$\sigma$ 反映峰的宽度，可用于进一步分析物质成分。
 
-<img src='./python/fts-prob-17.png'>
+<img src='/mme/fts/python/fts-prob-17.png'>
 
 </details>
 

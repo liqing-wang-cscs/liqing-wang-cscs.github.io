@@ -40,7 +40,7 @@ plt.title("最小二乘拟合直线")
 plt.show()
 ```
 
-<img src='./python/fts-prob-1.png'>
+<img src='/mme/fts/python/fts-prob-1.png'>
 
 </details>
 
@@ -151,7 +151,7 @@ plt.title("不同阶数多项式拟合对比")
 plt.show()
 ```
 
-<img src='./python/fts-prob-4.png'>
+<img src='/mme/fts/python/fts-prob-4.png'>
 
 </details>
 
