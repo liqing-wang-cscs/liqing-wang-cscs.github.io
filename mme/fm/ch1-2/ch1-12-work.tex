@@ -1,0 +1,153 @@
+\documentclass{article}
+\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
+\geometry{a4paper, margin=1.5cm}
+\usepackage{titling}\setlength{\droptitle}{-2cm}
+
+\author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
+\title{均值方差模型、资本资产定价模型：练习题}
+\date{2026年9月23日}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+
+\item 证明如果不允许卖空，投资组合收益率的方差 \(\sigma^2(R_w)\) 不会超过 \(\sigma^2(R_A)\) 和 \(\sigma^2(R_B)\) 中的最大者。
+
+\item 设 \(\rho_{AB}=1\)，取
+\[
+w_A=-\frac{\sigma(R_B)}{\sigma(R_A)-\sigma(R_B)},\qquad
+w_B=\frac{\sigma(R_A)}{\sigma(R_A)-\sigma(R_B)},
+\]
+证明 \(\sigma(R_w)=0\)。
+
+\item 设 \(\rho_{AB}=-1\)，取
+\[
+w_A=\frac{\sigma(R_B)}{\sigma(R_A)+\sigma(R_B)},\qquad
+w_B=\frac{\sigma(R_A)}{\sigma(R_A)+\sigma(R_B)},
+\]
+证明 \(\sigma(R_w)=0\)。
+
+\item 证明当 \(-1<\rho_{AB}<1\) 时，方差最小的投资组合，在
+\[
+w_B=\frac{\sigma^2(R_A)-\rho_{AB}\sigma(R_A)\sigma(R_B)}
+{\sigma^2(R_A)+\sigma^2(R_B)-2\rho_{AB}\sigma(R_A)\sigma(R_B)}
+\]
+处达到。
+
+\item 考虑一个风险资产组合，该组合的现金流可能为 \(70\,000\) 或者 \(200\,000\)，概率相等，均为 \(0.5\)。
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 如果投资者要求 \(8\%\) 的风险溢价，问：投资者愿意支付多少钱去购买该资产组合？该组合的期望收益率是多少？
+    \item 如果投资者要求 \(12\%\) 的风险溢价，则投资者愿意支付的价格是多少？
+    \item 比较 (1) 和 (2) 的答案，分析风险溢价和价格之间的关系。
+\end{enumerate}
+
+\item 计算表 3.7 所示投资组合的期望回报率和标准差。
+
+% \textbf{表 3.7\quad 题6表}
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+股票 & 投资组合/\% & 期望回报率/\% & 标准差 & \multicolumn{3}{c}{股票间的相关系数} \\
+\cmidrule(lr){5-7}
+& & & & 股票 1 & 股票 2 & 股票 3 \\
+\midrule
+股票 1 & 50 & 20 & 20 & 1.0 & 0.5 & 0.3 \\
+股票 2 & 30 & 15 & 30 & 0.5 & 1.0 & 0.1 \\
+股票 3 & 20 & 20 & 40 & 0.3 & 0.1 & 1.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\item 根据表 3.8 数据求每一种股票的 \(\beta\) 系数。
+
+% \textbf{表 3.8\quad 题7表}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+股票 & 市场回报率为 \(-10\%\) 的期望收益率 & 市场回报率为 \(+10\%\) 的期望收益率 \\
+\midrule
+A & 0 & +20 \\
+B & \(-20\) & +20 \\
+C & \(-30\) & 0 \\
+D & +15 & +15 \\
+E & +1 & \(-15\) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\item 设四种证券的有关数据如表 3.9 所示。投资者另有 \(50\%\) 资产投资于无风险证券。
+
+% \textbf{表 3.9\quad 题8表}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+证券 \(i\) & 期望收益率/\% & \(\beta_i\) & 投资比例/\% \\
+\midrule
+\(i=1\) & 7.6 & 0.2 & 10 \\
+\(i=2\) & 12.4 & 0.8 & 10 \\
+\(i=3\) & 15.6 & 1.2 & 10 \\
+\(i=4\) & 18.8 & 1.6 & 20 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 求市场证券组合期望收益率 \(R_M\) 和无风险利率 \(R_f\)。
+    \item 求证券组合的 \(\beta\) 系数。
+    \item 若投资者可以卖所持有的无风险资产去买市场证券组合，当他希望期望收益率为 \(12\%\) 时，证券组合如何？
+\end{enumerate}
+
+\item 设资产组合由 3 只证券组成，权重分别为 \(w_1=40\%\), \(w_2=-20\%\), \(w_3=80\%\)，给定证券的期望收益 \(\mu_1=8\%\), \(\mu_2=10\%\), \(\mu_3=6\%\)，标准差 \(\sigma_1=0.15\), \(\sigma_2=0.05\), \(\sigma_3=0.12\)，相关系数 \(\rho_{12}=0.3\), \(\rho_{23}=0.0\), \(\rho_{31}=-0.2\)，求期望收益 \(\mu_V\) 和标准差 \(\sigma_V\)。
+
+\item 证明权重为 \(w_1,\cdots,w_n\) 的 \(n\) 只证券构成的资产组合的贝塔因子为
+\[
+\beta_p=w_1\beta_1+\cdots+w_n\beta_n,
+\]
+其中，\(\beta_1,\cdots,\beta_n\) 是这些证券的贝塔因子。
+
+\item 假定风险证券时期 1 时的随机收益为 \(\tilde{y}\)，而时期 0 的均衡价格为 \(S_j\)。假定 CAPM 成立，而证券的贝塔为 \(\beta_{jm}\)。证明：
+\[
+S_j=\frac{E[\tilde{y}]}{1+r_f+\beta_{ym}(E[\tilde{r}_m]-r_f)}
+=\frac{E[\tilde{y}]-\varphi^*\cdot\rho_{jm}\sigma(\tilde{y})}{1+r_f},
+\]
+这里，
+\[
+\varphi^*=\frac{E[\tilde{y}]-r_f}{\sigma(\tilde{r}_m)},\qquad
+\rho_{ym}=\frac{\operatorname{Cov}(\tilde{y},\tilde{r}_m)}{\sigma(\tilde{y})\sigma(\tilde{r}_m)}.
+\]
+
+\item 假定市场上仅有两种资产，其收益率向量 \((X,Y)^T\) 和协方差矩阵 \(V\) 的取值分别为
+\[
+V=\begin{bmatrix}
+0.01 & 0\\
+0 & 0.0064
+\end{bmatrix},\qquad
+\begin{bmatrix}
+X\\
+Y
+\end{bmatrix}
+=
+\begin{bmatrix}
+0.2\\
+0.1
+\end{bmatrix}
+\]
+试求全局最小方差资产组合。
+
+\item 某项目未来期望收益为 \(1\,000\) 万美元，由于该项目与市场相关性较小，贝塔系数 \(\beta=0.6\)。若市场无风险利率为 \(5\%\)，市场证券组合的期望收益率为 \(17\%\)，项目投资成本为 \(820\) 万美元，是否值得投资？
+
+\item 某投资组合包含 A 和 B 两种股票，股票 A 的期望收益率为 \(14\%\)，标准差为 \(10\%\)；股票 B 的期望收益率为 \(18\%\)，标准差为 \(16\%\)。股票 A 和股票 B 的相关系数为 \(0.4\)，投资股票 A 和股票 B 的权重分别为 \(40\%\) 和 \(60\%\)，则该投资组合的期望收益率与标准差分别为多少？
+
+\item 已知无风险利率为 \(6\%\)，市场回报率的均值和标准差分别为 \(0.10\) 和 \(0.20\)。若给定股票的回报率与市场回报率的协方差为 \(0.05\)，求该股票回报率的期望值。
+
+\item 已知市场证券组合的期望收益率为 \(9\%\)，标准差为 \(30\%\)，市场利率为 \(3\%\)，求证券市场线的方程；若证券 A 的 \(\beta\) 值为 \(0.6\)，根据 CAPM 计算该证券的期望收益；若证券 B 的标准差为 \(0.6\)，其与市场证券组合的相关系数为 \(0.25\)，根据 CAPM 计算该证券的期望收益率。
+
+\item 股票 A 的风险为 \(0.32\)，\(\beta\) 值为 \(1.42\)；股票 B 的风险为 \(0.68\)，\(\beta\) 值为 \(0.75\)。哪只股票的总风险更大？哪只股票的市场风险更大？若市场利率为 \(2\%\)，市场期望收益率为 \(10\%\)，哪只股票的价值更高？
+
+\end{enumerate}
+
+\end{document}
