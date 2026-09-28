@@ -1,0 +1,160 @@
+\documentclass{article}
+\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
+\geometry{a4paper, margin=1.5cm}
+\usepackage{titling}\setlength{\droptitle}{-2cm}
+
+\author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
+\title{套利定价模型(APT)}
+\date{2026年9月30日}
+\begin{document}
+\maketitle
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+
+% ---------- 4.1 多因子线性模型 ----------
+\item \textbf{（因子模型的基本形式）}
+设某风险资产的收益率满足单因子模型
+\[
+R_i = a_i + b_i F_1 + \varepsilon_i
+\]
+其中 $E(F_1)=0$，$E(\varepsilon_i)=0$，$\mathrm{Var}(F_1)=1$，$\mathrm{Var}(\varepsilon_i)=S_i^2$，且 $\varepsilon_i$ 与 $F_1$ 独立。
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出 $E(R_i)$ 的表达式；
+    \item 证明 $\mathrm{Var}(R_i)=b_i^2+S_i^2$。
+\end{enumerate}
+
+\item \textbf{（敏感系数的含义）}
+已知三种资产对同一因子的敏感系数分别为 $b_1=0.5$，$b_2=1.5$，$b_3=2.0$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 若该因子 $F_1$ 意外上涨 $2\%$，在其他条件不变的情况下，三种资产收益率分别变化多少？
+    \item 简要说明 $b_i$ 的绝对值越大意味着什么。
+\end{enumerate}
+
+\item \textbf{（投资组合的因子敏感系数）}
+设市场上有两种资产，其对两因子的敏感系数为：资产 1 的 $b_{11}=0.8$、$b_{12}=1.2$；资产 2 的 $b_{21}=1.6$、$b_{22}=0.4$。某投资者将资金的 $60\%$ 投入资产 1，$40\%$ 投入资产 2。
+\begin{enumerate}[label=(\arabic*), topsep=2pt, itemsep=0pt]
+    \item 求该投资组合对因子 1 的敏感系数；
+    \item 求该投资组合对因子 2 的敏感系数。
+\end{enumerate}
+
+\item \textbf{（组合残差方差的分散化）}
+设投资组合由 $n$ 种等权资产构成，即 $w_i=1/n$，各资产残差相互独立，且 $\mathrm{Var}(\varepsilon_i)=S_i^2\le S$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出组合残差方差 $\sigma^2(\varepsilon_P)$ 的表达式，并证明 $\sigma^2(\varepsilon_P)\le S/n$；
+    \item 当 $n\to\infty$ 时，$\sigma^2(\varepsilon_P)$ 趋于多少？这说明分散化能消除哪一类风险？
+\end{enumerate}
+
+\item \textbf{（组合方差的计算）}
+已知某双因子模型中，某投资组合满足
+\(
+\sum_{i} w_i b_{i1}=0.6,\quad \sum_{i} w_i b_{i2}=0.9,
+\) 
+且组合残差方差 $\sigma^2(\varepsilon_P)=0.02$，两因子方差均为 $1$ 且相互独立。
+\begin{enumerate}[label=(\arabic*)]
+    \item 根据式(4.1.7)，求组合方差的近似值；
+    \item 若忽略残差项，组合方差约等于多少？
+\end{enumerate}
+
+% ---------- 4.2 无残差套利定价 ----------
+\item \textbf{（套利组合的判定）}
+设市场上有三种股票，其期望收益率与单因子敏感系数为
+\[
+E(R_1)=15\%,\ E(R_2)=21\%,\ E(R_3)=12\%, \quad 
+b_1=0.9,\ b_2=3.0,\ b_3=1.8.
+\]
+考虑组合权重 $w_1=0.1$，$w_2=0.075$，$w_3=-0.175$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 验证 $w_1+w_2+w_3=0$ 与 $0.9w_1+3.0w_2+1.8w_3=0$；
+    \item 计算组合的期望收益率 $E(R_w)$，并判断是否存在套利机会。
+\end{enumerate}
+
+\item \textbf{（套利定价线的确定）}
+沿用第 6 题的数据，假设无套利条件下
+\(
+E(R_i)=\lambda_0+\lambda_1 b_i. 
+\)
+已知 $\lambda_0=8\%$，$\lambda_1=4\%$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 分别写出无套利时三种股票的期望收益率；
+    \item 与原来的 $E(R_1)=15\%$、$E(R_2)=21\%$、$E(R_3)=12\%$ 比较，指出哪些股票价格被高估、哪些被低估；
+    \item 说明套利交易会如何推动价格变动，使套利机会消失。
+\end{enumerate}
+
+\item \textbf{（风险溢价 $\lambda_k$ 的经济含义）}
+设某 $K$ 因子无残差模型满足无套利条件，$E(R_i)=\lambda_0+\sum_{k=1}^{K}\lambda_k b_{ik}$。
+现构造一个特殊组合 $\mathbf{w}$，满足
+\[
+\sum_i w_i b_{ik}=1,\qquad \sum_i w_i b_{ij}=0\ (j\neq k).
+\]
+\begin{enumerate}[label=(\arabic*)]
+    \item 求该组合的期望收益率 $E(R_w)$；
+    \item 由此写出 $\lambda_k$ 的表达式；
+    \item 若市场存在无风险资产且 $R_f=4\%$，$\lambda_k=6\%$，求该组合的期望收益率。
+\end{enumerate}
+
+\item \textbf{（双因子模型下的期望收益率）}
+设某资产的期望收益率满足双因子 APT 模型
+\[
+E(R_i)=R_f+\lambda_1 b_{i1}+\lambda_2 b_{i2},
+\]
+已知 $R_f=4\%$，两因子的风险溢价分别为 $\lambda_1=5\%$，$\lambda_2=3\%$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 若 $b_{i1}=0.8$，$b_{i2}=1.2$，求 $E(R_i)$；
+    \item 若另一资产的敏感系数为 $b_{j1}=1.5$，$b_{j2}=0.5$，求 $E(R_j)$；
+    \item 比较两资产的期望收益率，说明哪个资产承担了更多的因子风险。
+\end{enumerate}
+
+\item \textbf{（反向求解无风险利率）}
+考虑一个双因子模型，因子 $a$ 和 $b$ 对应的风险溢价分别为 $\lambda_a=4\%$ 和 $\lambda_b=6\%$。股票 $A$ 在两因子上的敏感系数分别为 $b_{A a}=1.2$，$b_{A b}=0.9$，其预期收益率为 $16\%$。假设不存在套利机会。
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出股票 $A$ 满足的 APT 定价方程；
+    \item 求无风险收益率 $R_f$；
+    \item 若另一股票 $B$ 的敏感系数为 $b_{B a}=0.6$，$b_{B b}=1.5$，求其无套利条件下的预期收益率。
+\end{enumerate}
+
+
+\item \textbf{（多因子模型与组合方差综合）}
+设某双因子模型中，三种资产对两因子的敏感系数及残差方差如下表：
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cccc}
+        \toprule
+        资产 & $b_{i1}$ & $b_{i2}$ & $\mathrm{Var}(\varepsilon_i)$ \\
+        \midrule
+        资产 1 & 1.0 & 0.5 & 0.04 \\
+        资产 2 & 0.6 & 1.2 & 0.09 \\
+        资产 3 & 1.4 & 0.3 & 0.01 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+已知两因子方差均为 $1$ 且相互独立，各资产残差相互独立。某投资者构造等权组合，即 $w_i=1/3$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 求组合对因子 1 和因子 2 的敏感系数；
+    \item 求组合的残差方差 $\sigma^2(\varepsilon_P)$；
+    \item 根据式(4.1.7)，求组合方差的近似值；
+    \item 若把资产 3 的权重提高到 $1/2$，其余两资产各占 $1/4$，重新计算组合对两因子的敏感系数，并说明组合风险结构发生了什么变化。
+\end{enumerate}
+
+\item \textbf{（套利机会的识别与定价线修正）}
+设市场上有四种股票，均只受单因子影响，其期望收益率与敏感系数为
+\[
+E(R_1)=10\%,\ E(R_2)=14\%,\ E(R_3)=18\%,\ E(R_4)=8\%,
+\]
+\[
+b_1=0.5,\ b_2=1.0,\ b_3=1.5,\ b_4=0.8.
+\]
+已知无风险利率 $R_f=4\%$。
+\begin{enumerate}[label=(\arabic*)]
+    \item 以 $R_f$ 和某一敏感系数为 $1$ 的组合为基准，写出无套利定价线 $E(R)=\lambda_0+\lambda_1 b$；
+    \item 判断上述四只股票中哪些在定价线上方、哪些在下方，是否存在套利机会；
+    \item 对存在套利机会的股票，构造一个零成本、零因子暴露且期望收益为正的套利组合（写出权重并验证三个条件）；
+    \item 说明套利交易如何使这四只股票的期望收益率回到同一条定价线上。
+\end{enumerate}
+
+
+
+\end{enumerate}
+
+\end{document}
