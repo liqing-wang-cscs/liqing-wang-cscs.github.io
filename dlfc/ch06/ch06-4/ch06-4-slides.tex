@@ -1,0 +1,116 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+
+% 图形包 (如果需要插入图片)
+\usepackage{graphicx}
+% \graphicspath{{./images/}} % 假设图片放在images文件夹
+
+% 标题页信息
+\title[6.4.误差函数]{第6章：深度神经网络}
+\subtitle{第4节：误差函数(Error Functions)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 第一张：标题页
+\frame{\maketitle}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% 第二张：引言
+\section{引言}
+\begin{frame}{引言}
+    \begin{itemize}
+        \item 在之前的章节中，我们探讨了回归和分类的线性模型，并推导了合适的误差函数形式及相应的输出单元激活函数。
+        \item 相同的选择误差函数的考虑同样适用于多层神经网络。
+        \item 本节将总结关键点，并介绍针对不同任务的自然配对： \textbf{输出激活函数} 和\textbf{误差函数}。
+    \end{itemize}
+\end{frame}
+
+% 第三张：回归问题 (Regression)
+\section{回归问题}
+\begin{frame}{6.4.1 回归问题}
+    \begin{itemize}
+        \item 假设目标变量 $t$ 的条件分布服从高斯分布：
+        \begin{align}
+            p(t|\mathbf{x}, \mathbf{w}) = \mathcal{N}\left(t|y(\mathbf{x}, \mathbf{w}), \sigma^2\right) %\tag{6.23}
+        \end{align}
+        \item 输出单元激活函数选择为 \textbf{恒等函数} (identity function)，因为网络可以近似任意连续函数。
+        \item 对应的误差函数（最小化负对数似然）是 \textbf{平方和误差函数}：
+        \begin{align}
+            E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \{y(\mathbf{x}_n, \mathbf{w}) - t_n\}^2 %\tag{6.26}
+        \end{align}
+    \end{itemize}
+\end{frame}
+
+% 第四张：二分类问题 (Binary Classification)
+\section{二分类问题}
+\begin{frame}{6.4.2 二分类问题}
+    \begin{itemize}
+        \item 针对单个目标变量 $t \in \{0, 1\}$ 的二分类问题。
+        \item 输出单元激活函数选择为 \textbf{Logistic Sigmoid 函数}：
+        \begin{align}
+            y(\mathbf{x}, \mathbf{w}) = \sigma(a) = \frac{1}{1+\exp(-a)} \quad \text{其中 } a = a(\mathbf{x}, \mathbf{w})
+        \end{align}
+        \item 解释 $y(\mathbf{x}, \mathbf{w})$ 为属于类别 $\mathcal{C}_1$ 的概率。
+        \item 对应的误差函数是 \textbf{交叉熵误差函数}：
+        \begin{align}
+            E(\mathbf{w}) = -\sum_{n=1}^N \left\{ t_n \ln y_n + (1 - t_n) \ln (1 - y_n) \right\} %\tag{6.33}
+        \end{align}
+    \end{itemize}
+\end{frame}
+
+% 第五张：多分类问题 (Multiclass Classification)
+\section{多分类问题}
+\begin{frame}{6.4.3 多分类问题}
+    \begin{itemize}
+        \item 针对 $K$ 个互斥类别的分类问题。
+        \item 输出向量 $\mathbf{y}$ 的每个元素 $y_k$ 表示输入属于第 $k$ 类的概率。
+        \item 输出单元激活函数选择为 \textbf{Softmax 函数}：
+        \begin{align}
+            y_k(\mathbf{x}, \mathbf{w}) = \frac{\exp(a_k(\mathbf{x}, \mathbf{w}))}{\sum_j \exp(a_j(\mathbf{x}, \mathbf{w}))} %\tag{6.37}
+        \end{align}
+        \item 对应的误差函数是 \textbf{多类交叉熵误差函数}：
+        \begin{align}
+            E(\mathbf{w}) = -\sum_{n=1}^N \sum_{k=1}^K t_{kn} \ln y_k(\mathbf{x}_n, \mathbf{w}) %\tag{6.36}
+        \end{align}
+    \end{itemize}
+\end{frame}
+
+% 第六张：总结
+\section{总结}
+\begin{frame}{总结：任务、激活函数与误差函数的配对}
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|l|l|l|p{5.5cm}|}
+        \hline
+        \textbf{任务类型} & \textbf{输出激活函数} & \textbf{误差函数} & \textbf{原因简述} \\ \hline
+        回归 & 恒等函数 & 平方和误差 & 恒等函数不限制输出范围，平方误差对连续值偏差敏感且凸性好。 \\ \hline
+        二分类 & Logistic Sigmoid & 交叉熵 & Sigmoid输出可视为概率，交叉熵最大似然估计且梯度稳定。 \\ \hline
+        多分类 & Softmax & 多类交叉熵 & Softmax将输出转为归一化概率，多类交叉熵等价于负对数似然。 \\ \hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+    \vspace{1em}
+    
+    \begin{block}{关键思想}
+        存在一种自然的配对方式，根据要解决的问题类型来选择输出单元激活函数和匹配的误差函数。
+    \end{block}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,208 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第5章-单层网络-分类-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{5.1} $(\star)$ Consider a classification problem with $K$ classes and a target vector $\mathbf{t}$ that uses a 1-of-$K$ binary coding scheme. Show that the conditional expectation $\mathbb{E}[\mathbf{t}|\mathbf{x}]$ is given by the posterior probability $p(\mathcal{C}_k|\mathbf{x})$.
+
+\textbf{5.1} $(\star)$ 考虑一个具有 $K$ 个类别的分类问题，其目标向量 $\mathbf{t}$ 使用 1-of-$K$ 二进制编码方案。证明条件期望 $\mathbb{E}[\mathbf{t}|\mathbf{x}]$ 由后验概率 $p(\mathcal{C}_k|\mathbf{x})$ 给出。
+
+
+\textbf{5.2} $(\star\star)$ Given a set of data points $\{\mathbf{x}_n\}$, we can define the \textit{convex hull} to be the set of all points $\mathbf{x}$ given by
+\begin{equation}
+\mathbf{x} = \sum_n \alpha_n \mathbf{x}_n \tag{5.96}
+\end{equation}
+where $\alpha_n \geqslant 0$ and $\sum_n \alpha_n = 1$. Consider a second set of points $\{\mathbf{y}_n\}$ together with their corresponding convex hull. By definition, the two sets of points will be linearly separable if there exists a vector $\widehat{\mathbf{w}}$ and a scalar $w_0 > 0$ such that $\widehat{\mathbf{w}}^{\mathrm{T}}\mathbf{x}_n + w_0 > 0$ for all $\mathbf{x}_n$ and $\widehat{\mathbf{w}}^{\mathrm{T}}\mathbf{y}_n + w_0 < 0$ for all $\mathbf{y}_n$. Show that if their convex hulls intersect, the two sets of points cannot be linearly separable, and conversely that if they are linearly separable, their convex hulls do not intersect.
+
+\textbf{5.2} $(\star\star)$ 给定一组数据点 $\{\mathbf{x}_n\}$，我们可以将\textit{凸包}定义为由下式给出的所有点 $\mathbf{x}$ 的集合
+\begin{equation}
+\mathbf{x} = \sum_n \alpha_n \mathbf{x}_n \tag{5.96}
+\end{equation}
+其中 $\alpha_n \geqslant 0$ 且 $\sum_n \alpha_n = 1$。考虑第二组点 $\{\mathbf{y}_n\}$ 及其相应的凸包。根据定义，如果存在一个向量 $\widehat{\mathbf{w}}$ 和一个标量 $w_0 > 0$，使得对于所有 $\mathbf{x}_n$ 都有 $\widehat{\mathbf{w}}^{\mathrm{T}}\mathbf{x}_n + w_0 > 0$，并且对于所有 $\mathbf{y}_n$ 都有 $\widehat{\mathbf{w}}^{\mathrm{T}}\mathbf{y}_n + w_0 < 0$，那么这两组点将是线性可分的。证明如果它们的凸包相交，则这两组点不能是线性可分的；反之，如果它们是线性可分的，则它们的凸包不相交。
+
+
+\textbf{5.3} $(\star\star)$ Consider the minimization of a sum-of-squares error function (5.14), and suppose that all the target vectors in the training set satisfy a linear constraint
+\begin{equation}
+\mathbf{a}^{\mathrm{T}}\mathbf{t}_n + b = 0 \tag{5.97}
+\end{equation}
+where $\mathbf{t}_n$ corresponds to the $n$th row of the matrix $\mathbf{T}$ in (5.14). Show that as a consequence of this constraint, the elements of the model prediction $\mathbf{y}(\mathbf{x})$ given by the least-squares solution (5.16) also satisfy this constraint, so that
+\begin{equation}
+\mathbf{a}^{\mathrm{T}}\mathbf{y}(\mathbf{x}) + b = 0. \tag{5.98}
+\end{equation}
+To do so, assume that one of the basis functions $\phi_0(\mathbf{x}) = 1$ so that the corresponding parameter $w_0$ plays the role of a bias.
+
+\textbf{5.3} $(\star\star)$ 考虑最小化平方和误差函数(5.14)，并假设训练集中的所有目标向量都满足一个线性约束
+\begin{equation}
+\mathbf{a}^{\mathrm{T}}\mathbf{t}_n + b = 0 \tag{5.97}
+\end{equation}
+其中 $\mathbf{t}_n$ 对应于(5.14)中矩阵 $\mathbf{T}$ 的第 $n$ 行。证明作为此约束的结果，由最小二乘解(5.16)给出的模型预测 $\mathbf{y}(\mathbf{x})$ 的元素也满足此约束，即
+\begin{equation}
+\mathbf{a}^{\mathrm{T}}\mathbf{y}(\mathbf{x}) + b = 0. \tag{5.98}
+\end{equation}
+为此，假设其中一个基函数 $\phi_0(\mathbf{x}) = 1$，以便相应的参数 $w_0$ 起到偏置的作用。
+
+
+\textbf{5.4} $(\star\star)$ Extend the result of Exercise 5.3 to show that if multiple linear constraints are satisfied simultaneously by the target vectors, then the same constraints will also be satisfied by the least-squares prediction of a linear model.
+
+\textbf{5.4} $(\star\star)$ 扩展练习5.3的结果，以证明如果目标向量同时满足多个线性约束，那么线性模型的最小二乘预测也将满足相同的约束。
+
+
+\textbf{5.5} $(\star)$ Use the definition (5.38), along with (5.30) and (5.31) to derive the result (5.39) for the F-score.
+
+\textbf{5.5} $(\star)$ 使用定义(5.38)，以及(5.30)和(5.31)，推导出F分数的结果(5.39)。
+
+
+\textbf{5.6} $(\star\star)$ Consider two non-negative numbers $a$ and $b$, and show that, if $a \leqslant b$, then $a \leqslant (ab)^{1/2}$. Use this result to show that, if the decision regions of a two-class classification problem are chosen to minimize the probability of misclassification, this probability will satisfy
+\begin{equation}
+p(\text{mistake}) \leqslant \int \{p(\mathbf{x}, \mathcal{C}_1)p(\mathbf{x}, \mathcal{C}_2)\}^{1/2} \,\mathrm{d}\mathbf{x}. \tag{5.99}
+\end{equation}
+
+\textbf{5.6} $(\star\star)$ 考虑两个非负数 $a$ 和 $b$，并证明如果 $a \leqslant b$，则 $a \leqslant (ab)^{1/2}$。利用这个结果证明，如果一个二类分类问题的决策区域被选择为最小化错误分类的概率，那么这个概率将满足
+\begin{equation}
+p(\text{mistake}) \leqslant \int \{p(\mathbf{x}, \mathcal{C}_1)p(\mathbf{x}, \mathcal{C}_2)\}^{1/2} \,\mathrm{d}\mathbf{x}. \tag{5.99}
+\end{equation}
+
+
+\textbf{5.7} $(\star)$ Given a loss matrix with elements $L_{kj}$, the expected risk is minimized if, for each $\mathbf{x}$, we choose the class that minimizes (5.23). Verify that, when the loss matrix is given by $L_{kj} = 1 - I_{kj}$, where $I_{kj}$ are the elements of the identity matrix, this reduces to the criterion of choosing the class having the largest posterior probability. What is the interpretation of this form of loss matrix?
+
+\textbf{5.7} $(\star)$ 给定一个元素为 $L_{kj}$ 的损失矩阵，如果对于每个 $\mathbf{x}$，我们都选择使(5.23)最小化的类别，则期望风险最小。验证当损失矩阵由 $L_{kj} = 1 - I_{kj}$ 给出时（其中 $I_{kj}$ 是单位矩阵的元素），这等价于选择具有最大后验概率的类别的标准。这种形式的损失矩阵有何解释？
+
+
+\textbf{5.8} $(\star)$ Derive the criterion for minimizing the expected loss when there is a general loss matrix and general prior probabilities for the classes.
+
+\textbf{5.8} $(\star)$ 推导在存在一般损失矩阵和各类别的一般先验概率时，最小化期望损失的标准。
+
+
+\textbf{5.9} $(\star)$ Consider the average of the posterior probabilities over a set of $N$ data points in the form
+\begin{equation}
+\frac{1}{N} \sum_{N=1}^{N} p(\mathcal{C}_k|\mathbf{x}_n). \tag{5.100}
+\end{equation}
+By taking the limit $N \to \infty$, show that this quantity approaches the prior class probability $p(\mathcal{C}_k)$.
+
+\textbf{5.9} $(\star)$ 考虑一组 $N$ 个数据点上后验概率的平均值，形式如下
+\begin{equation}
+\frac{1}{N} \sum_{N=1}^{N} p(\mathcal{C}_k|\mathbf{x}_n). \tag{5.100}
+\end{equation}
+通过取极限 $N \to \infty$，证明该量趋近于先验类别概率 $p(\mathcal{C}_k)$。
+
+
+\textbf{5.10} $(\star\star)$ Consider a classification problem in which the loss incurred when an input vector from class $\mathcal{C}_k$ is classified as belonging to class $\mathcal{C}_j$ is given by the loss matrix $L_{kj}$ and for which the loss incurred in selecting the reject option is $\lambda$. Find the decision criterion that will give the minimum expected loss. Verify that this reduces to the reject criterion discussed in Section 5.2.3 when the loss matrix is given by $L_{kj} = 1 - I_{kj}$. What is the relationship between $\lambda$ and the rejection threshold $\theta$?
+
+\textbf{5.10} $(\star\star)$ 考虑一个分类问题，其中来自类别 $\mathcal{C}_k$ 的输入向量被分类为属于类别 $\mathcal{C}_j$ 时所产生的损失由损失矩阵 $L_{kj}$ 给出，而选择拒绝选项所产生的损失为 $\lambda$。找出能给出最小期望损失的决策标准。验证当损失矩阵由 $L_{kj} = 1 - I_{kj}$ 给出时，这会简化为5.2.3节中讨论的拒绝标准。$\lambda$ 与拒绝阈值 $\theta$ 之间有什么关系？
+
+
+\textbf{5.11} $(\star)$ Show that the logistic sigmoid function (5.42) satisfies the property $\sigma(-a) = 1 - \sigma(a)$ and that its inverse is given by $\sigma^{-1}(y) = \ln \{y/(1-y)\}$.
+
+\textbf{5.11} $(\star)$ 证明逻辑Sigmoid函数(5.42)满足性质 $\sigma(-a) = 1 - \sigma(a)$，并且其反函数由 $\sigma^{-1}(y) = \ln \{y/(1-y)\}$ 给出。
+
+
+\textbf{5.12} $(\star)$ Using (5.40) and (5.41), derive the result (5.48) for the posterior class probability in the two-class generative model with Gaussian densities, and verify the results (5.49) and (5.50) for the parameters $\mathbf{w}$ and $w_0$.
+
+\textbf{5.12} $(\star)$ 使用(5.40)和(5.41)，推导出具有高密度斯密度的二类生成模型中的后验类别概率的结果(5.48)，并验证参数 $\mathbf{w}$ 和 $w_0$ 的结果(5.49)和(5.50)。
+
+
+\textbf{5.13} $(\star)$ Consider a generative classification model for $K$ classes defined by prior class probabilities $p(\mathcal{C}_k) = \pi_k$ and general class-conditional densities $p(\boldsymbol{\phi}|\mathcal{C}_k)$ where $\boldsymbol{\phi}$ is the input feature vector. Suppose we are given a training data set $\{\boldsymbol{\phi}_n, \mathbf{t}_n\}$ where $n = 1, \dots, N$, and $\mathbf{t}_n$ is a binary target vector of length $K$ that uses the 1-of-$K$ coding scheme, so that it has components $t_{nj} = I_{jk}$ if data point $n$ is from class $\mathcal{C}_k$. Assuming that the data points are drawn independently from this model, show that the maximum-likelihood solution for the prior probabilities is given by
+\begin{equation}
+\pi_k = \frac{N_k}{N} \tag{5.101}
+\end{equation}
+where $N_k$ is the number of data points assigned to class $\mathcal{C}_k$.
+
+\textbf{5.13} $(\star)$ 考虑一个为 $K$ 个类别定义的生成式分类模型，该模型由先验类别概率 $p(\mathcal{C}_k) = \pi_k$ 和一般的类别条件密度 $p(\boldsymbol{\phi}|\mathcal{C}_k)$ 定义，其中 $\boldsymbol{\phi}$ 是输入特征向量。假设我们有一个训练数据集 $\{\boldsymbol{\phi}_n, \mathbf{t}_n\}$，其中 $n = 1, \dots, N$，并且 $\mathbf{t}_n$ 是一个长度为 $K$ 的二进制目标向量，它使用 1-of-$K$ 编码方案，因此如果数据点 $n$ 来自类别 $\mathcal{C}_k$，则它的分量为 $t_{nj} = I_{jk}$。假设数据点是独立地从该模型中抽取的，证明先验概率的最大似然解由下式给出
+\begin{equation}
+\pi_k = \frac{N_k}{N} \tag{5.101}
+\end{equation}
+其中 $N_k$ 是被分配到类别 $\mathcal{C}_k$ 的数据点的数量。
+
+
+\textbf{5.14} $(\star\star)$ Consider the classification model of Exercise 5.13 and now suppose that the class-conditional densities are given by Gaussian distributions with a shared covariance matrix, so that
+\begin{equation}
+p(\boldsymbol{\phi}|\mathcal{C}_k) = \mathcal{N}(\boldsymbol{\phi}|\boldsymbol{\mu}_k, \boldsymbol{\Sigma}). \tag{5.102}
+\end{equation}
+Show that the maximum likelihood solution for the mean of the Gaussian distribution for class $\mathcal{C}_k$ is given by
+\begin{equation}
+\boldsymbol{\mu}_k = \frac{1}{N_k} \sum_{n=1}^{N} t_{nk} \boldsymbol{\phi}_n, \tag{5.103}
+\end{equation}
+which represents the mean of those feature vectors assigned to class $\mathcal{C}_k$. Similarly, show that the maximum likelihood solution for the shared covariance matrix is given by
+\begin{equation}
+\boldsymbol{\Sigma} = \sum_{k=1}^{K} \frac{N_k}{N} \mathbf{S}_k \tag{5.104}
+\end{equation}
+where
+\begin{equation}
+\mathbf{S}_k = \frac{1}{N_k} \sum_{n=1}^{N} t_{nk} (\boldsymbol{\phi}_n - \boldsymbol{\mu}_k)(\boldsymbol{\phi}_n - \boldsymbol{\mu}_k)^{\mathrm{T}}. \tag{5.105}
+\end{equation}
+Thus, $\boldsymbol{\Sigma}$ is given by a weighted average of the covariances of the data associated with each class, in which the weighting coefficients are given by the prior probabilities of the classes.
+
+\textbf{5.14} $(\star\star)$ 考虑练习5.13中的分类模型，现在假设类别条件密度由具有共享协方差矩阵的高斯分布给出，即
+\begin{equation}
+p(\boldsymbol{\phi}|\mathcal{C}_k) = \mathcal{N}(\boldsymbol{\phi}|\boldsymbol{\mu}_k, \boldsymbol{\Sigma}). \tag{5.102}
+\end{equation}
+证明类别 $\mathcal{C}_k$ 的高斯分布均值的最大似然解由下式给出
+\begin{equation}
+\boldsymbol{\mu}_k = \frac{1}{N_k} \sum_{n=1}^{N} t_{nk} \boldsymbol{\phi}_n, \tag{5.103}
+\end{equation}
+这代表了被分配到类别 $\mathcal{C}_k$ 的那些特征向量的均值。同样地，证明共享协方差矩阵的最大似然解由下式给出
+\begin{equation}
+\boldsymbol{\Sigma} = \sum_{k=1}^{K} \frac{N_k}{N} \mathbf{S}_k \tag{5.104}
+\end{equation}
+其中
+\begin{equation}
+\mathbf{S}_k = \frac{1}{N_k} \sum_{n=1}^{N} t_{nk} (\boldsymbol{\phi}_n - \boldsymbol{\mu}_k)(\boldsymbol{\phi}_n - \boldsymbol{\mu}_k)^{\mathrm{T}}. \tag{5.105}
+\end{equation}
+因此，$\boldsymbol{\Sigma}$ 由与每个类别相关的数据的协方差的加权平均值给出，其中加权系数由类别的先验概率给出。
+
+
+\textbf{5.15} $(\star\star)$ Derive the maximum likelihood solution for the parameters $\{\mu_{ki}\}$ of the probabilistic naive Bayes classifier with discrete binary features described in Section 5.3.3.
+
+\textbf{5.15} $(\star\star)$ 推导5.3.3节中描述的具有离散二元特征的朴素贝叶斯分类器的参数 $\{\mu_{ki}\}$ 的最大似然解。
+
+
+\textbf{5.16} $(\star\star)$ Consider a classification problem with $K$ classes for which the feature vector $\boldsymbol{\phi}$ has $M$ components each of which can take $L$ discrete states. Let the values of the components be represented by a 1-of-$L$ binary coding scheme. Further suppose that, conditioned on the class $\mathcal{C}_k$, the $M$ components of $\boldsymbol{\phi}$ are independent, so that the class-conditional density factorizes with respect to the feature vector components. Show that the quantities $a_k$ given by (5.46), which appear in the argument to the softmax function describing the posterior class probabilities, are linear functions of the components of $\boldsymbol{\phi}$. Note that this represents an example of a naive Bayes model.
+
+\textbf{5.16} $(\star\star)$ 考虑一个具有 $K$ 个类别的分类问题，其特征向量 $\boldsymbol{\phi}$ 有 $M$ 个分量，每个分量可以取 $L$ 个离散状态。让分量的值由一个 1-of-$L$ 二进制编码方案表示。进一步假设，在给定类别 $\mathcal{C}_k$ 的条件下，$\boldsymbol{\phi}$ 的 $M$ 个分量是独立的，因此类别条件密度关于特征向量分量进行因式分解。证明出现在描述后验类别概率的softmax函数参数中的量 $a_k$（由(5.46)给出）是 $\boldsymbol{\phi}$ 的分量的线性函数。注意，这代表了一个朴素贝叶斯模型的例子。
+
+
+\textbf{5.17} $(\star\star)$ Derive the maximum likelihood solution for the parameters of the probabilistic naive Bayes classifier described in Exercise 5.16.
+
+\textbf{5.17} $(\star\star)$ 推导练习5.16中描述的朴素贝叶斯分类器参数的最大似然解。
+
+
+\textbf{5.18} $(\star)$ Verify the relation (5.72) for the derivative of the logistic sigmoid function defined by (5.42).
+
+\textbf{5.18} $(\star)$ 验证由(5.42)定义的逻辑Sigmoid函数的导数的关系式(5.72)。
+
+
+\textbf{5.19} $(\star)$ By making use of the result (5.72) for the derivative of the logistic sigmoid, show that the derivative of the error function (5.74) for the logistic regression model is given by (5.75).
+
+\textbf{5.19} $(\star)$ 利用逻辑Sigmoid函数导数的结果(5.72)，证明逻辑回归模型的误差函数(5.74)的导数由(5.75)给出。
+
+
+\textbf{5.20} $(\star)$ Show that for a linearly separable data set, the maximum likelihood solution for the logistic regression model is obtained by finding a vector $\mathbf{w}$ whose decision boundary $\mathbf{w}^{\mathrm{T}}\boldsymbol{\phi}(\mathbf{x}) = 0$ separates the classes and then taking the magnitude of $\mathbf{w}$ to infinity.
+
+\textbf{5.20} $(\star)$ 证明对于一个线性可分的数据集，逻辑回归模型的最大似然解是通过找到一个决策边界 $\mathbf{w}^{\mathrm{T}}\boldsymbol{\phi}(\mathbf{x}) = 0$ 能够分离各类别的向量 $\mathbf{w}$，然后令 $\mathbf{w}$ 的模长趋于无穷大而得到的。
+
+
+\textbf{5.21} $(\star)$ Show that the derivatives of the softmax activation function (5.76), where the $a_k$ are defined by (5.77), are given by (5.78).
+
+\textbf{5.21} $(\star)$ 证明softmax激活函数(5.76)的导数由(5.78)给出，其中 $a_k$ 由(5.77)定义。
+
+
+\textbf{5.22} $(\star)$ Using the result (5.78) for the derivatives of the softmax activation function, show that the gradients of the cross-entropy error (5.80) are given by (5.81).
+
+\textbf{5.22} $(\star)$ 利用softmax激活函数导数的结果(5.78)，证明交叉熵误差(5.80)的梯度由(5.81)给出。
+
+
+\textbf{5.23} $(\star)$ Show that the probit function (5.86) and the erf function (5.87) are related by (5.88).
+
+\textbf{5.23} $(\star)$ 证明probit函数(5.86)和erf函数(5.87)之间的关系由(5.88)给出。
+
+
+\textbf{5.24} $(\star\star)$ Suppose we wish to approximate the logistic sigmoid $\sigma(a)$ defined by (5.42) by a scaled probit function $\Phi(\lambda a)$, where $\Phi(a)$ is defined by (5.86). Show that if $\lambda$ is chosen so that the derivatives of the two functions are equal at $a = 0$, then $\lambda^2 = \pi/8$.
+
+\textbf{5.24} $(\star\star)$ 假设我们希望用一个缩放的probit函数 $\Phi(\lambda a)$ 来逼近由(5.42)定义的逻辑Sigmoid函数 $\sigma(a)$，其中 $\Phi(a)$ 由(5.86)定义。证明如果选择 $\lambda$ 使得这两个函数在 $a = 0$ 处的导数相等，那么 $\lambda^2 = \pi/8$。
+
+\end{document}

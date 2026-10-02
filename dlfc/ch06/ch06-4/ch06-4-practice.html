@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第6章第4节：误差函数自测题</title>
+    <!-- MathJax Configuration -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .option {
+            margin: 10px 0;
+        }
+        .option input[type="radio"] {
+            margin-right: 8px;
+        }
+        .option label {
+            cursor: pointer;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>第6章第4节：误差函数自测题</h1>
+<p>请选择最合适的答案。</p>
+
+<div class="question-container">
+    <div class="question-text">1. 在神经网络解决回归问题时，最常用的输出单元激活函数是什么？</div>
+    <div class="option">
+        <input type="radio" id="q1a" name="q1" value="A">
+        <label for="q1a">A. \( \text{Sigmoid函数} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1b" name="q1" value="B">
+        <label for="q1b">B. \( \text{恒等函数 (Identity)} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1c" name="q1" value="C">
+        <label for="q1c">C. \( \text{Softmax函数} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1d" name="q1" value="D">
+        <label for="q1d">D. \( \text{ReLU函数} \)</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q1', 'B')">提交</button>
+    <div class="result" id="result-q1"></div>
+    <div class="explanation" id="explanation-q1">
+        <strong>解析：</strong>在回归问题中，网络的输出 \( y(\mathbf{x}, \mathbf{w}) \) 可以是任意实数值，用来预测连续的目标值 \( t \)。因此，最自然的激活函数是恒等函数 \( y = a \)，这样网络的原始输出 \( a \) 就直接作为最终输出。对应的误差函数是平方和误差。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">2. 对于神经网络的二分类问题，与Sigmoid输出单元相匹配的标准误差函数是？</div>
+    <div class="option">
+        <input type="radio" id="q2a" name="q2" value="A">
+        <label for="q2a">A. \( \text{平方和误差 (Sum-of-Squares)} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2b" name="q2" value="B">
+        <label for="q2b">B. \( \text{交叉熵 (Cross-Entropy)} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2c" name="q2" value="C">
+        <label for="q2c">C. \( \text{多类交叉熵 (Multi-class Cross-Entropy)} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2d" name="q2" value="D">
+        <label for="q2d">D. \( \text{Hinge Loss} \)</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q2', 'B')">提交</button>
+    <div class="result" id="result-q2"></div>
+    <div class="explanation" id="explanation-q2">
+        <strong>解析：</strong>对于二分类，输出单元通常使用 Sigmoid 函数，其输出值在 \( (0,1) \) 之间，可以解释为属于正类的概率。从伯努利分布的最大似然推导出的负对数似然函数即为交叉熵误差函数：\( E(\mathbf{w}) = -\sum_{n} \left\{ t_n \ln y_n + (1 - t_n) \ln (1 - y_n) \right\} \)。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">3. 在多分类问题中，当使用1-of-K编码的目标向量时，输出层通常使用哪种激活函数？</div>
+    <div class="option">
+        <input type="radio" id="q3a" name="q3" value="A">
+        <label for="q3a">A. \( \text{Sigmoid函数} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3b" name="q3" value="B">
+        <label for="q3b">B. \( \text{恒等函数 (Identity)} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3c" name="q3" value="C">
+        <label for="q3c">C. \( \text{Softmax函数} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3d" name="q3" value="D">
+        <label for="q3d">D. \( \text{Tanh函数} \)</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q3', 'C')">提交</button>
+    <div class="result" id="result-q3"></div>
+    <div class="explanation" id="explanation-q3">
+        <strong>解析：</strong>在 \( K \) 类分类问题中，网络有 \( K \) 个输出单元。Softmax 函数能将 \( K \) 个原始输出值转化为一个有效的概率分布，使得所有输出值非负且总和为1，非常适合表示 \( K \) 个类别的概率。其公式为：\( y_k(\mathbf{x}, \mathbf{w}) = \frac{\exp(a_k(\mathbf{x}, \mathbf{w}))}{\sum_j \exp(a_j(\mathbf{x}, \mathbf{w}))} \)。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">4. 以下哪个误差函数最适合用于神经网络的多分类任务？</div>
+    <div class="option">
+        <input type="radio" id="q4a" name="q4" value="A">
+        <label for="q4a">A. \( E(\mathbf{w}) = \frac{1}{2} \sum_n \{y_n - t_n\}^2 \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4b" name="q4" value="B">
+        <label for="q4b">B. \( E(\mathbf{w}) = -\sum_n \left\{ t_n \ln y_n + (1 - t_n) \ln (1 - y_n) \right\} \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4c" name="q4" value="C">
+        <label for="q4c">C. \( E(\mathbf{w}) = -\sum_n \sum_k t_{kn} \ln y_k(\mathbf{x}_n, \mathbf{w}) \)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4d" name="q4" value="D">
+        <label for="q4d">D. \( E(\mathbf{w}) = \sum_n |y_n - t_n| \)</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q4', 'C')">提交</button>
+    <div class="result" id="result-q4"></div>
+    <div class="explanation" id="explanation-q4">
+        <strong>解析：</strong>此公式是多类交叉熵误差函数的标准形式，与Softmax输出激活函数相匹配。其中 \( t_{kn} \) 是1-of-K编码的目标向量，\( y_k \) 是网络预测的第 \( k \) 类的概率。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">5. 关于回归问题的误差函数，以下哪项描述是正确的？</div>
+    <div class="option">
+        <input type="radio" id="q5a" name="q5" value="A">
+        <label for="q5a">A. 它假设目标变量服从泊松分布</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5b" name="q5" value="B">
+        <label for="q5b">B. 它假设目标变量服从高斯分布</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5c" name="q5" value="C">
+        <label for="q5c">C. 它与Softmax激活函数配合使用</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5d" name="q5" value="D">
+        <label for="q5d">D. 它通常被称为交叉熵</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q5', 'B')">提交</button>
+    <div class="result" id="result-q5"></div>
+    <div class="explanation" id="explanation-q5">
+        <strong>解析：</strong>在回归分析中，一个常见的假设是目标值 \( t \) 由网络输出 \( y(\mathbf{x}, \mathbf{w}) \) 加上一个高斯噪声项构成，即 \( t \sim \mathcal{N}(y(\mathbf{x}, \mathbf{w}), \sigma^2) \)。基于这个假设，通过最大化似然函数可以推导出平方和误差函数。
+    </div>
+</div>
+
+<script>
+    function checkAnswer(questionName, correctValue) {
+        const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+        const resultDiv = document.getElementById(`result-${questionName}`);
+        const explanationDiv = document.getElementById(`explanation-${questionName}`);
+
+        if (!selectedOption) {
+            alert("请选择一个答案！");
+            return;
+        }
+
+        const userChoice = selectedOption.value;
+
+        if (userChoice === correctValue) {
+            resultDiv.textContent = "正确！";
+            resultDiv.className = "result correct";
+        } else {
+            resultDiv.textContent = `错误。正确答案是 ${correctValue}。`;
+            resultDiv.className = "result incorrect";
+        }
+        
+        resultDiv.style.display = "block";
+        explanationDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

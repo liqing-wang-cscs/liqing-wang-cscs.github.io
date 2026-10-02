@@ -1,0 +1,272 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, amsfonts, bm}
+\usepackage{url}
+% \usepackage{booktabs}
+% \usepackage{caption}
+% \usepackage{subcaption}
+% \usepackage{mathtools}
+
+% 图形包 (如果需要插入图片)
+\usepackage{graphicx}
+% \graphicspath{{./images/}} % 假设图片放在images文件夹
+
+% 标题页信息
+\title[6.3.深度网络]{第6章：深度神经网络}
+\subtitle{第3节：深度网络 (Deep Networks)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 第一张：标题页
+\frame{\maketitle}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ===== Section 1: Deep Networks Overview =====
+\section{深度网络概述}
+\begin{frame}{深度网络：超越两层}
+\begin{itemize}
+    \item 传统两层网络（图 6.9）难以训练深层结构，但 {\color{red}\textbf{深度神经网络}（$>2$ 层）}带来显著优势；
+    \item 深层网络可指数级提升表示能力：输入空间被划分为 $O(2^L)$ 个区域（$L$ 为深度），而两层网络需指数级隐藏单元；
+    \item 核心动机：{\color{red}\textbf{分层表示}（Hierarchical representation）}
+    ——低层特征（边、角）→ 中层组合（眼、耳）→ 高层语义（猫）。
+\end{itemize}
+\end{frame}
+
+% ===== Subsection 6.3.1: Hierarchical Representations =====
+\section{分层表示}
+\begin{frame}{分层表示：归纳偏置的核心}
+\begin{block}{关键思想}
+    深度网络通过层级抽象建模“像素 $\to$ 特征 $\to$ 概念”的映射，形成 {\color{red}\textbf{组合性归纳偏置}（compositional inductive bias）}。
+\end{block}
+
+\begin{itemize}
+    \item \textbf{例子}：识别“猫”——
+        \begin{itemize}
+            \item 底层：边缘、纹理（卷积核学习）；
+            \item 中层：眼睛、胡须（组合低层特征）；
+            \item 高层：整体对象（分类决策）。
+        \end{itemize}
+    \item 生成视角：从边 $\to$ 圆 $\to$ 头部 $\to$ 猫，每层组合方式呈指数增长。
+\end{itemize}
+\end{frame}
+
+% ===== Subsection 6.3.2: Distributed Representations =====
+\section{分布式表示}
+\begin{frame}{分布式表示：高效编码}
+\begin{block}{定义}
+    隐藏层中 {\color{red}\textbf{多个单元的组合}} 表示一个特征，而非单个单元独占。
+\end{block}
+
+\begin{itemize}
+    \item $M$ 个单元可表示最多 $2^M$ 种组合（指数增长）；
+    \item \textbf{例子}：人脸图像（眼镜/帽子/胡须）——3 个单元即可编码 8 种组合；
+    \item 优势：紧凑、鲁棒、泛化性强（统计相关性隐含在激活模式中）。
+\end{itemize}
+
+% \begin{equation*}
+%     \text{组合特征} $\propto \prod_{i=1}^M \mathbb{I}(z_i > \theta_i)$
+%     \eqn{6.19}
+% \end{equation*}
+\end{frame}
+
+% ===== Subsection 6.3.3: Representation Learning =====
+\section{表示学习}
+\begin{frame}{表示学习：自动发现有用特征}
+\begin{block}{目标}
+    将原始数据 $\mathbf{x}$ 映射到新空间 $\mathbf{z} = f(\mathbf{x})$，使下游任务（如分类）更易求解。
+\end{block}
+
+\begin{itemize}
+    \item \textbf{监督式}：用标签驱动（如分类损失）；
+    \item \textbf{无监督式}：仅用数据自身结构——
+        \begin{itemize}
+            \item {\color{red}\textbf{自编码器}（Autoencoders）}：输入 $\to$ 压缩编码 $\to$ 重建输入；
+            \item 目标：强制网络学习有意义的压缩表示。
+        \end{itemize}
+    \item 表示空间常称 {\color{red}\textbf{嵌入空间}（embedding space）}。
+\end{itemize}
+\end{frame}
+
+% ===== Subsection 6.3.4: Transfer Learning =====
+\section{迁移学习}
+\begin{frame}{迁移学习：知识复用}
+\begin{block}{核心思想}
+    在任务 A 上预训练模型 $\to$ 迁移至任务 B（数据少），复用底层通用特征。
+\end{block}
+
+\begin{itemize}
+    \item \textbf{典型流程}：
+        \begin{enumerate}
+            \item 在大规模数据集（如 ImageNet）上预训练 CNN；
+            \item 冻结前 $k$ 层，仅微调最后几层（或全网络微调）；
+            \item 适配新任务（如皮肤病变分类）。
+        \end{enumerate}
+    \item \textbf{两种策略}：
+        \begin{itemize}
+            \item {\color{red}\textbf{冻结+微调}（Fine-tuning）}：小学习率更新全部参数；
+            \item {\color{red}\textbf{特征提取}}：固定预训练网络，仅训练新分类头。
+        \end{itemize}
+\end{itemize}
+\end{frame}
+
+% ===== Subsection 6.3.5: Contrastive Learning =====
+\section{对比学习}
+\begin{frame}{对比学习：基于相似性的表示}
+\begin{block}{基本设定}
+    定义 {\color{red}\textbf{正样本对}}（语义相似）与 {\color{red}\textbf{负样本对}}（语义不同），优化嵌入距离。
+\end{block}
+
+\begin{block}{正样本构造}
+        \begin{itemize}
+            \item 实例判别：同一图像的增强版本（旋转、裁剪等）；
+            \item 监督对比：同类图像为正对，异类为负对；
+            \item CLIP：图像-文本对为正，错配为负。
+        \end{itemize}
+\end{block}
+
+\begin{block}{InfoNCE 损失函数}
+\begin{equation}
+    E(w) = -\log \frac{
+        \exp\left(\mathbf{f}_w(\mathbf{x})^\mathrm{T} \mathbf{f}_w(\mathbf{x}^+)\right)
+    }{
+        \exp\left(\mathbf{f}_w(\mathbf{x})^\mathrm{T} \mathbf{f}_w(\mathbf{x}^+)\right)
+        + 
+        \sum_{n=1}^N 
+        \exp\left(\mathbf{f}_w(\mathbf{x})^\mathrm{T} \mathbf{f}_w(\mathbf{x}_n^-)\right)
+    }
+    \tag{6.20}
+\end{equation}
+\end{block}
+
+\end{frame}
+
+\begin{frame}{多模态对比学习 CLIP }
+\begin{block}{CLIP 损失函数}
+\begin{equation}
+\begin{aligned}
+    E(w) =&
+    -\frac{1}{2}\log \frac{
+        \exp\left(\mathbf{f}_w(\mathbf{x}^+)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^+)\right)
+        }{
+        \exp\left(\mathbf{f}_w(\mathbf{x}^+)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^+)\right)
+        + 
+        \sum_{n=1}^N 
+        \exp\left(\mathbf{f}_w(\mathbf{x}_n^-)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^+)\right)
+        }\\
+    &
+    -\frac{1}{2}\log \frac{
+        \exp\left(\mathbf{f}_w(\mathbf{x}^+)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^+)\right)
+        }{
+        \exp\left(\mathbf{f}_w(\mathbf{x}^+)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^+)\right)
+        + 
+        \sum_{n=1}^N 
+        \exp\left(\mathbf{f}_w(\mathbf{x}_n^+)^\mathrm{T} \mathbf{g}_\theta(\mathbf{y}^-)\right)
+        }
+\end{aligned}
+\tag{6.21}
+\end{equation}
+\end{block}
+
+\begin{block}{解释 CLIP 损失函数}
+    \begin{itemize}
+    \item $\mathbf{f}$：图像编码器；$\mathbf{g}$：文本编码器；
+    \item 正对 $(\mathbf{x}^+, \mathbf{y}^+)$：匹配的图文对；
+    \item 负对 $(\mathbf{x}^+, \mathbf{y}^-)$：错配文本；负对 $(\mathbf{x}^-, \mathbf{y}^+)$：错配图像。
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+% ===== Subsection 6.3.6: General Architectures =====
+\section{通用网络架构}
+\begin{frame}{通用网络架构：超越全连接}
+\begin{block}{核心约束}
+    \textbf{前馈性}（Feed-forward）：无环有向图 $\Rightarrow$ 输出是输入的确定性函数。
+\end{block}
+
+\begin{itemize}
+    \item 任意节点 $k$ 的计算：
+    \begin{equation}
+        z_k = h\left( \sum_{j \in \mathcal{A}(k)} w_{kj} z_j + b_k \right)
+        \tag{6.22}
+    \end{equation}
+    其中 $\mathcal{A}(k)$ 是 $k$ 的祖先节点集合（所有输入该节点的单元）。
+    
+    \item 支持复杂拓扑：残差连接、Inception 分支、图神经网络等均可建模。
+\end{itemize}
+\end{frame}
+
+% ===== Subsection 6.3.7: Tensors =====
+\section{张量}
+\begin{frame}{张量：高维数据的自然表示}
+\begin{block}{定义}
+    张量是标量、向量、矩阵的高维推广；神经网络中广泛存在。
+\end{block}
+
+\begin{itemize}
+    \item \textbf{例子}：$N$ 张 RGB 图像（$I \times J$ 像素）$\to$ 四阶张量 $\mathbf{X} \in \mathbb{R}^{I \times J \times 3 \times N}$；
+        \begin{itemize}
+            \item $i,j$：像素坐标；
+            \item $k=1,2,3$：R/G/B 通道；
+            \item $n$：样本索引。
+        \end{itemize}
+    \item \textbf{重要性}：
+        \begin{itemize}
+            \item 卷积操作天然作用于张量；
+            \item GPU 高度优化张量运算（如 cuDNN）；
+            \item Transformer 中的注意力权重也是张量。
+        \end{itemize}
+\end{itemize}
+\end{frame}
+
+% ===== Summary Slide =====
+\begin{frame}{本节小结}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{核心概念}
+\begin{itemize}
+    \item 分层表示 $\to$ 组合性归纳偏置
+    \item 分布式表示 $\to$ 指数级特征容量
+    \item 表示学习 $\to$ 自动发现嵌入空间
+    \item 迁移学习 $\to$ 知识复用
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{前沿方法}
+\begin{itemize}
+    \item 对比学习（InfoNCE, CLIP）
+    \item 通用架构（前馈图、张量运算）
+    \item 多模态对齐（图像-文本）
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{1em}
+\centering
+\textbf{深度网络的本质}：通过可微分的层级变换，将原始数据映射到任务友好的表示空间。
+\end{frame}
+
+\end{document}
+
+\begin{figure}
+    \includegraphics[width=0.6\textwidth]{fig6_9.pdf}
+    \caption{两层网络架构（图 6.9）}
+    \label{fig:6-9}
+\end{figure}

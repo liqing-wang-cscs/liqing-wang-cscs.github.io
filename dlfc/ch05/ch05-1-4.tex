@@ -1,0 +1,184 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx, color}
+\usepackage[margin=1in]{geometry}
+\title{第5章-单层网络-分类 -- 第5.1.4节-最小二乘分类}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+% \section{5.1.4 最小二乘法用于分类}
+
+\section{最小二乘分类的思路}
+
+With linear regression models, the minimization of a sum-of-squares error function leads to a simple closed-form solution for the parameter values. 
+
+It is therefore tempting to see if we can apply the same least-squares formalism to classification problems. 
+
+Consider a general classification problem with $K$ classes and a 1-of-$K$ binary coding scheme for the target vector $\mathbf{t}$. 
+
+One justification for using least squares in such a context is that it approximates the conditional expectation $\mathbb{E}[\mathbf{t}|\mathbf{x}]$ of the target values given the input vector. 
+
+For a binary coding scheme, this conditional expectation is given by the vector of posterior class probabilities. 
+
+Unfortunately, these probabilities are typically approximated rather poorly, and indeed the approximations can have values outside the range $(0,1)$. 
+
+%这句话怎么理解？
+{\color{red} 线性回归输出结果经常超出 $(0,1)$ 的范围。}
+
+However, it is instructive to explore these simple models and to understand how these limitations arise.
+
+
+\section{最小二乘分类的模型}
+
+Each class $C_k$ is described by its own linear model so that
+\begin{equation}
+y_k(\mathbf{x}) = \mathbf{w}_k^T \widetilde{\mathbf{x}} + w_{k0}
+\tag{5.12}
+\end{equation}
+where $k = 1, \ldots, K$. 
+
+We can conveniently group these together using vector notation so that
+\begin{equation}
+\mathbf{y}(\mathbf{x}) = \widetilde{\mathbf{W}}^T \widetilde{\mathbf{x}}
+\tag{5.13}
+\end{equation}
+where $\widetilde{\mathbf{W}}$ is a matrix whose $k$th column comprises the $(D+1)$-dimensional vector $\widetilde{\mathbf{w}}_k = (w_{k0}, \mathbf{w}_k^T)^T$ and $\widetilde{\mathbf{x}}$ is the corresponding augmented input vector $(1, \mathbf{x}^T)^T$ with a dummy input $x_0 = 1$. 
+
+A new input $\mathbf{x}$ is then assigned to the class for which the output $y_k = \widetilde{\mathbf{w}}_k^T \widetilde{\mathbf{x}}$ is largest.
+
+{\color{red}
+将分类结果写成行向量，以 $K=2$ 个类别，$p=3$ 个自变量为例，模型公式为
+$$
+\begin{pmatrix}y_1(x_1,x_2,x_3) & y_2(x_1,x_2,x_3) \end{pmatrix}
+=
+\begin{pmatrix}1 & x_1 & x_2 & x_3 \end{pmatrix}
+\begin{pmatrix} 
+w_{10} & w_{20} \\ 
+w_{11} & w_{21} \\ 
+w_{12} & w_{22} \\ 
+w_{13} & w_{23} \\ 
+\end{pmatrix}.
+$$
+
+设有 $n$ 组观测数据，则有经验公式
+$$
+\begin{pmatrix}
+y_1^{(1)} & y_2^{(1)} \\
+\vdots & \vdots \\ 
+y_1^{(n)} & y_2^{(n)} \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & x_1^{(1)} & x_2^{(1)} & x_3^{(1)} \\ 
+\vdots & \vdots & \vdots & \vdots  \\ 
+1 & x_1^{(n)} & x_2^{(n)} & x_3^{(n)} \\ 
+\end{pmatrix}
+\begin{pmatrix} 
+w_{10} & w_{20} \\ 
+w_{11} & w_{21} \\ 
+w_{12} & w_{22} \\ 
+w_{13} & w_{23} \\ 
+\end{pmatrix}.
+$$
+其中分类结果已知。例如有5组观测数据的分类结果为
+$$
+\begin{pmatrix}
+y_1^{(1)} & y_2^{(1)} \\
+y_1^{(2)} & y_2^{(2)} \\
+y_1^{(3)} & y_2^{(3)} \\
+y_1^{(4)} & y_2^{(4)} \\
+y_1^{(5)} & y_2^{(5)} \\
+\end{pmatrix}
+=
+\begin{pmatrix} 
+1&0 \\ 
+1&0 \\ 
+0&1 \\ 
+0&1 \\ 
+1&0 \\ 
+\end{pmatrix}. 
+$$
+
+参数估计就是要从这个超定方程组里求出权重矩阵 $W$. 
+
+
+}
+
+\section{最小二乘分类的参数估计}
+
+We now determine the parameter matrix $\widetilde{\mathbf{W}}$ by minimizing a sum-of-squares error function. 
+
+Consider a training data set $\{\mathbf{x}_n, \mathbf{t}_n\}$ where $n = 1, \ldots, N$, and define a matrix $\mathbf{T}$ whose $n$th row is the vector $\mathbf{t}_n^T$, together with a matrix $\widetilde{\mathbf{X}}$ whose $n$th row is $\widetilde{\mathbf{x}}_n^T$. 
+
+The sum-of-squares error function can then be written as
+\begin{equation}
+E_D(\widetilde{\mathbf{W}}) = \frac{1}{2} \text{Tr}\left\{ (\widetilde{\mathbf{X}}\widetilde{\mathbf{W}} - \mathbf{T})^T (\widetilde{\mathbf{X}}\widetilde{\mathbf{W}} - \mathbf{T}) \right\}.
+\tag{5.14}
+\end{equation}
+
+Setting the derivative with respect to $\widetilde{\mathbf{W}}$ to zero and rearranging, we obtain the solution for $\widetilde{\mathbf{W}}$ in the form
+\begin{equation}
+\widetilde{\mathbf{W}} = (\widetilde{\mathbf{X}}^T \widetilde{\mathbf{X}})^{-1} \widetilde{\mathbf{X}}^T \mathbf{T} = \widetilde{\mathbf{X}}^\dagger \mathbf{T}
+\tag{5.15}
+\end{equation}
+where $\widetilde{\mathbf{X}}^\dagger$ is the pseudo-inverse of the matrix $\widetilde{\mathbf{X}}$. 
+
+We then obtain the discriminant function in the form
+\begin{equation}
+\mathbf{y}(\mathbf{x}) = \widetilde{\mathbf{W}}^T \widetilde{\mathbf{x}} = \mathbf{T}^T \left( \widetilde{\mathbf{X}}^\dagger \right)^T \widetilde{\mathbf{x}}.
+\tag{5.16}
+\end{equation}
+
+
+\section{最小二乘分类的一个有趣的性质}
+
+An interesting property of least-squares solutions with multiple target variables is that if every target vector in the training set satisfies some linear constraint
+\begin{equation}
+\mathbf{a}^T \mathbf{t}_n + b = 0
+\tag{5.17}
+\end{equation}
+for some constants $a$ and $b$, then the model prediction for any value of $\mathbf{x}$ will satisfy the same constraint so that
+\begin{equation}
+\mathbf{a}^T \mathbf{y}(\mathbf{x}) + b = 0.
+\tag{5.18}
+\end{equation}
+
+Thus, if we use a 1-of-$K$ coding scheme for $K$ classes, then the predictions made by the model will have the property that the elements of $\mathbf{y}(\mathbf{x})$ will sum to 1 for any value of $\mathbf{x}$. 
+
+However, this summation constraint alone is not sufficient to allow the model outputs to be interpreted as probabilities because they are not constrained to lie within the interval $(0,1)$.
+
+
+\section{最小二乘分类的缺陷}
+
+The least-squares approach gives an exact closed-form solution for the discriminant function parameters. 
+
+However, even as a discriminant function (where we use it to make decisions directly and dispense with any probabilistic interpretation), it suffers from some severe problems. 
+
+We have seen that the sum-of-squares error function can be viewed as the negative log likelihood under the assumption of a Gaussian noise distribution. 
+
+If the true distribution of the data is markedly different from being Gaussian, then least squares can give poor results. 
+
+In particular, least squares is very sensitive to the presence of outliers, which are data points located a long way from the bulk of the data. 
+
+This is illustrated in Figure 5.4. 
+
+Here we see that the additional data points in the right-hand figure produce a significant change in the location of the decision boundary, even though these points would be correctly classified by the original decision boundary in the left-hand figure. 
+
+The sum-of-squares error function gives too much weight to data points that are a long way from the decision boundary, even though they are correctly classified. 
+
+Outliers can arise due to rare events or may simply be due to mistakes in the data set. 
+
+Techniques that are sensitive to a very few data points are said to lack robustness. 
+
+For comparison, Figure 5.4 also shows results from a technique called logistic regression, which is more robust to outliers.
+
+\section{最小二乘分类的缺陷的原因}
+
+The failure of least squares should not surprise us when we recall that it corresponds to maximum likelihood under the assumption of a Gaussian conditional distribution, whereas binary target vectors clearly have a distribution that is far from Gaussian. 
+
+By adopting more appropriate probabilistic models, we can obtain classification techniques with much better properties than least squares, and which can also be generalized to give flexible nonlinear neural network models, as we will see in later chapters.
+
+\end{document}

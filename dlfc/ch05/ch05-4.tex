@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx, color}
+\usepackage[margin=1in]{geometry}
+\title{第5章-单层网络-分类 -- 第5.4节-判别分类器}
+\author{《深度学习基础》课程小组}
+% \date{}
+ 
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Discriminative Classifiers}
+
+For the two-class classification problem, we have seen that the posterior probability of class $\mathcal{C}_{1}$ can be written as a logistic sigmoid acting on a linear function of $\mathbf{x}$, for a wide choice of class-conditional distributions $p(\mathbf{x}|\mathcal{C}_{k})$ from the exponential family. Similarly, for the multi-class case, the posterior probability of class $\mathcal{C}_{k}$ is given by a softmax transformation of linear functions of $\mathbf{x}$. For specific choices of the class-conditional densities $p(\mathbf{x}|\mathcal{C}_{k})$, we have used maximum likelihood to determine the parameters of the densities as well as the class priors $p(\mathcal{C}_{k})$ and then used Bayes' theorem to find the posterior class probabilities. This represents an example of \textit{generative modelling}, because we could take such a model and generate synthetic data by drawing values of $\mathbf{x}$ from the marginal distribution $p(\mathbf{x})$ or from any of the class-conditional densities $p(\mathbf{x}|\mathcal{C}_{k})$.
+
+However, an alternative approach is to use the functional form of the generalized linear model explicitly and to determine its parameters directly by using maximum likelihood. In this direct approach, we maximize a likelihood function defined through the conditional distribution $p(\mathcal{C}_{k}|\mathbf{x})$, which represents a form of \textit{discriminative probabilistic modelling}. One advantage of the discriminative approach is that there will typically be fewer learnable parameters to be determined, as we will see shortly. It may also lead to improved predictive performance, particularly when the assumed forms for the class-conditional densities represent a poor approximation to the true distributions.
+
+\subsection{Activation functions}
+
+In linear regression, the model prediction $y(\mathbf{x},\mathbf{w})$ is given by a linear function of the parameters
+
+\begin{equation}
+y(\mathbf{x},\mathbf{w})=\mathbf{w}^{\rm T}\mathbf{x}+w_{0},
+\tag{5.69}
+\end{equation}
+
+which gives a continuous-valued output in the range $(-\infty,\infty)$. For classification problems, however, we wish to predict discrete class labels, or more generally posterior probabilities that lie in the range $(0,1)$. To achieve this, we consider a generalization of this model in which we transform the linear function of $\mathbf{w}$ and $w_{0}$ using a nonlinear function $f(\cdot)$ so that
+
+\begin{equation}
+y(\mathbf{x},\mathbf{w})=f\left(\mathbf{w}^{\rm T}\mathbf{x}+w+0\right).
+\tag{5.70}
+\end{equation}
+
+In the machine learning literature, $f(\cdot)$ is known as an \textit{activation function}, whereas its inverse is called a \textit{link function} in the statistics literature. The decision surfaces correspond to $y(\mathbf{x})=$ constant, so that $\mathbf{w}^{\rm T}\mathbf{x}=$ constant, and hence the decision surfaces are linear functions of $\mathbf{x}$, even if the function $f(\cdot)$ is nonlinear. For this reason, the class of models described by (5.70) are called \textit{generalized linear models} (McCullagh and Nelder, 1989). However, in contrast to the models used for regression, they are no longer linear in the parameters due to the nonlinear function $f(\cdot)$. This will lead to more complex analytical and computational properties than for linear regression models. Nevertheless, these models are still relatively simple compared to the much more flexible nonlinear models that will be studied in subsequent chapters.
+
+\subsection{Fixed basis functions}
+
+So far in this chapter, we have considered classification models that work directly with the original input vector $\mathbf{x}$. However, all the algorithms are equally applicable if we first make a fixed nonlinear transformation of the inputs using a vector of basis functions $\boldsymbol{\phi}(\mathbf{x})$. The resulting decision boundaries will be linear in the feature space $\boldsymbol{\phi}$, and these correspond to nonlinear decision boundaries in the original $\mathbf{x}$ space, as illustrated in Figure 5.15. Classes that are linearly separable in the feature space $\boldsymbol{\phi}(\mathbf{x})$ need not be linearly separable in the original observation space $\mathbf{x}$.
+
+Note that as in our discussion of linear models for regression, one of the basis functions is typically set to a constant, say $\phi_{0}(\mathbf{x})=1$, so that the corresponding parameter $w_{0}$ plays the role of a bias.
+
+For many problems of practical interest, there is significant overlap in $\mathbf{x}$-space between the class-conditional densities $p(\mathbf{x}|\mathcal{C}_{k})$. This corresponds to posterior probabilities $p(\mathcal{C}_{k}|\mathbf{x})$, which, for at least some values of $\mathbf{x}$, are not 0 or 1. In such cases, the optimal solution is obtained by modelling the posterior probabilities accurately and then applying standard decision theory. Note that nonlinear transformations $\boldsymbol{\phi}(\mathbf{x})$ cannot remove such a class overlap, although they can increase the level of overlap or create an overlap where none existed in the original observation space. However, suitable choices of nonlinearity can make the process of modelling the posterior probabilities easier. However, such fixed basis function models have important limitations, and these will be resolved in later chapters by allowing the basis functions themselves to adapt to the data.
+
+\subsection{Logistic regression}
+
+We first consider the problem of two-class classification. In our discussion of generative approaches in Section 5.3, we saw that under rather general assumptions, the posterior probability of class $\mathcal{C}_{1}$ can be written as a logistic sigmoid acting on a linear function of the feature vector $\boldsymbol{\phi}$ so that
+
+\begin{equation}
+p(\mathcal{C}_{1}|\boldsymbol{\phi})=y(\boldsymbol{\phi})=\sigma\left(\mathbf{w}^{\rm T}\boldsymbol{\phi}\right)
+\tag{5.71}
+\end{equation}
+
+with $p(\mathcal{C}_{2}|\boldsymbol{\phi})=1-p(\mathcal{C}_{1}|\boldsymbol{\phi})$. Here $\sigma(\cdot)$ is the \textit{logistic sigmoid function} defined by (5.42). In the terminology of statistics, this model is known as \textit{logistic regression}, although it should be emphasized that this is a model for classification rather than for continuous variable.
+
+For an $M$-dimensional feature space $\boldsymbol{\phi}$, this model has $M$ adjustable parameters. By contrast, if we had fitted Gaussian class-conditional densities using maximum likelihood, we would have used $2M$ parameters for the means and $M(M+1)/2$ parameters for the (shared) covariance matrix. Together with the class prior $p(\mathcal{C}_{1})$, this gives a total of $M(M+5)/2+1$ parameters, which grows quadratically with $M$, in contrast to the linear dependence on $M$ of the number of parameters in logistic regression. For large values of $M$, there is a clear advantage in working with the logistic regression model directly.
+
+We now use maximum likelihood to determine the parameters of the logistic regression model. To do this, we will make use of the derivative of the logistic sigmoid function, which can conveniently be expressed in terms of the sigmoid function itself:
+
+\begin{equation}
+\frac{{\rm d}\sigma}{{\rm d}a}=\sigma(1-\sigma).
+\tag{5.72}
+\end{equation}
+
+For a data set $\{\boldsymbol{\phi}_{n},t_{n}\}$, where $\boldsymbol{\phi}_{n}=\boldsymbol{\phi}(\mathbf{x}_{n})$ and $t_{n}\in\{0,1\}$, with $n=1,\ldots,N$, the likelihood function can be written
+
+\begin{equation}
+p(\mathbf{t}|\mathbf{w})=\prod_{n=1}^{N}y_{n}^{t_{n}}\left\{1-y_{n}\right\}^{1-t_{n}}
+\tag{5.73}
+\end{equation}
+
+where $\mathbf{t}=(t_{1},\ldots,t_{N})^{\rm T}$ and $y_{n}=p(\mathcal{C}_{1}|\boldsymbol{\phi}_{n})$. As usual, we can define an error function by taking the negative logarithm of the likelihood, which gives the \textit{cross-entropy error function}:
+
+\begin{equation}
+E(\mathbf{w})=-\ln p(\mathbf{t}|\mathbf{w})=-\sum_{n=1}^{N}\left\{t_{n}\ln y_{n}+(1-t_{n})\ln(1-y_{n})\right\}
+\tag{5.74}
+\end{equation}
+
+where $y_{n}=\sigma(a_{n})$ and $a_{n}=\mathbf{w}^{\rm T}\boldsymbol{\phi}_{n}$. Taking the gradient of the error function with respect to $\mathbf{w}$, we obtain
+
+\begin{equation}
+\nabla E(\mathbf{w})=\sum_{n=1}^{N}(y_{n}-t_{n})\boldsymbol{\phi}_{n}
+\tag{5.75}
+\end{equation}
+
+where we have made use of (5.72). We see that the factor involving the derivative of the logistic sigmoid has cancelled, leading to a simplified form for the gradient of the log likelihood. In particular, the contribution to the gradient from data point $n$ is given by the 'error' $y_{n}-t_{n}$ between the target value and the prediction of the model times the basis function vector $\boldsymbol{\phi}_{n}$. Furthermore, comparison with (4.12) shows that this takes precisely the same form as the gradient of the sum-of-squares error function for the linear regression model.
+
+The maximum likelihood solution corresponds to $\nabla E(\mathbf{w})=0$. However, from (5.75) we see that this no longer corresponds to a set of linear equations, due to the nonlinearity in $y(\cdot)$, and so this equation does not have a closed-form solution. One approach to finding a maximum likelihood solution would be to use stochastic gradient descent, in which $\nabla E_{n}$ is the $n$th term on the right-hand side of (5.75). Stochastic gradient descent will be the principal approach to training the highly nonlinear neural networks discussed in later chapters. However, the maximum likelihood equation is only 'slightly' nonlinear, and in fact the error function (5.74), in which the model is defined by (5.71), is a convex function of the parameters, which allows the error function to be minimized using a simple algorithm called \textit{iterative reweighted least squares} or IRLS (Bishop, 2006). However, this does not easily generalize to more complex models such as deep neural networks.
+
+Note that maximum likelihood can exhibit severe over-fitting for data sets that are linearly separable. This arises because the maximum likelihood solution occurs when the hyperplane corresponding to $\sigma=0.5$, equivalent to $\mathbf{w}^{\rm T}\boldsymbol{\phi}=0$, separates the two classes and the magnitude of $\mathbf{w}$ goes to infinity. In this case, the logistic sigmoid function becomes infinitely steep in feature space, corresponding to a Heaviside step function, so that every training point from each class $k$ is assigned a posterior probability $p(\mathcal{C}_{k}|\mathbf{x})=1$. Furthermore, there is typically a continuum of such solutions because any separating hyperplane will give rise to the same posterior probabilities at the training data points. Maximum likelihood provides no way to favour one such solution over another, and which solution is found in practice will depend on the choice of optimization algorithm and on the parameter initialization. Note that the problem will arise even if the number of data points is large compared with the number of parameters in the model, so long as the training data set is linearly separable. The singularity can be avoided by adding a regularization term to the error function.
+
+\subsubsection{Multi-class logistic regression}
+
+In our discussion of generative models for multi-class classification, we have seen that, for a large class of distributions from the exponential family, the posterior probabilities are given by a softmax transformation of linear functions of the feature variables, so that
+
+\begin{equation}
+p(\mathcal{C}_{k}|\boldsymbol{\phi})=y_{k}(\boldsymbol{\phi})=\frac{\exp(a_{k})}{\sum_{j}\exp(a_{j})}
+\tag{5.76}
+\end{equation}
+
+where the pre-activations $a_{k}$ are given by
+
+\begin{equation}
+a_{k}=\mathbf{w}_{k}^{\rm T}\boldsymbol{\phi}.
+\tag{5.77}
+\end{equation}
+
+There we used maximum likelihood to determine separately the class-conditional densities and the class priors and then found the corresponding posterior probabilities using Bayes' theorem, thereby implicitly determining the parameters $\{\mathbf{w}_{k}\}$. Here we consider the use of maximum likelihood to determine the parameters $\{\mathbf{w}_{k}\}$ of this model directly. To do this, we will require the derivatives of $y_{k}$ with respect to all of the pre-activations $a_{j}$. These are given by
+
+\begin{equation}
+\frac{\partial y_{k}}{\partial a_{j}}=y_{k}(I_{kj}-y_{j})
+\tag{5.78}
+\end{equation}
+
+where $I_{kj}$ are the elements of the identity matrix.
+
+Next we write down the likelihood function. This is most easily done using the 1-of-$K$ coding scheme in which the target vector $\mathbf{t}_{n}$ for a feature vector $\boldsymbol{\phi}_{n}$ belonging to class $\mathcal{C}_{k}$ is a binary vector with all elements zero except for element $k$, which equals one. The likelihood function is then given by
+
+\begin{equation}
+p(\mathbf{T}|\mathbf{w}_{1},\ldots,\mathbf{w}_{K})=\prod_{n=1}^{N}\prod_{k=1}^{K}p(\mathcal{C}_{k}|\boldsymbol{\phi}_{n})^{t_{nk}}=\prod_{n=1}^{N}\prod_{k=1}^{K}y_{nk}^{t_{nk}}
+\tag{5.79}
+\end{equation}
+
+where $y_{nk}=y_{k}(\boldsymbol{\phi}_{n})$, and $\mathbf{T}$ is an $N\times K$ matrix of target variables with elements $t_{nk}$. Taking the negative logarithm then gives
+
+\begin{equation}
+E(\mathbf{w}_{1},\ldots,\mathbf{w}_{K})=-\ln p(\mathbf{T}|\mathbf{w}_{1},\ldots,\mathbf{w}_{K})=-\sum_{n=1}^{N}\sum_{k=1}^{K}t_{nk}\ln y_{nk},
+\tag{5.80}
+\end{equation}
+
+which is known as the \textit{cross-entropy error function} for the multi-class classification problem.
+
+We now take the gradient of the error function with respect to one of the parameter vectors $\mathbf{w}_{j}$. Making use of the result (5.78) for the derivatives of the softmax function, we obtain
+
+\begin{equation}
+\nabla_{\mathbf{w}_{j}}E(\mathbf{w}_{1},\ldots,\mathbf{w}_{K})=\sum_{n=1}^{N}(y_{nj}-t_{nj})\boldsymbol{\phi}_{n}
+\tag{5.81}
+\end{equation}
+
+where we have made use of $\sum_{k}t_{nk}=1$. Again, we could optimize the parameters through stochastic gradient descent.
+
+Once again, we see the same form arising for the gradient as was found for the sum-of-squares error function with the linear model and for the cross-entropy error with the logistic regression model, namely the product of the error $(y_{nj}-t_{nj})$ times the basis function activation $\boldsymbol{\phi}_{n}$. These are examples of a more general result that we will explore later.
+
+Linear classification models can be represented as single-layer neural networks as shown in Figure 5.16. If we consider the derivative of the error function with respect to a weight $w_{ik}$, which links basis function $\phi_{i}(\mathbf{x})$ to output unit $t_{k}$, we have from (5.81)
+
+\begin{equation}
+\frac{\partial E(\mathbf{w}_{1},\ldots,\mathbf{w}_{K})}{\partial w_{ij}}=\sum_{n=1}^{N}(y_{nk}-t_{nk})\phi_{i}(\mathbf{x}_{n}).
+\tag{5.82}
+\end{equation}
+
+Comparing this with Figure 5.16, we see that, for each data point $n$ this gradient takes the form of the output of the basis function at the input end of the weight link with the 'error' $(y_{nk}-t_{nk})$ at the output end.
+
+\subsubsection{Probit regression}
+
+We have seen that, for a broad range of class-conditional distributions described by the exponential family, the resulting posterior class probabilities are given by a logistic (or softmax) transformation acting on a linear function of the feature variables. However, not all choices of class-conditional density give rise to such a simple form for the posterior probabilities, which suggests that it might be worth exploring other types of discriminative probabilistic model. Consider the two-class case, again remaining within the framework of generalized linear models, so that
+
+\begin{equation}
+p(t=1|a)=f(a)
+\tag{5.83}
+\end{equation}
+
+where $a=\mathbf{w}^{\rm T}\boldsymbol{\phi}$, and $f(\cdot)$ is the activation function.
+
+One way to motivate an alternative choice for the link function is to consider a noisy threshold model, as follows. For each input $\boldsymbol{\phi}_{n}$, we evaluate $a_{n}=\mathbf{w}^{\rm T}\boldsymbol{\phi}_{n}$ and then we set the target value according to
+
+\begin{equation}
+\begin{cases}t_{n}=1, & \text{if } a_{n}\geqslant\theta,\\ t_{n}=0, & \text{otherwise.}\end{cases}
+\tag{5.84}
+\end{equation}
+
+If the value of $\theta$ is drawn from a probability density $p(\theta)$, then the corresponding activation function will be given by the cumulative distribution function
+
+\begin{equation}
+f(a)=\int_{-\infty}^{a}p(\theta)\,{\rm d}\theta
+\tag{5.85}
+\end{equation}
+
+as illustrated in Figure 5.17.
+
+As a specific example, suppose that the density $p(\theta)$ is given by a zero-mean, unit-variance Gaussian. The corresponding cumulative distribution function is given by
+
+\begin{equation}
+\Phi(a)=\int_{-\infty}^{a}\mathcal{N}(\theta|0,1)\,{\rm d}\theta,
+\tag{5.86}
+\end{equation}
+
+which is known as the \textit{probit function}. It has a sigmoidal shape and is compared with the logistic sigmoid function in Figure 5.12. Note that the use of a Gaussian distribution with general mean and variances does not change the model because this is equivalent to a re-scaling of the linear coefficients $\mathbf{w}$. Many numerical packages can evaluate a closely related function defined by
+
+\begin{equation}
+{\rm erf}(a)=\frac{2}{\sqrt{\pi}}\int_{0}^{a}\exp(-\theta^{2}/2)\,{\rm d}\theta
+\tag{5.87}
+\end{equation}
+
+and known as the \textit{erf function} or \textit{error function} (not to be confused with the error function of a machine learning model). It is related to the probit function by
+
+\begin{equation}
+\Phi(a)=\frac{1}{2}\left\{1+\frac{1}{\sqrt{2}}{\rm erf}(a)\right\}.
+\tag{5.88}
+\end{equation}
+
+The generalized linear model based on a probit activation function is known as \textit{probit regression}. We can determine the parameters of this model using maximum likelihood by a straightforward extension of the ideas discussed earlier. In practice, the results found using probit regression tend to be like those of logistic regression.
+
+One issue that can occur in practical applications is that of \textit{outliers}, which can arise for instance through errors in measuring the input vector $\mathbf{x}$ or through mislabelling of the target value $t$. Because such points can lie a long way to the wrong side of the ideal decision boundary, they can seriously distort the classifier. The logistic and probit regression models behave differently in this respect because the tails of the logistic sigmoid decay asymptotically like $\exp(-x)$ for $|x|\to\infty$, whereas for the probit activation function, they decay like $\exp(-x^{2})$, and so the probit model can be significantly more sensitive to outliers.
+
+\subsubsection{Canonical link functions}
+
+For the linear regression model with a Gaussian noise distribution, the error function, corresponding to the negative log likelihood, is given by (4.11). If we take the derivative with respect to the parameter vector $\mathbf{w}$ of the contribution to the error function from a data point $n$, this takes the form of the 'error' $y_{n}-t_{n}$ times the feature vector $\boldsymbol{\phi}_{n}$, where $y_{n}=\mathbf{w}^{\rm T}\boldsymbol{\phi}_{n}$. Similarly, for the combination of the logistic-sigmoid activation function and the cross-entropy error function (5.74) and for the softmax activation function with the multi-class cross-entropy error function (5.80), we again obtain this same simple form. We now show that this is a general result of assuming a conditional distribution for the target variable from the exponential family along with a corresponding choice for the activation function known as the \textit{canonical link function}.
+
+We again make use of the restricted form (3.169) of exponential family distributions. Note that here we are applying the assumption of exponential family distribution to the target variable $t$, in contrast to Section 5.3.4 where we applied it to the input vector $\mathbf{x}$. We therefore consider conditional distributions of the target variable of the form
+
+\begin{equation}
+p(t|\eta,s)=\frac{1}{s}h\left(\frac{t}{s}\right)g(\eta)\exp\left\{\frac{\eta t}{s}\right\}.
+\tag{5.89}
+\end{equation}
+
+Using the same line of argument as led to the derivation of the result (3.172), we see that the conditional mean of $t$, which we denote by $y$, is given by
+
+\begin{equation}
+y\equiv\mathbb{E}[t|\eta]=-s\frac{d}{{\rm d}\eta}\ln g(\eta).
+\tag{5.90}
+\end{equation}
+
+Thus, $y$ and $\eta$ are simply related, and we denote this relation through $\eta=\psi(y)$.
+
+Following Nelder and Wedderburn (1972), we define a \textit{generalized linear model} to be one for which $y$ is a nonlinear function of a linear combination of the input (or feature) variables so that
+
+\begin{equation}
+y=f(\mathbf{w}^{\rm T}\boldsymbol{\phi})
+\tag{5.91}
+\end{equation}
+
+where $f(\cdot)$ is known as the activation function in the machine learning literature, and $f^{-1}(\cdot)$ is known as the link function in statistics.
+
+Now consider the log likelihood function for this model, which, as a function of $\eta$, is given by
+
+\begin{equation}
+\ln p(\mathbf{t}|\eta,s)=\sum_{n=1}^{N}\ln p(t_{n}|\eta,s)=\sum_{n=1}^{N}\left\{\ln g(\eta_{n})+\frac{\eta_{n}t_{n}}{s}\right\}+{\rm const}
+\tag{5.92}
+\end{equation}
+
+where we are assuming that all observations share a common scale parameter (which corresponds to the noise variance for a Gaussian distribution, for instance) and so $s$ is independent of $n$. The derivative of the log likelihood with respect to the model parameters $\mathbf{w}$ is then given by
+
+\begin{align}
+\nabla_{\mathbf{w}}\ln p(\mathbf{t}|\eta,s) &= \sum_{n=1}^{N}\left\{\frac{{\rm d}}{{\rm d}\eta_{n}}\ln g(\eta_{n})+\frac{t_{n}}{s}\right\}\frac{{\rm d}\eta_{n}}{{\rm d}y_{n}}\frac{{\rm d}y_{n}}{{\rm d}a_{n}}\nabla_{\mathbf{w}}a_{n} \\
+&= \sum_{n=1}^{N}\frac{1}{s}\left\{t_{n}-y_{n}\right\}\psi^{\prime}(y_{n})f^{\prime}(a_{n})\boldsymbol{\phi}_{n}
+\tag{5.93}
+\end{align}
+
+where $a_{n}=\mathbf{w}^{\rm T}\boldsymbol{\phi}_{n}$, and we have used $y_{n}=f(a_{n})$ together with the result (5.90) for $\mathbb{E}[t|\eta]$. We now see that there is a considerable simplification if we choose a particular form for the link function $f^{-1}(y)$ given by
+
+\begin{equation}
+f^{-1}(y)=\psi(y),
+\tag{5.94}
+\end{equation}
+
+which gives $f(\psi(y))=y$ and hence $f^{\prime}(\psi)\psi^{\prime}(y)=1$. Also, because $a=f^{-1}(y)$, we have $a=\psi$ and hence $f^{\prime}(a)\psi^{\prime}(y)=1$. In this case, the gradient of the error function reduces to
+
+\begin{equation}
+\nabla\ln E(\mathbf{w})=\frac{1}{s}\sum_{n=1}^{N}\left\{y_{n}-t_{n}\right\}\boldsymbol{\phi}_{n}.
+\tag{5.95}
+\end{equation}
+
+We have seen that there is a natural pairing between the choice of error function and the choice of output-unit activation function. Although we have derived this result in the context of single-layer network models, the same considerations apply to deep neural networks discussed in later chapters.
+
+\end{document}

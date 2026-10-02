@@ -1,0 +1,120 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+
+% 定义颜色 (保持模板风格，调整语义)
+\definecolor{modelColor}{RGB}{231, 76, 60}      % 红：模型构建 (基函数/特征)
+\definecolor{solveColor}{RGB}{52, 152, 219}    % 蓝：求解与几何 (最小二乘/投影)
+\definecolor{regColor}{RGB}{142, 68, 173}      % 紫：正则化与泛化 (过拟合/偏差方差)
+\definecolor{decColor}{RGB}{46, 204, 113}      % 绿：决策理论 (损失/期望)
+\definecolor{exColor}{RGB}{243, 156, 18}       % 橙：习题
+
+\begin{document}
+
+\begin{tikzpicture}[
+    node distance = 1.2cm and 1.5cm,
+    % 分类标题样式
+    catTitle/.style={
+        rectangle, draw=#1, fill=#1!20, 
+        text=#1!80!black, font=\large\bfseries, 
+        minimum width=3cm, minimum height=0.8cm, thick, rounded corners
+    },
+    % 内容节点样式
+    content/.style={
+        rectangle, draw=gray, fill=white, align=center, 
+        text width=3.4cm, minimum height=0.7cm, rounded corners%, font=\small
+    },
+    % 习题节点样式
+    exercise/.style={
+        ellipse, draw=#1, fill=#1!10, 
+        text=#1!80!black, font=\scriptsize\bfseries, 
+        inner sep=2pt, minimum width=1.2cm, thick
+    },
+    % 箭头样式
+    arr/.style={->, thick, >=Stealth, opacity=0.6}
+]
+
+    % ================= 中心主题 =================
+    \node[catTitle=black, fill=blue!60, text=white, circle, 
+          minimum size=2.5cm, text width=2.2cm, align=center] (center) {单层网络 回归模型};
+
+    % ================= 第一象限：模型构建 (左上) =================
+    \node[catTitle=modelColor, above left=of center, xshift=1.0cm, yshift=-1cm] (cat1) {模型构建};
+    
+    \node[content, above=of cat1, text width=4.0cm] (n11) {基函数 Basis Functions \\ 多项式/高斯/Sigmoid};
+    \node[content, above left=of cat1, text width=4.0cm] (n12) {特征映射 Feature Map \\ $\phi(\mathbf{x})$ 非线性变换};
+    \node[content, left=of cat1, text width=4.2cm] (n13) {设计矩阵 Design Matrix \\ $\boldsymbol{\Phi}$ 构造与维度};
+
+    % 习题关联 (模型 - 4.1, 4.2)
+    \node[exercise=exColor, above=of n11, yshift=-0.5cm] (e1) {4.1 正规方程推导};
+    \node[exercise=exColor, left=of n12, xshift=0.5cm] (e2) {4.2 正则化方程};
+
+    % ================= 第二象限：求解与几何 (右上) =================
+    \node[catTitle=solveColor, above right=of center, xshift=-1.0cm, yshift=-1cm] (cat2) {求解与几何};
+
+    \node[content, above=of cat2, text width=4.5cm] (n21) {最小二乘法 Least Squares \\ 闭式解 / MLE等价};
+    \node[content, above right=of cat2, text width=4.5cm] (n22) {几何解释 Geometry \\ 正交投影 / 残差垂直};
+    \node[content, right=of cat2, text width=4.5cm] (n23) {数值方法 Numerical \\ 伪逆 / SGD / 顺序学习};
+
+    % 习题关联 (求解 - 4.4)
+    \node[exercise=exColor, above=of n21, yshift=-0.5cm] (e4a) {4.4 投影矩阵证明};
+    \node[exercise=exColor, right=of n22, xshift=-0.5cm] (e4b) {4.4 正交投影几何};
+
+    % ================= 第三象限：正则化与泛化 (左下) =================
+    \node[catTitle=regColor, below left=of center, xshift=1.0cm, yshift=1cm] (cat3) {正则化与泛化};
+
+    \node[content, left=of cat3, text width=5.0cm] (n31) {$L_2$ 正则化 Ridge Regression \\ 参数收缩 / 防止过拟合};
+    \node[content, below=of cat3, text width=4.2cm] (n32) {偏差 - 方差权衡 \\ Bias-Variance Trade-off};
+    \node[content, below left=of cat3, text width=4.5cm] (n33) {模型选择 Model Selection \\ 验证集 / 交叉验证};
+
+    % 习题关联 (正则化 - 无直接对应新题，但4.2相关)
+    % 此处可留空或关联概念，4.2已连在左上，这里强调理论
+    % \node[exercise=exColor, below=of n32, yshift=0.2cm, opacity=0.5] (e_dummy) {理论支撑}; 
+
+    % ================= 第四象限：决策理论 (右下) =================
+    \node[catTitle=decColor, below right=of center, xshift=-1.0cm, yshift=1cm] (cat4) {决策理论};
+
+    \node[content, right=of cat4, text width=3.8cm] (n41) {期望损失最小化 \\ Min Expected Loss};
+    \node[content, below right=of cat4] (n42) {损失函数选择 \\ $L_q$ Loss / 鲁棒性};
+    \node[content, below=of cat4] (n43) {最优预测统计量 \\ 均值/中位数/众数};
+
+    % 习题关联 (决策 - 4.8, 4.12)
+    \node[exercise=exColor, right=of n41, xshift=-0.5cm] (e8) {4.8 多变量条件均值};
+    \node[exercise=exColor, below=of n42, yshift=0.5cm] (e12a) {4.12 条件中位数 ($q=1$)};
+    \node[exercise=exColor, right=of n42, xshift=-0.5cm] (e12b) {4.12 条件众数 ($q \to 0$)};
+
+    % ================= 连线逻辑 =================
+    
+    % 中心 -> 分类
+    \draw[arr, modelColor] (center) -- (cat1);
+    \draw[arr, solveColor] (center) -- (cat2);
+    \draw[arr, regColor] (center) -- (cat3);
+    \draw[arr, decColor] (center) -- (cat4);
+
+    % 分类 -> 内容
+    \foreach \n in {n11, n12, n13} \draw[arr, modelColor!60] (cat1) -- (\n);
+    \foreach \n in {n21, n22, n23} \draw[arr, solveColor!60] (cat2) -- (\n);
+    \foreach \n in {n31, n32, n33} \draw[arr, regColor!60] (cat3) -- (\n);
+    \foreach \n in {n41, n42, n43} \draw[arr, decColor!60] (cat4) -- (\n);
+
+    % 内容 -> 习题
+    % 模型
+    \draw[arr, exColor] (n11) -- (e1);
+    \draw[arr, exColor] (n12) -- (e2);
+    % 求解
+    \draw[arr, exColor] (n21) -- (e4a);
+    \draw[arr, exColor] (n22) -- (e4b);
+    % 决策
+    \draw[arr, exColor] (n41) -- (e8);
+    \draw[arr, exColor] (n42) -- (e12a);
+    \draw[arr, exColor] (n42) -- (e12b);
+
+    % 添加图例说明
+    \node[right=of center, xshift=0cm, font=\tiny, align=center, text=gray, yshift=0cm] 
+        {橙色椭圆代表本章精选习题 \\ 理论与习题通过箭头对应};
+
+\end{tikzpicture}
+
+\end{document}

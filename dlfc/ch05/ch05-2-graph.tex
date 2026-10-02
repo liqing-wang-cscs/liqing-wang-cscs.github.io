@@ -1,0 +1,110 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex,tikz}
+% 引入 positioning 库
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局样式定义
+    node distance = 1.2cm and 1.5cm, % 增加间距以适应长文本
+    box/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\normalsize,
+        minimum width = 3.0cm,
+        minimum height = 0.9cm
+    },
+    % 中心节点样式
+    mainNode/.style = {
+        circle, %box, 
+        align = center, 
+        fill = blue!15, 
+        text width = 4.5cm, 
+        font = \sffamily\bfseries\large,
+        line width = 2pt
+    },
+    % 核心定理节点样式 (突出显示)
+    theoremNode/.style = {
+        box, 
+        fill = yellow!20, 
+        text width = 4.5cm, 
+        font = \sffamily\bfseries\normalsize,
+        line width = 1.5pt
+        % 移除了无效的 'border shifted'
+    },
+    % 细节子节点样式
+    detailNode/.style = {
+        box, 
+        fill = white,
+        font = \sffamily\normalsize,
+        text width = 4.8cm
+    },
+    % 箭头样式
+    arrow/.style = {
+        ->, 
+        thick, 
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % --- 1. 核心主题 ---
+    \node[mainNode] (center) {5.2.决策理论\\Decision Theory};
+
+    % --- 2. 上方分支：最小化错误率 (Misclassification rate) ---
+    \node[theoremNode, above=of center] (misclass) {5.2.1 最小化错误率\\Minimize Misclassification};
+    \node[detailNode, above left=of misclass] (prior_posterior) {先验概率：$p(\mathcal{C}_k)$ \\ 后验概率：$p(\mathcal{C}_k|\mathbf{x})$};
+    \node[detailNode, above=of misclass] (misclass_rule) {决策规则:\\将 $\mathbf{x}$ 分配给后验概率\\$p(\mathcal{C}_k|\mathbf{x})$ 最大的类};
+    \node[detailNode, above right=of misclass] (misclass_bayes) {贝叶斯公式:\\$p(\mathcal{C}_k|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\mathbf{x})}$};
+
+    % --- 3. 右侧分支：期望损失 (Expected loss) ---
+    \node[theoremNode, right=of center] (exp_loss) {5.2.2 期望损失\\Expected Loss};
+    \node[detailNode, above right=of exp_loss] (loss_matrix) {损失矩阵 $L_{kj}$:\\量化不同错误的代价};
+    \node[detailNode, right=of exp_loss] (risk_min) {最小化风险:\\选择使 $\sum_k L_{kj} p(\mathcal{C}_k|\mathbf{x})$\\最小的类 $j$};
+    \node[detailNode, below right=of exp_loss] (reject_opt) {拒绝选项 (Reject Option):\\若最大后验概率低于阈值 $\theta$，则拒绝分类};
+
+    % --- 4. 下方分支：推断与决策方法 (Inference and Decision) ---
+    \node[theoremNode, below=of center] (inf_dec) {5.2.4 推断与决策的\\ 三种途径};
+    \node[detailNode, below left=of inf_dec, text width=7.5cm] (gen_model) {(a) 生成模型 (Generative):\\先求 $p(\mathbf{x}|\mathcal{C}_k)$ 和 $p(\mathcal{C}_k)$，再用贝叶斯求后验};
+    \node[detailNode, below=of inf_dec, text width=5.5cm] (disc_model) {(b) 判别模型 (Discriminative):\\直接对后验概率 $p(\mathcal{C}_k|\mathbf{x})$ 建模};
+    \node[detailNode, below right=of inf_dec, text width=6.8cm] (disc_func) {(c) 判别函数 (Discriminant Function):\\直接学习从输入 $\mathbf{x}$ 到类别标签的映射};
+
+    % --- 5. 左侧分支：分类器评估 (Classifier Accuracy) ---
+    \node[theoremNode, left=of center] (accuracy) {5.2.5 分类器准确性\\Classifier Accuracy};
+    \node[detailNode, above left=of accuracy] (confusion) {混淆矩阵 (Confusion Matrix):\\TP, FP, TN, FN};
+    \node[detailNode, left=of accuracy] (metrics) {关键指标:\\精确率 (Precision), 召回率 (Recall),\\假阳性率 (FPR)};
+    \node[detailNode, below left=of accuracy] (roc_auc) {ROC 曲线与 AUC:\\权衡 TPR 与 FPR，AUC 衡量整体性能};
+
+    % --- 绘制连线 ---
+    % 中心到四大模块
+    \draw[arrow] (center) -- (misclass);
+    \draw[arrow] (center) -- (exp_loss);
+    \draw[arrow] (center) -- (inf_dec);
+    \draw[arrow] (center) -- (accuracy);
+
+    % Misclassification 的子节点
+    \draw[arrow] (misclass) -- (misclass_rule);
+    \draw[arrow] (misclass) -- (prior_posterior);
+    \draw[arrow] (misclass) -- (misclass_bayes);
+
+    % Expected Loss 的子节点
+    \draw[arrow] (exp_loss) -- (loss_matrix);
+    \draw[arrow] (exp_loss) -- (risk_min);
+    \draw[arrow] (exp_loss) -- (reject_opt);
+
+    % Inference and Decision 的子节点
+    \draw[arrow] (inf_dec) -- (gen_model);
+    \draw[arrow] (inf_dec) -- (disc_model);
+    \draw[arrow] (inf_dec) -- (disc_func);
+
+    % Classifier Accuracy 的子节点
+    \draw[arrow] (accuracy) -- (confusion);
+    \draw[arrow] (accuracy) -- (metrics);
+    \draw[arrow] (accuracy) -- (roc_auc);
+
+\end{tikzpicture}
+
+\end{document}

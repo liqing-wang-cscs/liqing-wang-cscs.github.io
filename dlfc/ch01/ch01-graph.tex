@@ -1,0 +1,164 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% 设置更大的页面边距
+\geometry{a2paper, margin=0.5in}
+
+% 定义自定义颜色
+\definecolor{lightblue}{RGB}{173, 216, 230}
+\definecolor{lightyellow}{RGB}{255, 255, 224}
+\definecolor{lightgreen}{RGB}{144, 238, 144}
+
+% 加载tikz库
+\usetikzlibrary{shapes, positioning, arrows, backgrounds, calc}
+
+% 定义节点样式
+\tikzset{
+    concept/.style={rectangle, rounded corners, draw=blue, fill=lightblue, text centered, minimum height=0.8cm, text width=2cm, font=\small},
+    subconcept/.style={ellipse, draw=red, fill=lightyellow, text centered, minimum height=0.6cm, text width=1.5cm, font=\footnotesize},
+    relation/.style={->, >=stealth, thick, font=\tiny},
+    application/.style={diamond, draw=green, fill=lightgreen, text centered, minimum height=0.8cm, text width=1.5cm, font=\small}
+}
+
+\title{第一章：深度学习革命 - 知识图谱}
+\author{《深度学习基础》课程小组}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+
+\begin{tikzpicture}
+
+% 核心概念节点
+\node[concept] (dl) {深度学习};
+\node[concept, left=3.0cm of dl] (ai) {人工智能\\(AI)};
+\node[concept, right=3.0cm of dl] (ml) {机器学习};
+
+% 学习范式
+\node[subconcept, below left=2.0cm and 1.5cm of ml] (supervised) {监督学习};
+\node[subconcept, below left=1.2cm and 3.5cm of ml] (unsupervised) {无监督学习};
+\node[subconcept, below=2.0cm and 0cm of ml] (selfsupervised) {自监督学习};
+\node[subconcept, below right=2.0cm and 1.5cm of ml] (transfer) {迁移学习};
+
+% 监督学习子类型
+\node[subconcept, below left=1.5cm and 0.8cm of supervised] (classification) {分类问题};
+\node[subconcept, below right=1.5cm and 0.8cm of supervised] (regression) {回归问题};
+
+% 无监督学习子类型
+\node[subconcept, below=1.8cm and 0cm of unsupervised] (generative) {生成模型};
+
+% 神经网络基础概念
+\node[concept, above right=1.5cm and 2.5cm of ml] (nn) {神经网络};
+\node[concept, above=2.5cm and 0cm of nn] (perceptron) {单层网络\\(感知器)};
+\node[concept, above right=2.0cm and 2.5cm of nn] (deepnet) {深度网络};
+
+% 关键技术概念
+\node[subconcept, above left=1.5cm and 1.0cm of deepnet] (backprop) {反向传播};
+\node[subconcept, above=2.0cm and 0cm of deepnet] (activation) {激活函数};
+\node[subconcept, above right=1.5cm and 1.0cm of deepnet] (gradient) {梯度下降法};
+
+% 激活函数类型
+\node[subconcept, above=1.2cm and 0cm of activation] (sigmoid) {Sigmoid};
+\node[subconcept, above left=1.2cm and 1.2cm of activation] (relu) {ReLU};
+\node[subconcept, above right=1.2cm and 1.2cm of activation] (tanh) {Tanh};
+
+% 模型优化核心问题
+\node[concept, below right=2.0cm and 3.0cm of dl] (overfitting) {过拟合};
+\node[concept, right=3.5cm and 0cm of overfitting, yshift=0.3cm] (regularization) {正则化}; % 调整正则化位置避免箭头重叠
+\node[concept, right=3.5cm and 0cm of regularization] (generalization) {泛化能力};
+\node[concept, below=2.5cm and 0cm of overfitting, xshift=-0.5cm] (modelcomplexity) {模型复杂度}; % 调整模型复杂度位置避免重叠
+
+% 常用深度学习模型 (重新调整位置以避免重叠)
+\node[concept, above right=1.5cm and 4.0cm of dl] (models) {深度学习\\常用模型};
+\node[subconcept, above left=2.0cm and 1.2cm of models] (cnn) {卷积神经网络\\(CNN)};
+\node[subconcept, above=2.5cm and 0cm of models] (rnn) {循环神经网络\\(RNN)};
+\node[subconcept, above right=2.0cm and 1.2cm of models] (lstm) {长短期记忆网络\\(LSTM)};
+\node[subconcept, right=4.0cm and 0cm of models, yshift=1.0cm] (gan) {生成对抗网络\\(GAN)}; % 进一步调整GAN的位置避免重叠
+
+% 应用领域
+\node[application, below left=2.5cm and 1.5cm of ai] (cv) {计算机视觉};
+\node[application, below=3.0cm and 0cm of ai] (nlp) {自然语言处理};
+\node[application, below right=2.5cm and 1.5cm of ai] (other) {其他领域};
+
+% 发展历程
+\node[concept, above =2.0cm of ai, text width=2.5cm] (history) {神经网络\\发展历史};
+
+% 关系连接线
+\draw[relation] (ai) -- (dl);
+\draw[relation] (ml) -- (dl);
+\draw[relation] (ml) -- (supervised);
+\draw[relation] (ml) -- (unsupervised);
+\draw[relation] (ml) -- (selfsupervised);
+\draw[relation] (ml) -- (transfer);
+
+\draw[relation] (supervised) -- (classification);
+\draw[relation] (supervised) -- (regression);
+\draw[relation] (unsupervised) -- (generative);
+
+\draw[relation] (dl) -- (nn);
+\draw[relation] (nn) -- (perceptron);
+\draw[relation] (nn) -- (deepnet);
+\draw[relation] (backprop) -- (deepnet);
+\draw[relation] (activation) -- (deepnet);
+\draw[relation] (gradient) -- (deepnet);
+
+\draw[relation] (sigmoid) -- (activation);
+\draw[relation] (relu) -- (activation);
+\draw[relation] (tanh) -- (activation);
+
+\draw[relation] (dl) -- (overfitting);
+\draw[relation] (dl) -- (regularization);
+\draw[relation] (dl) -- (generalization);
+\draw[relation] (modelcomplexity) -- (overfitting);
+\draw[relation] (regularization) -- (overfitting);
+\draw[relation] (overfitting) -- (generalization);
+
+\draw[relation] (dl) -- (models);
+\draw[relation] (models) -- (cnn);
+\draw[relation] (models) -- (rnn);
+\draw[relation] (models) -- (lstm);
+\draw[relation] (models) -- (gan);
+
+\draw[relation] (ai) -- (cv);
+\draw[relation] (ai) -- (nlp);
+\draw[relation] (ai) -- (other);
+
+\draw[relation] (history) -- (ai);
+
+% 添加说明文字
+\node[below=2.0cm and 0cm of cv, font=\tiny, align=center] {自动驾驶、\\安全监控、\\医学影像};
+\node[below=2.0cm and 0cm of nlp, font=\tiny, align=center] {机器翻译、\\情感分析、\\问答系统、\\文本生成};
+\node[below=2.0cm and 0cm of other, font=\tiny, align=center] {智能推荐、\\金融领域、\\工业制造、\\机器人技术};
+
+% 添加时间线
+\node[left=1.5cm and 1.0cm of history, text width=2.5cm, font=\tiny, align=left] (timeline) {
+\textbf{发展历程：}\\
+1943年：人工神经元模型\\
+1958年：感知器\\
+1986年：反向传播算法\\
+2012年：AlexNet
+};
+
+\end{tikzpicture}
+
+\end{center}
+
+\section*{概念关系说明}
+\begin{itemize}
+\item \textbf{深度学习} 是 \textbf{机器学习} 的分支领域，源于 \textbf{人工神经网络} 研究
+\item \textbf{监督学习}、\textbf{无监督学习}、\textbf{自监督学习} 和 \textbf{迁移学习} 是主要的机器学习范式
+\item \textbf{过拟合} 与 \textbf{模型复杂度} 相关，可通过 \textbf{正则化} 技术缓解
+\item \textbf{反向传播} 算法是训练深度网络的关键技术
+\item \textbf{卷积神经网络}、\textbf{循环神经网络} 等是深度学习的常用模型
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,359 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第3章-标准分布-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{3.1} ($\star$) Verify that the Bernoulli distribution (3.2) satisfies the following properties:
+\begin{align}
+\sum_{x=0}^{1} p(x|\mu) &= 1 \tag{3.191} \\
+\mathbb{E}[x] &= \mu \tag{3.192} \\
+\text{var}[x] &= \mu(1-\mu). \tag{3.193}
+\end{align}
+Show that the entropy $\mathrm{H}[x]$ of a Bernoulli-distributed random binary variable $x$ is given by
+\begin{equation}
+\mathrm{H}[x] = -\mu \ln \mu - (1-\mu) \ln(1-\mu). \tag{3.194}
+\end{equation}
+
+\textbf{3.1} ($\star$) 验证伯努利分布(3.2)满足以下性质：
+\begin{align}
+\sum_{x=0}^{1} p(x|\mu) &= 1 \tag{3.191} \\
+\mathbb{E}[x] &= \mu \tag{3.192} \\
+\text{var}[x] &= \mu(1-\mu). \tag{3.193}
+\end{align}
+证明一个服从伯努利分布的随机二元变量$x$的熵$\mathrm{H}[x]$由下式给出
+\begin{equation}
+\mathrm{H}[x] = -\mu \ln \mu - (1-\mu) \ln(1-\mu). \tag{3.194}
+\end{equation}
+
+\textbf{3.2} ($\star\star$) The form of the Bernoulli distribution given by (3.2) is not symmetric between the two values of $x$. In some situations, it will be more convenient to use an equivalent formulation for which $x \in \{-1, 1\}$, in which case the distribution can be written
+\begin{equation}
+p(x|\mu) = \left(\frac{1-\mu}{2}\right)^{(1-x)/2} \left(\frac{1+\mu}{2}\right)^{(1+x)/2} \tag{3.195}
+\end{equation}
+where $\mu \in [-1, 1]$. Show that the distribution (3.195) is normalized, and evaluate its mean, variance, and entropy.
+
+\textbf{3.2} ($\star\star$) 由(3.2)给出的伯努利分布的形式在$x$的两个取值之间不是对称的。在某些情况下，使用一个等价的表述会更方便，其中$x \in \{-1, 1\}$，此时分布可以写为
+\begin{equation}
+p(x|\mu) = \left(\frac{1-\mu}{2}\right)^{(1-x)/2} \left(\frac{1+\mu}{2}\right)^{(1+x)/2} \tag{3.195}
+\end{equation}
+其中$\mu \in [-1, 1]$。证明分布(3.195)是归一化的，并计算其均值、方差和熵。
+
+\textbf{3.3} ($\star\star$) In this exercise, we prove that the binomial distribution (3.9) is normalized. First, use the definition (3.10) of the number of combinations of $m$ identical objects chosen from a total of $N$ to show that
+\begin{equation}
+\binom{N}{m} + \binom{N}{m-1} = \binom{N+1}{m}. \tag{3.196}
+\end{equation}
+Use this result to prove by induction the following result:
+\begin{equation}
+(1+x)^N = \sum_{m=0}^{N} \binom{N}{m} x^m, \tag{3.197}
+\end{equation}
+which is known as the \emph{binomial theorem} and which is valid for all real values of $x$. Finally, show that the binomial distribution is normalized, so that
+\begin{equation}
+\sum_{m=0}^{N} \binom{N}{m} \mu^m (1-\mu)^{N-m} = 1, \tag{3.198}
+\end{equation}
+which can be done by first pulling a factor $(1-\mu)^N$ out of the summation and then making use of the binomial theorem.
+
+\textbf{3.3} ($\star\star$) 在本练习中，我们证明二项分布(3.9)是归一化的。首先，利用从总共$N$个对象中选择$m$个相同对象的组合数的定义(3.10)来证明
+\begin{equation}
+\binom{N}{m} + \binom{N}{m-1} = \binom{N+1}{m}. \tag{3.196}
+\end{equation}
+利用这个结果，通过归纳法证明以下结果：
+\begin{equation}
+(1+x)^N = \sum_{m=0}^{N} \binom{N}{m} x^m, \tag{3.197}
+\end{equation}
+这被称为\emph{二项式定理}，并且对所有实数值的$x$都成立。最后，证明二项分布是归一化的，即
+\begin{equation}
+\sum_{m=0}^{N} \binom{N}{m} \mu^m (1-\mu)^{N-m} = 1, \tag{3.198}
+\end{equation}
+这可以通过先从求和中提取因子$(1-\mu)^N$，然后利用二项式定理来完成。
+
+\textbf{3.4} ($\star\star$) Show that the mean of the binomial distribution is given by (3.11). To do this, differentiate both sides of the normalization condition (3.198) with respect to $\mu$ and then rearrange to obtain an expression for the mean of $n$. Similarly, by differentiating (3.198) twice with respect to $\mu$ and making use of the result (3.11) for the mean of the binomial distribution, prove the result (3.12) for the variance of the binomial.
+
+\textbf{3.4} ($\star\star$) 证明二项分布的均值由(3.11)给出。为此，对归一化条件(3.198)的两边关于$\mu$求导，然后重新整理以获得$n$的均值的表达式。类似地，通过对(3.198)关于$\mu$求两次导，并利用二项分布均值的结果(3.11)，证明二项分布方差的结果(3.12)。
+
+\textbf{3.5} ($\star$) Show that the mode of the multivariate Gaussian (3.26) is given by $\boldsymbol{\mu}$.
+
+\textbf{3.5} ($\star$) 证明多元高斯分布(3.26)的众数由$\boldsymbol{\mu}$给出。
+
+\textbf{3.6} ($\star\star$) Suppose that $\mathbf{x}$ has a Gaussian distribution with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$. Show that the linearly transformed variable $\mathbf{A}\mathbf{x} + \mathbf{b}$ is also Gaussian, and find its mean and covariance.
+
+\textbf{3.6} ($\star\star$) 假设$\mathbf{x}$具有均值为$\boldsymbol{\mu}$、协方差为$\boldsymbol{\Sigma}$的高斯分布。证明线性变换后的变量$\mathbf{A}\mathbf{x} + \mathbf{b}$也是高斯分布，并求出其均值和协方差。
+
+\textbf{3.7} ($\star\star\star$) Show that the Kullback–Leibler divergence between two Gaussian distributions $q(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_q, \boldsymbol{\Sigma}_q)$ and $p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_p, \boldsymbol{\Sigma}_p)$ is given by
+\begin{equation}
+\mathrm{KL}(q(\mathbf{x})||p(\mathbf{x})) 
+= \frac{1}{2} \left\{ \ln \frac{|\boldsymbol{\Sigma}_p|}{|\boldsymbol{\Sigma}_q|} - D + \mathrm{Tr}\left(\boldsymbol{\Sigma}_p^{-1}\boldsymbol{\Sigma}_q\right) + (\boldsymbol{\mu}_p - \boldsymbol{\mu}_q)^\mathrm{T} \boldsymbol{\Sigma}_p^{-1} (\boldsymbol{\mu}_p - \boldsymbol{\mu}_q) \right\} \tag{3.199}
+\end{equation}
+where $\mathrm{Tr}(\cdot)$ denotes the trace of a matrix, and $D$ is the dimensionality of $\mathbf{x}$.
+
+\textbf{3.7} ($\star\star\star$) 证明两个高斯分布$q(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_q, \boldsymbol{\Sigma}_q)$和$p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_p, \boldsymbol{\Sigma}_p)$之间的Kullback-Leibler散度由下式给出
+\begin{equation}
+\mathrm{KL}(q(\mathbf{x})||p(\mathbf{x})) 
+= \frac{1}{2} \left\{ \ln \frac{|\boldsymbol{\Sigma}_p|}{|\boldsymbol{\Sigma}_q|} - D + \mathrm{Tr}\left(\boldsymbol{\Sigma}_p^{-1}\boldsymbol{\Sigma}_q\right) + (\boldsymbol{\mu}_p - \boldsymbol{\mu}_q)^\mathrm{T} \boldsymbol{\Sigma}_p^{-1} (\boldsymbol{\mu}_p - \boldsymbol{\mu}_q) \right\} \tag{3.199}
+\end{equation}
+其中$\mathrm{Tr}(\cdot)$表示矩阵的迹，$D$是$\mathbf{x}$的维数。
+
+\textbf{3.8} ($\star\star$) This exercise demonstrates that the multivariate distribution with maximum entropy, for a given covariance, is a Gaussian. The entropy of a distribution $p(\mathbf{x})$ is given by
+\begin{equation}
+\mathrm{H}[\mathbf{x}] = - \int p(\mathbf{x}) \ln p(\mathbf{x}) \,\mathrm{d}\mathbf{x}. \tag{3.200}
+\end{equation}
+We wish to maximize $\mathrm{H}[\mathbf{x}]$ over all distributions $p(\mathbf{x})$ subject to the constraints that $p(\mathbf{x})$ is normalized and that it has a specific mean and covariance, so that
+\begin{align}
+\int p(\mathbf{x}) \,\mathrm{d}\mathbf{x} &= 1 \tag{3.201} \\
+\int p(\mathbf{x}) \mathbf{x} \,\mathrm{d}\mathbf{x} &= \boldsymbol{\mu} \tag{3.202} \\
+\int p(\mathbf{x}) (\mathbf{x}-\boldsymbol{\mu})(\mathbf{x}-\boldsymbol{\mu})^\mathrm{T} \,\mathrm{d}\mathbf{x} &= \boldsymbol{\Sigma}. \tag{3.203}
+\end{align}
+By performing a variational maximization of (3.200) and using Lagrange multipliers to enforce the constraints (3.201), (3.202), and (3.203), show that the maximum likelihood distribution is given by the Gaussian (3.26).
+
+\textbf{3.8} ($\star\star$) 本练习表明，对于给定的协方差，具有最大熵的多元分布是高斯分布。分布$p(\mathbf{x})$的熵由下式给出
+\begin{equation}
+\mathrm{H}[\mathbf{x}] = - \int p(\mathbf{x}) \ln p(\mathbf{x}) \,\mathrm{d}\mathbf{x}. \tag{3.200}
+\end{equation}
+我们希望在所有满足$p(\mathbf{x})$归一化且具有特定均值和协方差的约束条件下，最大化$\mathrm{H}[\mathbf{x}]$，即
+\begin{align}
+\int p(\mathbf{x}) \,\mathrm{d}\mathbf{x} &= 1 \tag{3.201} \\
+\int p(\mathbf{x}) \mathbf{x} \,\mathrm{d}\mathbf{x} &= \boldsymbol{\mu} \tag{3.202} \\
+\int p(\mathbf{x}) (\mathbf{x}-\boldsymbol{\mu})(\mathbf{x}-\boldsymbol{\mu})^\mathrm{T} \,\mathrm{d}\mathbf{x} &= \boldsymbol{\Sigma}. \tag{3.203}
+\end{align}
+通过对(3.200)进行变分最大化，并使用拉格朗日乘子来强制执行约束(3.201)、(3.202)和(3.203)，证明最大似然分布由高斯分布(3.26)给出。
+
+\textbf{3.9} ($\star\star\star$) Show that the entropy of the multivariate Gaussian $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Sigma})$ is given by
+\begin{equation}
+\mathrm{H}[\mathbf{x}] = \frac{1}{2} \ln |\boldsymbol{\Sigma}| + \frac{D}{2} (1 + \ln(2\pi)) \tag{3.204}
+\end{equation}
+where $D$ is the dimensionality of $\mathbf{x}$.
+
+\textbf{3.9} ($\star\star\star$) 证明多元高斯分布$\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Sigma})$的熵由下式给出
+\begin{equation}
+\mathrm{H}[\mathbf{x}] = \frac{1}{2} \ln |\boldsymbol{\Sigma}| + \frac{D}{2} (1 + \ln(2\pi)) \tag{3.204}
+\end{equation}
+其中$D$是$\mathbf{x}$的维数。
+
+\textbf{3.10} ($\star\star\star$) Consider two random variables $x_1$ and $x_2$ having Gaussian distributions with means $\mu_1$ and $\mu_2$ and precisions $\tau_1$ and $\tau_2$, respectively. Derive an expression for the differential entropy of the variable $x = x_1 + x_2$. To do this, first find the distribution of $x$ by using the relation
+\begin{equation}
+p(x) = \int_{-\infty}^{\infty} p(x|x_2)p(x_2) \,\mathrm{d}x_2 \tag{3.205}
+\end{equation}
+and completing the square in the exponent. Then observe that this represents the convolution of two Gaussian distributions, which itself will be Gaussian, and finally make use of the result (2.99) for the entropy of the univariate Gaussian.
+
+\textbf{3.10} ($\star\star\star$) 考虑两个随机变量$x_1$和$x_2$，它们分别具有均值为$\mu_1$和$\mu_2$、精度为$\tau_1$和$\tau_2$的高斯分布。推导变量$x = x_1 + x_2$的微分熵的表达式。为此，首先利用关系
+\begin{equation}
+p(x) = \int_{-\infty}^{\infty} p(x|x_2)p(x_2) \,\mathrm{d}x_2 \tag{3.205}
+\end{equation}
+并完成指数部分的配方来找到$x$的分布。然后观察到这代表了两个高斯分布的卷积，其本身也将是高斯分布，最后利用单变量高斯分布熵的结果(2.99)。
+
+\textbf{3.11} ($\star$) Consider the multivariate Gaussian distribution given by (3.26). By writing the precision matrix (inverse covariance matrix) as the sum of a symmetric and an antisymmetric matrix, show that the antisymmetric term does not appear in the exponent of the Gaussian, and hence, that the precision matrix may be taken to be symmetric without loss of generality. Because the inverse of a symmetric matrix is also symmetric (see Exercise 3.16), it follows that the covariance matrix may also be chosen to be symmetric without loss of generality.
+
+\textbf{3.11} ($\star$) 考虑由(3.26)给出的多元高斯分布。通过将精度矩阵（逆协方差矩阵）写成一个对称矩阵和一个反对称矩阵的和，证明反对称项不出现在高斯分布的指数中，因此，精度矩阵可以被取为对称的而不失一般性。因为对称矩阵的逆也是对称的（见练习3.16），所以协方差矩阵也可以被选为对称的而不失一般性。
+
+\textbf{3.12} ($\star\star\star$) Consider a real, symmetric matrix $\boldsymbol{\Sigma}$ whose eigenvalue equation is given by (3.28). By taking the complex conjugate of this equation, subtracting the original equation, and then forming the inner product with eigenvector $\mathbf{u}_i$, show that the eigenvalues $\lambda_i$ are real. Similarly, use the symmetry property of $\boldsymbol{\Sigma}$ to show that two eigenvectors $\mathbf{u}_i$ and $\mathbf{u}_j$ will be orthogonal provided $\lambda_j \neq \lambda_i$. Finally, show that, without loss of generality, the set of eigenvectors can be chosen to be orthonormal, so that they satisfy (3.29), even if some of the eigenvalues are zero.
+
+\textbf{3.12} ($\star\star\star$) 考虑一个实对称矩阵$\boldsymbol{\Sigma}$，其特征值方程由(3.28)给出。通过取该方程的复共轭，减去原方程，然后与特征向量$\mathbf{u}_i$形成内积，证明特征值$\lambda_i$是实数。同样地，利用$\boldsymbol{\Sigma}$的对称性证明，如果$\lambda_j \neq \lambda_i$，则两个特征向量$\mathbf{u}_i$和$\mathbf{u}_j$将是正交的。最后，证明不失一般性地，特征向量集可以选择为正交归一的，使得它们满足(3.29)，即使某些特征值为零。
+
+\textbf{3.13} ($\star\star$) Show that a real, symmetric matrix $\boldsymbol{\Sigma}$ having the eigenvector equation (3.28) can be expressed as an expansion in the eigenvectors, with coefficients given by the eigenvalues, of the form (3.31). Similarly, show that the inverse matrix $\boldsymbol{\Sigma}^{-1}$ has a representation of the form (3.32).
+
+\textbf{3.13} ($\star\star$) 证明一个具有特征向量方程(3.28)的实对称矩阵$\boldsymbol{\Sigma}$可以表示为特征向量的展开，其系数由特征值给出，形式如(3.31)所示。同样地，证明逆矩阵$\boldsymbol{\Sigma}^{-1}$具有形式如(3.32)的表示。
+
+\textbf{3.14} ($\star\star$) A positive definite matrix $\boldsymbol{\Sigma}$ can be defined as one for which the quadratic form
+\begin{equation}
+\mathbf{a}^\mathrm{T} \boldsymbol{\Sigma} \mathbf{a} \tag{3.206}
+\end{equation}
+is positive for any real value of the vector $\mathbf{a}$. Show that a necessary and sufficient condition for $\boldsymbol{\Sigma}$ to be positive definite is that all the eigenvalues $\lambda_i$ of $\boldsymbol{\Sigma}$, defined by (3.28), are positive.
+
+\textbf{3.14} ($\star\star$) 正定矩阵$\boldsymbol{\Sigma}$可以定义为对于向量$\mathbf{a}$的任何实数值，二次型
+\begin{equation}
+\mathbf{a}^\mathrm{T} \boldsymbol{\Sigma} \mathbf{a} \tag{3.206}
+\end{equation}
+均为正的矩阵。证明$\boldsymbol{\Sigma}$为正定矩阵的充要条件是$\boldsymbol{\Sigma}$的所有特征值$\lambda_i$（由(3.28)定义）均为正。
+
+\textbf{3.15} ($\star$) Show that a real, symmetric matrix of size $D \times D$ has $D(D+1)/2$ independent parameters.
+
+\textbf{3.15} ($\star$) 证明一个$D \times D$大小的实对称矩阵有$D(D+1)/2$个独立参数。
+
+\textbf{3.16} ($\star$) Show that the inverse of a symmetric matrix is itself symmetric.
+
+\textbf{3.16} ($\star$) 证明对称矩阵的逆矩阵本身也是对称的。
+
+\textbf{3.17} ($\star\star$) By diagonalizing the coordinate system using the eigenvector expansion (3.31), show that the volume contained within the hyperellipsoid corresponding to a constant Mahalanobis distance $\Delta$ is given by
+\begin{equation}
+V_D |\boldsymbol{\Sigma}|^{1/2} \Delta^D \tag{3.207}
+\end{equation}
+where $V_D$ is the volume of the unit sphere in $D$ dimensions, and the Mahalanobis distance is defined by (3.27).
+
+\textbf{3.17} ($\star\star$) 通过使用特征向量展开(3.31)对坐标系进行对角化，证明对应于恒定马氏距离$\Delta$的超椭球体内所包含的体积由下式给出
+\begin{equation}
+V_D |\boldsymbol{\Sigma}|^{1/2} \Delta^D \tag{3.207}
+\end{equation}
+其中$V_D$是$D$维空间中单位球的体积，马氏距离由(3.27)定义。
+
+\textbf{3.18} ($\star\star$) Prove the identity (3.60) by multiplying both sides by the matrix
+\begin{equation}
+\begin{pmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{pmatrix} \tag{3.208}
+\end{equation}
+and making use of the definition (3.61).
+
+\textbf{3.18} ($\star\star$) 通过将等式两边乘以矩阵
+\begin{equation}
+\begin{pmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{pmatrix} \tag{3.208}
+\end{equation}
+并利用定义(3.61)，来证明恒等式(3.60)。
+
+\textbf{3.19} ($\star\star\star$) In Sections 3.2.4 and 3.2.5, we considered the conditional and marginal distributions for a multivariate Gaussian. More generally, we can consider a partitioning of the components of $\mathbf{x}$ into three groups $\mathbf{x}_a$, $\mathbf{x}_b$, and $\mathbf{x}_c$, with a corresponding partitioning of the mean vector $\boldsymbol{\mu}$ and of the covariance matrix $\boldsymbol{\Sigma}$ in the form
+\begin{equation}
+\boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b \\ \boldsymbol{\mu}_c \end{pmatrix}, \qquad \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} & \boldsymbol{\Sigma}_{ac} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} & \boldsymbol{\Sigma}_{bc} \\ \boldsymbol{\Sigma}_{ca} & \boldsymbol{\Sigma}_{cb} & \boldsymbol{\Sigma}_{cc} \end{pmatrix}. \tag{3.209}
+\end{equation}
+By making use of the results of Section 3.2, find an expression for the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ in which $\mathbf{x}_c$ has been marginalized out.
+
+\textbf{3.19} ($\star\star\star$) 在3.2.4和3.2.5节中，我们考虑了多元高斯分布的条件分布和边缘分布。更一般地，我们可以考虑将$\mathbf{x}$的分量划分为三组$\mathbf{x}_a$、$\mathbf{x}_b$和$\mathbf{x}_c$，并相应地将均值向量$\boldsymbol{\mu}$和协方差矩阵$\boldsymbol{\Sigma}$划分成如下形式
+\begin{equation}
+\boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b \\ \boldsymbol{\mu}_c \end{pmatrix}, \qquad \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} & \boldsymbol{\Sigma}_{ac} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} & \boldsymbol{\Sigma}_{bc} \\ \boldsymbol{\Sigma}_{ca} & \boldsymbol{\Sigma}_{cb} & \boldsymbol{\Sigma}_{cc} \end{pmatrix}. \tag{3.209}
+\end{equation}
+利用3.2节的结果，找出条件分布$p(\mathbf{x}_a|\mathbf{x}_b)$的表达式，其中$\mathbf{x}_c$已被边缘化。
+
+\textbf{3.20} ($\star\star$) A very useful result from linear algebra is the \emph{Woodbury matrix inversion formula} given by
+\begin{equation}
+(\mathbf{A} + \mathbf{BCD})^{-1} = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{B}(\mathbf{C}^{-1} + \mathbf{DA}^{-1}\mathbf{B})^{-1}\mathbf{DA}^{-1}. \tag{3.210}
+\end{equation}
+By multiplying both sides by $(\mathbf{A} + \mathbf{BCD})$, prove the correctness of this result.
+
+\textbf{3.20} ($\star\star$) 线性代数中一个非常有用的结果是\emph{伍德伯里矩阵求逆公式}，其形式为
+\begin{equation}
+(\mathbf{A} + \mathbf{BCD})^{-1} = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{B}(\mathbf{C}^{-1} + \mathbf{DA}^{-1}\mathbf{B})^{-1}\mathbf{DA}^{-1}. \tag{3.210}
+\end{equation}
+通过将等式两边乘以$(\mathbf{A} + \mathbf{BCD})$，证明此结果的正确性。
+
+\textbf{3.21} ($\star$) Let $\mathbf{x}$ and $\mathbf{z}$ be two independent random vectors, so that $p(\mathbf{x}, \mathbf{z}) = p(\mathbf{x})p(\mathbf{z})$. Show that the mean of their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$ is given by the sum of the means of each of the variables separately. Similarly, show that the covariance matrix of $\mathbf{y}$ is given by the sum of the covariance matrices of $\mathbf{x}$ and $\mathbf{z}$.
+
+\textbf{3.21} ($\star$) 设$\mathbf{x}$和$\mathbf{z}$是两个独立的随机向量，即$p(\mathbf{x}, \mathbf{z}) = p(\mathbf{x})p(\mathbf{z})$。证明它们之和$\mathbf{y} = \mathbf{x} + \mathbf{z}$的均值等于各个变量均值的和。同样地，证明$\mathbf{y}$的协方差矩阵等于$\mathbf{x}$和$\mathbf{z}$的协方差矩阵之和。
+
+\textbf{3.22} ($\star\star\star$) Consider a joint distribution over the variable
+\begin{equation}
+\mathbf{z} = \begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix} \tag{3.211}
+\end{equation}
+whose mean and covariance are given by (3.92) and (3.89), respectively. By making use of the results (3.76) and (3.77), show that the marginal distribution $p(\mathbf{x})$ is given by (3.83). Similarly, by making use of the results (3.65) and (3.66), show that the conditional distribution $p(\mathbf{y}|\mathbf{x})$ is given by (3.84).
+
+\textbf{3.22} ($\star\star\star$) 考虑关于变量
+\begin{equation}
+\mathbf{z} = \begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix} \tag{3.211}
+\end{equation}
+的一个联合分布，其均值和协方差分别由(3.92)和(3.89)给出。利用结果(3.76)和(3.77)，证明边缘分布$p(\mathbf{x})$由(3.83)给出。类似地，利用结果(3.65)和(3.66)，证明条件分布$p(\mathbf{y}|\mathbf{x})$由(3.84)给出。
+
+\textbf{3.23} ($\star\star$) Using the partitioned matrix inversion formula (3.60), show that the inverse of the precision matrix (3.88) is given by the covariance matrix (3.89).
+
+\textbf{3.23} ($\star\star$) 使用分块矩阵求逆公式(3.60)，证明精度矩阵(3.88)的逆由协方差矩阵(3.89)给出。
+
+\textbf{3.24} ($\star\star$) By starting from (3.91) and making use of the result (3.89), verify the result (3.92).
+
+\textbf{3.24} ($\star\star$) 从(3.91)开始，并利用结果(3.89)，验证结果(3.92)。
+
+\textbf{3.25} ($\star\star$) Consider two multi-dimensional random vectors $\mathbf{x}$ and $\mathbf{z}$ having Gaussian distributions $p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_{\mathbf{x}}, \boldsymbol{\Sigma}_{\mathbf{x}})$ and $p(\mathbf{z}) = \mathcal{N}(\mathbf{z}|\boldsymbol{\mu}_{\mathbf{z}}, \boldsymbol{\Sigma}_{\mathbf{z}})$, respectively, together with their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$. By considering the linear-Gaussian model comprising the product of the marginal distribution $p(\mathbf{x})$ and the conditional distribution $p(\mathbf{y}|\mathbf{x})$ and making use of the results (3.93) and (3.94), show that the marginal distribution of $p(\mathbf{y})$ is given by
+\begin{equation}
+p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\boldsymbol{\mu}_{\mathbf{x}} + \boldsymbol{\mu}_{\mathbf{z}}, \boldsymbol{\Sigma}_{\mathbf{x}} + \boldsymbol{\Sigma}_{\mathbf{z}}). \tag{3.212}
+\end{equation}
+
+\textbf{3.25} ($\star\star$) 考虑两个具有多维高斯分布的随机向量$\mathbf{x}$和$\mathbf{z}$，分别为$p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_{\mathbf{x}}, \boldsymbol{\Sigma}_{\mathbf{x}})$和$p(\mathbf{z}) = \mathcal{N}(\mathbf{z}|\boldsymbol{\mu}_{\mathbf{z}}, \boldsymbol{\Sigma}_{\mathbf{z}})$，以及它们的和$\mathbf{y} = \mathbf{x} + \mathbf{z}$。通过考虑由边缘分布$p(\mathbf{x})$和条件分布$p(\mathbf{y}|\mathbf{x})$的乘积组成的线性-高斯模型，并利用结果(3.93)和(3.94)，证明$p(\mathbf{y})$的边缘分布由下式给出
+\begin{equation}
+p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\boldsymbol{\mu}_{\mathbf{x}} + \boldsymbol{\mu}_{\mathbf{z}}, \boldsymbol{\Sigma}_{\mathbf{x}} + \boldsymbol{\Sigma}_{\mathbf{z}}). \tag{3.212}
+\end{equation}
+
+\textbf{3.26} ($\star\star\star$) This exercise and the next provide practice at manipulating the quadratic forms that arise in linear-Gaussian models, and they also serve as an independent check of results derived in the main text. Consider a joint distribution $p(\mathbf{x}, \mathbf{y})$ defined by the marginal and conditional distributions given by (3.83) and (3.84). By examining the quadratic form in the exponent of the joint distribution and using the technique of `completing the square' discussed in Section 3.2, find expressions for the mean and covariance of the marginal distribution $p(\mathbf{y})$ in which the variable $\mathbf{x}$ has been integrated out. To do this, make use of the Woodbury matrix inversion formula (3.210). Verify that these results agree with (3.93) and (3.94).
+
+\textbf{3.26} ($\star\star\star$) 本练习和下一个练习提供了处理线性-高斯模型中出现的二次型的实践，并且它们也作为对正文中推导结果的独立检验。考虑一个由(3.83)和(3.84)给出的边缘分布和条件分布所定义的联合分布$p(\mathbf{x}, \mathbf{y})$。通过检查联合分布指数中的二次型，并使用3.2节中讨论的“配方法”技术，找出变量$\mathbf{x}$被积分掉后的边缘分布$p(\mathbf{y})$的均值和协方差的表达式。为此，请使用伍德伯里矩阵求逆公式(3.210)。验证这些结果与(3.93)和(3.94)一致。
+
+\textbf{3.27} ($\star\star\star$) Consider the same joint distribution as in Exercise 3.26, but now use the technique of completing the square to find expressions for the mean and covariance of the conditional distribution $p(\mathbf{x}|\mathbf{y})$. Again, verify that these agree with the corresponding expressions (3.95) and (3.96).
+
+\textbf{3.27} ($\star\star\star$) 考虑与练习3.26相同的联合分布，但现在使用配方法技术来找出条件分布$p(\mathbf{x}|\mathbf{y})$的均值和协方差的表达式。再次验证这些结果与相应的表达式(3.95)和(3.96)一致。
+
+\textbf{3.28} ($\star\star$) To find the maximum likelihood solution for the covariance matrix of a multivariate Gaussian, we need to maximize the log likelihood function (3.102) with respect to $\boldsymbol{\Sigma}$, noting that the covariance matrix must be symmetric and positive definite. Here we proceed by ignoring these constraints and doing a straightforward maximization. Using the results (A.21), (A.26), and (A.28) from Appendix A, show that the covariance matrix $\boldsymbol{\Sigma}$ that maximizes the log likelihood function (3.102) is given by the sample covariance (3.106). We note that the final result is necessarily symmetric and positive definite (provided the sample covariance is non-singular).
+
+\textbf{3.28} ($\star\star$) 为了找到多元高斯分布协方差矩阵的最大似然解，我们需要关于$\boldsymbol{\Sigma}$最大化对数似然函数(3.102)，注意协方差矩阵必须是对称且正定的。在这里，我们通过忽略这些约束并进行直接最大化来进行。利用附录A中的结果(A.21)、(A.26)和(A.28)，证明使对数似然函数(3.102)最大化的协方差矩阵$\boldsymbol{\Sigma}$由样本协方差(3.106)给出。我们注意到，最终结果必然是对称和正定的（前提是样本协方差是非奇异的）。
+
+\textbf{3.29} ($\star\star$) Use the result (3.42) to prove (3.46). Now, using the results (3.42) and (3.46), show that
+\begin{equation}
+\mathbb{E}[\mathbf{x}_n \mathbf{x}_m^\mathrm{T}] = \boldsymbol{\mu}\boldsymbol{\mu}^\mathrm{T} + I_{nm}\boldsymbol{\Sigma} \tag{3.213}
+\end{equation}
+where $\mathbf{x}_n$ denotes a data point sampled from a Gaussian distribution with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, and $I_{nm}$ denotes the $(n, m)$ element of the identity matrix. Hence, prove the result (3.108).
+
+\textbf{3.29} ($\star\star$) 使用结果(3.42)来证明(3.46)。现在，利用结果(3.42)和(3.46)，证明
+\begin{equation}
+\mathbb{E}[\mathbf{x}_n \mathbf{x}_m^\mathrm{T}] = \boldsymbol{\mu}\boldsymbol{\mu}^\mathrm{T} + I_{nm}\boldsymbol{\Sigma} \tag{3.213}
+\end{equation}
+其中$\mathbf{x}_n$表示从一个均值为$\boldsymbol{\mu}$、协方差为$\boldsymbol{\Sigma}$的高斯分布中采样的数据点，而$I_{nm}$表示单位矩阵的$(n, m)$元素。因此，证明结果(3.108)。
+
+\textbf{3.30} ($\star$) The various trigonometric identities used in the discussion of periodic variables in this chapter can be proven easily from the relation
+\begin{equation}
+\exp(iA) = \cos A + i \sin A \tag{3.214}
+\end{equation}
+in which $i$ is the square root of minus one. By considering the identity
+\begin{equation}
+\exp(iA)\exp(-iA) = 1 \tag{3.215}
+\end{equation}
+prove the result (3.127). Similarly, using the identity
+\begin{equation}
+\cos(A-B) = \Re \exp\{i(A-B)\} \tag{3.216}
+\end{equation}
+where $\Re$ denotes the real part, prove (3.128). Finally, by using $\sin(A-B) = \Im \exp\{i(A-B)\}$, where $\Im$ denotes the imaginary part, prove the result (3.133).
+
+\textbf{3.30} ($\star$) 本章中用于讨论周期变量的各种三角恒等式可以很容易地从关系式
+\begin{equation}
+\exp(iA) = \cos A + i \sin A \tag{3.214}
+\end{equation}
+中得到证明，其中$i$是负一的平方根。通过考虑恒等式
+\begin{equation}
+\exp(iA)\exp(-iA) = 1 \tag{3.215}
+\end{equation}
+证明结果(3.127)。类似地，使用恒等式
+\begin{equation}
+\cos(A-B) = \Re \exp\{i(A-B)\} \tag{3.216}
+\end{equation}
+其中$\Re$表示实部，证明(3.128)。最后，通过使用$\sin(A-B) = \Im \exp\{i(A-B)\}$，其中$\Im$表示虚部，证明结果(3.133)。
+
+\textbf{3.31} ($\star\star$) For large $m$, the von Mises distribution (3.129) becomes sharply peaked around the mode $\theta_0$. By defining $\xi = m^{1/2}(\theta - \theta_0)$ and taking the Taylor expansion of the cosine function given by
+\begin{equation}
+\cos \alpha = 1 - \frac{\alpha^2}{2} + O(\alpha^4) \tag{3.217}
+\end{equation}
+show that as $m \to \infty$, the von Mises distribution tends to a Gaussian.
+
+\textbf{3.31} ($\star\star$) 对于大的$m$，冯·米塞斯分布(3.129)在众数$\theta_0$附近变得非常尖锐。通过定义$\xi = m^{1/2}(\theta - \theta_0)$并对余弦函数进行泰勒展开
+\begin{equation}
+\cos \alpha = 1 - \frac{\alpha^2}{2} + O(\alpha^4) \tag{3.217}
+\end{equation}
+证明当$m \to \infty$时，冯·米塞斯分布趋向于一个高斯分布。
+
+\textbf{3.32} ($\star$) Using the trigonometric identity (3.133), show that solution of (3.132) for $\theta_0$ is given by (3.134).
+
+\textbf{3.32} ($\star$) 利用三角恒等式(3.133)，证明(3.132)关于$\theta_0$的解由(3.134)给出。
+
+\textbf{3.33} ($\star$) By computing the first and second derivatives of the von Mises distribution (3.129), and using $I_0(m) > 0$ for $m > 0$, show that the maximum of the distribution occurs when $\theta = \theta_0$ and that the minimum occurs when $\theta = \theta_0 + \pi \pmod{2\pi}$.
+
+\textbf{3.33} ($\star$) 通过计算冯·米塞斯分布(3.129)的一阶和二阶导数，并利用当$m>0$时$I_0(m)>0$，证明分布的最大值出现在$\theta = \theta_0$时，最小值出现在$\theta = \theta_0 + \pi \pmod{2\pi}$时。
+
+\textbf{3.34} ($\star$) By making use of the result (3.118) together with (3.134) and the trigonometric identity (3.128), show that the maximum likelihood solution $m_{\text{ML}}$ for the concentration of the von Mises distribution satisfies $A(m_{\text{ML}}) = \bar{r}$ where $\bar{r}$ is the radius of the mean of the observations viewed as unit vectors in the two-dimensional Euclidean plane, as illustrated in Figure 3.9.
+
+\textbf{3.34} ($\star$) 利用结果(3.118)以及(3.134)和三角恒等式(3.128)，证明冯·米塞斯分布集中度的最大似然解$m_{\text{ML}}$满足$A(m_{\text{ML}}) = \bar{r}$，其中$\bar{r}$是将观测值视为二维欧几里得平面中的单位向量时，其均值的半径，如图3.9所示。
+
+\textbf{3.35} ($\star$) Verify that the multivariate Gaussian distribution can be cast in exponential family form (3.138), and derive expressions for $\boldsymbol{\eta}$, $\mathbf{u}(\mathbf{x})$, $h(\mathbf{x})$, and $g(\boldsymbol{\eta})$ analogous to (3.164) to (3.167).
+
+\textbf{3.35} ($\star$) 验证多元高斯分布可以写成指数族形式(3.138)，并推导出类似于(3.164)到(3.167)的$\boldsymbol{\eta}$、$\mathbf{u}(\mathbf{x})$、$h(\mathbf{x})$和$g(\boldsymbol{\eta})$的表达式。
+
+\textbf{3.36} ($\star$) The result (3.172) showed that the negative gradient of $\ln g(\boldsymbol{\eta})$ for the exponential family is given by the expectation of $\mathbf{u}(\mathbf{x})$. By taking the second derivatives of (3.139), show that
+\begin{equation}
+-\nabla\nabla \ln g(\boldsymbol{\eta}) = \mathbb{E}[\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x})^\mathrm{T}] - \mathbb{E}[\mathbf{u}(\mathbf{x})]\mathbb{E}[\mathbf{u}(\mathbf{x})^\mathrm{T}] = \text{cov}[\mathbf{u}(\mathbf{x})]. \tag{3.218}
+\end{equation}
+
+\textbf{3.36} ($\star$) 结果(3.172)表明，对于指数族，$\ln g(\boldsymbol{\eta})$的负梯度由$\mathbf{u}(\mathbf{x})$的期望给出。通过对(3.139)取二阶导数，证明
+\begin{equation}
+-\nabla\nabla \ln g(\boldsymbol{\eta}) = \mathbb{E}[\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x})^\mathrm{T}] - \mathbb{E}[\mathbf{u}(\mathbf{x})]\mathbb{E}[\mathbf{u}(\mathbf{x})^\mathrm{T}] = \text{cov}[\mathbf{u}(\mathbf{x})]. \tag{3.218}
+\end{equation}
+
+\textbf{3.37} ($\star\star$) Consider a histogram-like density model in which the space $\mathbf{x}$ is divided into fixed regions for which the density $p(\mathbf{x})$ takes the constant value $h_i$ over the $i$th region. The volume of region $i$ is denoted $\Delta_i$. Suppose we have a set of $N$ observations of $\mathbf{x}$ such that $n_i$ of these observations fall in region $i$. Using a Lagrange multiplier to enforce the normalization constraint on the density, derive an expression for the maximum likelihood estimator for the $\{h_i\}$.
+
+\textbf{3.37} ($\star\star$) 考虑一个直方图式的密度模型，其中空间$\mathbf{x}$被划分为固定的区域，密度$p(\mathbf{x})$在第$i$个区域上取常数值$h_i$。区域$i$的体积记为$\Delta_i$。假设我们有一组$N$个关于$\mathbf{x}$的观测值，其中有$n_i$个观测值落在区域$i$中。使用拉格朗日乘子来强制执行密度的归一化约束，推导出$\{h_i\}$的最大似然估计量的表达式。
+
+\textbf{3.38} ($\star$) Show that the $K$-nearest-neighbour density model defines an improper distribution whose integral over all space is divergent.
+
+\textbf{3.38} ($\star$) 证明$K$近邻密度模型定义了一个非正常分布，其在整个空间上的积分是发散的。
+
+\end{document}

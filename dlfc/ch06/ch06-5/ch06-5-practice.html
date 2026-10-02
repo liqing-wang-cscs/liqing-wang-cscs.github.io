@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第6章第5节：混合密度网络 (MDN) 自测题</title>
+    <!-- MathJax Configuration -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .option {
+            margin: 10px 0;
+        }
+        .option input[type="radio"] {
+            margin-right: 8px;
+        }
+        .option label {
+            cursor: pointer;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>第6章第5节：混合密度网络 (MDN) 自测题</h1>
+<p>请选择最合适的答案。</p>
+
+<div class="question-container">
+    <div class="question-text">1. 混合密度网络 (MDN) 主要用于解决什么类型的问题？</div>
+    <div class="option">
+        <input type="radio" id="q1a" name="q1" value="A">
+        <label for="q1a">A. 简单的线性回归问题</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1b" name="q1" value="B">
+        <label for="q1b">B. 输出分布为单峰高斯的分类问题</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1c" name="q1" value="C">
+        <label for="q1c">C. 输出分布可能为多峰的条件概率建模问题</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q1d" name="q1" value="D">
+        <label for="q1d">D. 无监督聚类问题</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q1', 'C')">提交</button>
+    <div class="result" id="result-q1"></div>
+    <div class="explanation" id="explanation-q1">
+        <strong>解析：</strong>根据教材6.5节引言，MDN的核心目的是解决标准神经网络难以处理的、输出为非高斯（尤其是多峰）分布的条件概率 \(p(\mathbf{t}|\mathbf{x})\) 建模问题。例如在机器人逆运动学中，一个末端位置可能对应多个关节角度，导致输出分布多峰。因此C是正确的。A和B描述的是可以用标准网络较好解决的简单问题。D描述的是无监督学习，而MDN通常是监督学习。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">2. 在MDN中，神经网络的输出通常被用来表示高斯混合模型的哪些参数？</div>
+    <div class="option">
+        <input type="radio" id="q2a" name="q2" value="A">
+        <label for="q2a">A. 仅均值 \(\boldsymbol{\mu}_k(\mathbf{x})\)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2b" name="q2" value="B">
+        <label for="q2b">B. 仅方差 \(\sigma_k^2(\mathbf{x})\)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2c" name="q2" value="C">
+        <label for="q2c">C. 仅混合系数 \(\pi_k(\mathbf{x})\)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q2d" name="q2" value="D">
+        <label for="q2d">D. 混合系数 \(\pi_k(\mathbf{x})\)、均值 \(\boldsymbol{\mu}_k(\mathbf{x})\) 和方差 \(\sigma_k^2(\mathbf{x})\)</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q2', 'D')">提交</button>
+    <div class="result" id="result-q2"></div>
+    <div class="explanation" id="explanation-q2">
+        <strong>解析：</strong>根据教材6.5.2节，MDN的神经网络输出被设计来决定高斯混合模型的所有关键参数。具体来说，网络输出一部分用于计算混合系数 \(\pi_k\)（通过Softmax），一部分用于计算均值 \(\boldsymbol{\mu}_k\)（通常通过线性激活），还有一部分用于计算方差 \(\sigma_k^2\)（通常通过指数激活保证正值）。因此，D选项完整且正确地描述了这一点。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">3. 为什么在MDN中，混合系数 \(\pi_k(\mathbf{x})\) 通常使用Softmax激活函数？</div>
+    <div class="option">
+        <input type="radio" id="q3a" name="q3" value="A">
+        <label for="q3a">A. 因为它计算速度快</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3b" name="q3" value="B">
+        <label for="q3b">B. 因为它能确保 \(\sum_{k=1}^{K} \pi_k(\mathbf{x}) = 1\) 且 \(0 \leq \pi_k(\mathbf{x}) \leq 1\)</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3c" name="q3" value="C">
+        <label for="q3c">C. 因为它能防止过拟合</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q3d" name="q3" value="D">
+        <label for="q3d">D. 因为它是非线性的</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q3', 'B')">提交</button>
+    <div class="result" id="result-q3"></div>
+    <div class="explanation" id="explanation-q3">
+        <strong>解析：</strong>根据教材6.5.2节公式(6.39)和(6.40)，混合系数 \(\pi_k\) 在概率论中有严格的约束条件：它们必须是非负的，并且总和为1。Softmax函数的性质恰好能满足这些约束。对于输入向量 \(\mathbf{z} = [a_1^\pi, ..., a_K^\pi]\)，Softmax输出 \(\pi_k = \frac{\exp(a_k^\pi)}{\sum_l \exp(a_l^\pi)}\)，这个值总是正的，且所有 \(\pi_k\) 的和为1。因此B是正确答案。其他选项不是使用Softmax的主要原因。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">4. 对于机器人逆运动学这类逆问题，为什么传统的最小二乘法（假设高斯噪声）效果可能很差？</div>
+    <div class="option">
+        <input type="radio" id="q4a" name="q4" value="A">
+        <label for="q4a">A. 因为计算量太大</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4b" name="q4" value="B">
+        <label for="q4b">B. 因为输出分布往往是多峰的，而最小二乘法预测的是条件均值，无法代表多峰分布</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4c" name="q4" value="C">
+        <label for="q4c">C. 因为最小二乘法不能处理连续变量</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q4d" name="q4" value="D">
+        <label for="q4d">D. 因为它只适用于线性系统</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q4', 'B')">提交</button>
+    <div class="result" id="result-q4"></div>
+    <div class="explanation" id="explanation-q4">
+        <strong>解析：</strong>根据教材6.5.1节中的机器人学例子，逆问题的一个关键特征是存在一对多的映射关系（一个末端位置对应多个关节角度）。这意味着真实的条件分布 \(p(\mathbf{t}|\mathbf{x})\) 是多峰的。最小二乘法本质上是在寻找条件均值 \(\mathbb{E}[\mathbf{t}|\mathbf{x}]\)，这在多峰分布中可能是一个没有实际意义的值（例如，位于两个峰值之间的低概率区域）。MDN能够建模整个分布，从而更好地处理这种情况。因此B是正确的。A、C、D都不是主要原因。
+    </div>
+</div>
+
+<div class="question-container">
+    <div class="question-text">5. MDN的训练目标（损失函数）是什么？</div>
+    <div class="option">
+        <input type="radio" id="q5a" name="q5" value="A">
+        <label for="q5a">A. 最小化预测值与真实值的平方误差</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5b" name="q5" value="B">
+        <label for="q5b">B. 最大化预测分布对真实样本的似然</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5c" name="q5" value="C">
+        <label for="q5c">C. 最小化预测分布对真实样本的负对数似然</label>
+    </div>
+    <div class="option">
+        <input type="radio" id="q5d" name="q5" value="D">
+        <label for="q5d">D. B和C都是正确的</label>
+    </div>
+    <button class="submit-btn" onclick="checkAnswer('q5', 'D')">提交</button>
+    <div class="result" id="result-q5"></div>
+    <div class="explanation" id="explanation-q5">
+        <strong>解析：</strong>根据教材6.5.2节公式(6.43)，MDN的训练目标是最小化负对数似然函数 \(E(\mathbf{w}) = -\sum_{n=1}^{N} \ln \left\{ \sum_{k=1}^{K} \pi_k(\mathbf{x}_n,\mathbf{w}) \,\mathcal{N}\left(\mathbf{t}_n \big| \boldsymbol{\mu}_k(\mathbf{x}_n,\mathbf{w}), \sigma_k^2(\mathbf{x}_n,\mathbf{w}) \right) \right\}\)。最小化负对数似然等价于最大化对数似然，也等价于最大化似然。因此，选项B（最大化似然）和C（最小化负对数似然）都正确地描述了训练目标。D选项包含了B和C，所以D是最终的正确答案。A是传统最小二乘法的目标，不适用于MDN。
+    </div>
+</div>
+
+<script>
+    function checkAnswer(questionName, correctValue) {
+        const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+        const resultDiv = document.getElementById(`result-${questionName}`);
+        const explanationDiv = document.getElementById(`explanation-${questionName}`);
+
+        if (!selectedOption) {
+            alert("请选择一个答案！");
+            return;
+        }
+
+        const userChoice = selectedOption.value;
+
+        if (userChoice === correctValue) {
+            resultDiv.textContent = "正确！";
+            resultDiv.className = "result correct";
+        } else {
+            resultDiv.textContent = `错误。正确答案是 ${correctValue}。`;
+            resultDiv.className = "result incorrect";
+        }
+        
+        resultDiv.style.display = "block";
+        explanationDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

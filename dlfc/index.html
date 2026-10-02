@@ -352,6 +352,40 @@
             font-style: italic;
         }
 
+        /* ===== PDF 显示 ===== */
+        .pdf-container {
+            width: 100%;
+            height: calc(100vh - 220px);
+            min-height: 600px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .pdf-fallback {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .pdf-fallback a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .pdf-fallback a:hover {
+            text-decoration: underline;
+        }
+
         /* ===== 右侧栏 (小节目录) ===== */
         .sidebar-right {
             width: 240px;
@@ -460,6 +494,10 @@
             }
             .main-content {
                 padding: 1.2rem;
+            }
+            .pdf-container {
+                height: calc(100vh - 300px);
+                min-height: 400px;
             }
         }
 
@@ -575,8 +613,8 @@
 <script>
     (function() {
         // ==============================================================
-        // 1. 课程数据 —— 支持 HTML 和 Markdown 文件
-        //    type: 'html' 或 'md'，默认 'html'
+        // 1. 课程数据 —— 支持 HTML / Markdown / PDF 文件
+        //    type: 'html' | 'md' | 'pdf'，默认 'html'
         //    type: 'group' 表示这是一个可展开的父节点
         // ==============================================================
         const courseData = [
@@ -594,45 +632,46 @@
                 id: 'ch2',
                 title: '第二章 · 概率',
                 sections: [
-                    { id: 'ch2s1', title: '2.1 ', file: 'ch2/ch2-1/ch2-1.md', type: 'md' },
-                    { id: 'ch2s2', title: '2.2 ', file: 'ch2/ch2-2/ch2-2.md', type: 'md' },
-                    { id: 'ch2s3', title: '2.3 ', file: 'ch2/ch2-3/ch2-3.md', type: 'md' }
+                    { id: 'ch2s1', title: '2.1 思维导图', file: 'ch02/ch02-graph.pdf', type: 'pdf' },
+                    { id: 'ch2s2', title: '2.2 幻灯片', file: 'ch02/ch02-slides-v2.pdf', type: 'pdf' },
+                    { id: 'ch2s3', title: '2.3 案例分析', file: 'ch02/ch02-case-study.pdf', type: 'pdf' },
+                    { id: 'ch2s4', title: '2.4 练习题幻灯片', file: 'ch02/ch02-slides-v3.pdf', type: 'pdf' },
+                    { id: 'ch2s5', title: '2.5 练习题打印版', file: 'ch02/ch02-ten-exercise.pdf', type: 'pdf' }
                 ]
             },
             {
                 id: 'ch3',
                 title: '第三章 · 标准分布',
                 sections: [
-                    { id: 'ch3s1', title: '3.1 ', file: 'ch3/ch3-1/ch3-1.md', type: 'md' },
-                    { id: 'ch3s2', title: '3.2 ', file: 'ch3/ch3-2/ch3-2.md', type: 'md' },
-                    { id: 'ch3s3', title: '3.3 ', file: 'ch3/ch3-3/ch3-3.md', type: 'md' }
+                    { id: 'ch3s1', title: '3.1 思维导图', file: 'ch03/ch03-graph.pdf', type: 'pdf' },
+                    { id: 'ch3s2', title: '3.2 幻灯片带习题', file: 'ch03/ch03-slides-with-exercise.pdf', type: 'pdf' }
                 ]
             },
             {
                 id: 'ch4',
                 title: '第四章 · 单层网络-回归',
                 sections: [
-                    { id: 'ch4s1', title: '4.1 ', file: 'ch4/ch4-1/ch4-1.md', type: 'md' },
-                    { id: 'ch4s2', title: '4.2 ', file: 'ch4/ch4-2/ch4-2.md', type: 'md' },
-                    { id: 'ch4s3', title: '4.3 ', file: 'ch4/ch4-3/ch4-3.md', type: 'md' }
+                    { id: 'ch4s1', title: '4.1 思维导图', file: 'ch04/ch04-graph.pdf', type: 'pdf' },
+                    { id: 'ch4s2', title: '4.2 幻灯片', file: 'ch04/ch04-slides-v2.pdf', type: 'pdf' },
+                    { id: 'ch4s3', title: '4.2 练习题打印版', file: 'ch04/ch04-five-exercise.pdf', type: 'pdf' }
                 ]
             },
             {
                 id: 'ch5',
                 title: '第五章 · 单层网络-分类',
                 sections: [
-                    { id: 'ch5s1', title: '5.1 ', file: 'ch5/ch5-1/ch5-1.md', type: 'md' },
-                    { id: 'ch5s2', title: '5.2 ', file: 'ch5/ch5-2/ch5-2.md', type: 'md' },
-                    { id: 'ch5s3', title: '5.3 ', file: 'ch5/ch5-3/ch5-3.md', type: 'md' }
+                    { id: 'ch5s1', title: '5.2 决策理论思维导图', file: 'ch05/ch05-2-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s2', title: '5.3 生成式分类器思维导图', file: 'ch05/ch05-3-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s3', title: '5.4 判别分类器思维导图', file: 'ch05/ch05-4-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s4', title: '第五章幻灯片 ', file: 'ch05/ch05-slides.pdf', type: 'pdf' },
                 ]
             },
             {
                 id: 'ch6',
                 title: '第六章 · 深度神经网络',
                 sections: [
-                    { id: 'ch6s1', title: '6.1 ', file: 'ch6/ch6-1/ch6-1.md', type: 'md' },
-                    { id: 'ch6s2', title: '6.2 ', file: 'ch6/ch6-2/ch6-2.md', type: 'md' },
-                    { id: 'ch6s3', title: '6.3 ', file: 'ch6/ch6-3/ch6-3.md', type: 'md' }
+                    { id: 'ch6s1a', title: '6.1 幻灯片', file: 'ch06/ch06-1/ch06-1-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s1b', title: '6.1 练习题', file: 'ch06/ch06-1/ch06-1-practice-v2.html', type: 'html' }
                 ]
             },
             {
@@ -787,7 +826,9 @@
                         html += `<div class="section-children" data-group-id="${section.id}">`;
                         (section.children || []).forEach(child => {
                             const childActive = (currentSectionId === child.id) ? 'active' : '';
-                            const typeLabel = child.type === 'md' ? ' 📝' : ' 📄';
+                            const typeLabel =
+                                child.type === 'md' ? ' 📝' :
+                                child.type === 'pdf' ? ' 📕' : ' 📄';
                             html += `<div class="section-item section-child ${childActive}" 
                                           data-section-id="${child.id}" 
                                           data-chapter-id="${chapId}">`;
@@ -799,7 +840,9 @@
                     } else {
                         // ===== 普通节 =====
                         const activeClass = (currentSectionId === section.id) ? 'active' : '';
-                        const typeLabel = section.type === 'md' ? ' 📝' : ' 📄';
+                        const typeLabel =
+                            section.type === 'md' ? ' 📝' :
+                            section.type === 'pdf' ? ' 📕' : ' 📄';
                         html += `<div class="section-item ${activeClass}" 
                                       data-section-id="${section.id}" 
                                       data-chapter-id="${chapId}">`;
@@ -854,7 +897,7 @@
         }
 
         // ==============================================================
-        // 3. 从外部文件加载节内容 (支持 HTML 和 Markdown)
+        // 3. 从外部文件加载节内容 (支持 HTML / Markdown / PDF)
         // ==============================================================
         function loadSectionFromFile(sectionId) {
             const section = sectionMap[sectionId];
@@ -880,7 +923,32 @@
                 return;
             }
 
-            // 使用 fetch 加载文件
+            const fileType = section.fileType || section.type || 'html';
+
+            // ==============================================================
+            // PDF 分支：直接用 iframe 嵌入，不走 fetch
+            // ==============================================================
+            if (fileType === 'pdf') {
+                contentArea.innerHTML = `
+                    <div class="pdf-container">
+                        <iframe src="${filePath}" class="pdf-viewer" title="${section.title}"></iframe>
+                    </div>
+                    <div class="pdf-fallback">
+                        📄 若 PDF 无法显示，请
+                        <a href="${filePath}" target="_blank" rel="noopener">在新标签页中打开</a>
+                    </div>
+                `;
+                // PDF 没有 HTML 标题，右侧目录显示提示
+                tocContainer.innerHTML = `<div class="toc-empty">📄 PDF 文件无目录</div>`;
+                if (history.pushState) {
+                    history.pushState(null, '', '#' + sectionId);
+                }
+                return;
+            }
+
+            // ==============================================================
+            // HTML / Markdown 分支：使用 fetch 加载
+            // ==============================================================
             fetch(filePath)
                 .then(response => {
                     if (!response.ok) {
@@ -890,9 +958,6 @@
                 })
                 .then(content => {
                     let htmlContent = content;
-
-                    // 根据 type 字段决定如何渲染
-                    const fileType = section.type || 'html'; // 默认为 html
 
                     if (fileType === 'md') {
                         // --- 第一步：保护公式 ---

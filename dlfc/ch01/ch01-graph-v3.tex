@@ -1,0 +1,114 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm, % 节点间距
+    every node/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45, 
+        text = white, 
+        font = \sffamily\bfseries\large, 
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle % 中心设为圆形
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries, 
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 1.6cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->, 
+        thick, 
+        >=stealth, 
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {人工智能 \\ Artificial \\ Intelligence};
+
+    % ================= 2. 上方分支：核心子领域 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (subfields) {核心子领域 \\ Sub-fields};
+    
+    \node[subNode, above left=of subfields] (ml) {机器学习 \\ Machine Learning};
+    \node[subNode, above=of subfields] (dl) {深度学习 \\ Deep Learning};
+    \node[subNode, above right=of subfields] (rl) {强化学习 \\ Reinforcement Learning};
+    \node[subNode, right=of subfields, yshift=0cm] (expert) {专家系统 \\ Expert Systems};
+
+    % ================= 3. 右侧分支：关键技术/应用 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (tech) {关键技术与应用 \\ Tech \& Apps};
+    
+    \node[subNode, above right=of tech] (nlp) {自然语言处理 \\ NLP / LLM};
+    \node[subNode, right=of tech] (cv) {计算机视觉 \\ Computer Vision};
+    \node[subNode, below right=of tech] (robot) {机器人技术 \\ Robotics};
+    \node[subNode, below=of tech, yshift=0cm] (speech) {音频处理 \\ Audio AI};
+
+    % ================= 4. 下方分支：基础支撑 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (foundation) {基础支撑 \\ Foundations};
+    
+    \node[subNode, below left=of foundation] (data) {大数据 \\ Big Data};
+    \node[subNode, below=of foundation] (compute) {算力硬件 \\ GPU/TPU};
+    \node[subNode, below right=of foundation] (algo) {数学算法 \\ Math Algorithm};
+    \node[subNode, left=of foundation, yshift=0cm] (cloud) {云计算 \\ Cloud};
+
+    % ================= 5. 左侧分支：伦理与未来 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (ethics) {伦理与未来 \\ Ethics \& Future};
+    
+    \node[subNode, above left=of ethics] (agi) {通用人工智能 \\ AGI};
+    \node[subNode, left=of ethics] (safety) {AI 安全 \\ AI Safety};
+    \node[subNode, below left=of ethics] (law) {法律与伦理 \\ Law \& Ethics};
+    \node[subNode, above=of ethics, yshift=-0.3cm] (human) {人机协作 \\ Human-AI};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (subfields);
+    \draw[arrowStyle, blue] (center) -- (tech);
+    \draw[arrowStyle, green!60!black] (center) -- (foundation);
+    \draw[arrowStyle, purple] (center) -- (ethics);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (subfields) -- (ml);
+    \draw[arrowStyle, red!60] (subfields) -- (dl);
+    \draw[arrowStyle, red!60] (subfields) -- (rl);
+    \draw[arrowStyle, red!60] (subfields) -- (expert);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (tech) -- (nlp);
+    \draw[arrowStyle, blue!60] (tech) -- (cv);
+    \draw[arrowStyle, blue!60] (tech) -- (robot);
+    \draw[arrowStyle, blue!60] (tech) -- (speech);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (foundation) -- (data);
+    \draw[arrowStyle, green!60!black] (foundation) -- (compute);
+    \draw[arrowStyle, green!60!black] (foundation) -- (algo);
+    \draw[arrowStyle, green!60!black] (foundation) -- (cloud);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (ethics) -- (agi);
+    \draw[arrowStyle, purple!60] (ethics) -- (safety);
+    \draw[arrowStyle, purple!60] (ethics) -- (law);
+    \draw[arrowStyle, purple!60] (ethics) -- (human);
+
+\end{tikzpicture}
+
+\end{document}

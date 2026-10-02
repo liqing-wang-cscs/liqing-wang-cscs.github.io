@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx, multirow}
+\usepackage[margin=1in]{geometry}
+\title{深度学习基础 - 概率 - 筛查案例}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{A medical screening example}
+
+Consider the problem of screening a population in order to provide early detection of cancer, and let us suppose that 1\% of the population actually have cancer. Ideally our test for cancer would give a positive result for anyone who has cancer and a negative result for anyone who does not. However, tests are not perfect, so we will suppose that when the test is given to people who are free of cancer, 3\% of them will test positive. These are known as \textit{false positives}. Similarly, when the test is given to people who do have cancer, 10\% of them will test negative. These are called \textit{false negatives}. The various error rates are illustrated in Figure 2.3.
+
+Given this information, we might ask the following questions: (1) 'If we screen the population, what is the probability that someone will test positive?', (2) 'If someone receives a positive test result, what is the probability that they actually have cancer?'. We could answer such questions by working through the cancer screening case in detail. Instead, however, we will pause our discussion of this specific example and first derive the general rules of probability, known as the \textit{sum rule of probability} and the \textit{product rule}. We will then illustrate the use of these rules by answering our two questions.
+
+\section{Medical screening revisited}
+
+Let us now return to our cancer screening example and apply the sum and product rules of probability to answer our two questions. For clarity, when working through this example, we will once again be explicit about distinguishing between the random variables and their instantiations. We will denote the presence or absence of cancer by the variable $C$, which can take two values: $C = 0$ corresponds to 'no cancer' and $C = 1$ corresponds to 'cancer'. We have assumed that one person in a hundred in the population has cancer, and so we have
+
+\begin{align}
+p(C=1) &= 1/100, \tag{2.12} \\
+p(C=0) &= 99/100, \tag{2.13}
+\end{align}
+
+respectively. Note that these satisfy $p(C=0)+p(C=1)=1$.
+
+Now let us introduce a second random variable $T$ representing the outcome of a screening test, where $T = 1$ denotes a positive result, indicative of cancer, and $T = 0$ a negative result, indicative of the absence of cancer. As illustrated in Figure 2.3, we know that for those who have cancer the probability of a positive test result is 90\%, while for those who do not have cancer the probability of a positive test result is 3\%. We can therefore write out all four conditional probabilities:
+
+\begin{align}
+p(T=1|C=1) &= 90/100 \tag{2.14} \\
+p(T=0|C=1) &= 10/100 \tag{2.15} \\
+p(T=1|C=0) &= 3/100 \tag{2.16} \\
+p(T=0|C=0) &= 97/100. \tag{2.17}
+\end{align}
+
+Again, note that these probabilities are normalized so that
+
+\begin{equation}
+p(T=1|C=1)+p(T=0|C=1)=1 \tag{2.18}
+\end{equation}
+
+and similarly
+
+\begin{equation}
+p(T=1|C=0)+p(T=0|C=0)=1. \tag{2.19}
+\end{equation}
+
+We can now use the sum and product rules of probability to answer our first question and evaluate the overall probability that someone who is tested at random will have a positive test result:
+
+\begin{align}
+p(T=1) &= p(T=1|C=0)p(C=0)+p(T=1|C=1)p(C=1) \notag \\
+&= \frac{3}{100}\times\frac{99}{100}+\frac{90}{100}\times\frac{1}{100}=\frac{387}{10,000}=0.0387. \tag{2.20}
+\end{align}
+
+We see that if a person is tested at random there is a roughly 4\% chance that the test will be positive even though there is a 1\% chance that they actually have cancer. From this it follows, using the sum rule, that $p(T=0)=1-387/10,000=9613/10,000=0.9613$ and, hence, there is a roughly 96\% chance that they do not have cancer.
+
+Now consider our second question, which is the one that is of particular interest to a person being screened: if a test is positive, what is the probability that the person has cancer? This requires that we evaluate the probability of cancer conditional on the outcome of the test, whereas the probabilities in (2.14) to (2.17) give the probability distribution over the test outcome conditioned on whether the person has cancer. We can solve the problem of reversing the conditional probability by using Bayes' theorem (2.10) to give
+
+\begin{align}
+p(C=1|T=1) &= \frac{p(T=1|C=1)p(C=1)}{p(T=1)} \tag{2.21} \\
+&= \frac{90}{100}\times\frac{1}{100}\times\frac{10,000}{387}=\frac{90}{387}\simeq 0.23 \tag{2.22}
+\end{align}
+
+so that if a person is tested at random and the test is positive, there is a 23\% probability that they actually have cancer. From the sum rule, it then follows that $p(C=0|T=1)=1-90/387=297/387\simeq 0.77$, which is a 77\% chance that they do not have cancer.
+
+
+%% 中文翻译 %%
+
+\section{一个医学筛查的例子}
+
+考虑对人群进行筛查以便早期发现癌症的问题，假设人群中实际有1\%的人患有癌症。理想情况下，我们的癌症检测应该给任何患癌的人一个阳性结果，给任何未患癌的人一个阴性结果。然而，测试并不完美，所以我们假设当测试给予没有癌症的人时，他们中有3\%会测出阳性。这些被称为\textit{假阳性}。同样地，当测试给予确实患有癌症的人时，他们中有10\%会测出阴性。这些被称为\textit{假阴性}。各种错误率在图2.3中进行了说明。
+
+根据这些信息，我们可能会问以下问题：(1) ‘如果我们筛查整个人群，有人测出阳性的概率是多少？’，(2) ‘如果有人收到阳性检测结果，他们实际患有癌症的概率是多少？’。我们可以通过详细研究癌症筛查案例来回答这些问题。然而，我们将暂停对这个具体例子的讨论，首先推导出概率的一般规则，即\textit{概率求和法则}和\textit{乘积法则}。然后，我们将通过回答这两个问题来说明这些规则的用法。
+
+\section{重新审视医学筛查}
+
+现在让我们回到我们的癌症筛查例子，并应用概率的求和与乘积法则来回答我们的两个问题。为了清晰起见，在研究这个例子时，我们将再次明确区分随机变量及其实例化。我们将用变量 $C$ 表示癌症的存在或不存在，它可以取两个值：$C = 0$ 对应‘无癌症’，$C = 1$ 对应‘有癌症’。我们假设人群中每百人中有一人患有癌症，因此我们有
+
+\begin{align}
+p(C=1) &= 1/100, \tag{2.12} \\
+p(C=0) &= 99/100, \tag{2.13}
+\end{align}
+
+分别如此。请注意，这些满足 $p(C=0)+p(C=1)=1$。
+
+现在让我们引入第二个随机变量 $T$ 来表示筛查测试的结果，其中 $T = 1$ 表示阳性结果，表明存在癌症，而 $T = 0$ 表示阴性结果，表明没有癌症。如图2.3所示，我们知道对于那些患有癌症的人来说，阳性测试结果的概率是90\%，而对于那些没有癌症的人来说，阳性测试结果的概率是3\%。因此，我们可以写出所有四个条件概率：
+
+\begin{align}
+p(T=1|C=1) &= 90/100 \tag{2.14} \\
+p(T=0|C=1) &= 10/100 \tag{2.15} \\
+p(T=1|C=0) &= 3/100 \tag{2.16} \\
+p(T=0|C=0) &= 97/100. \tag{2.17}
+\end{align}
+
+同样，请注意这些概率是归一化的，使得
+
+\begin{equation}
+p(T=1|C=1)+p(T=0|C=1)=1 \tag{2.18}
+\end{equation}
+
+并且类似地
+
+\begin{equation}
+p(T=1|C=0)+p(T=0|C=0)=1. \tag{2.19}
+\end{equation}
+
+我们现在可以使用概率的求和与乘积法则来回答我们的第一个问题，并评估一个被随机测试的人得到阳性测试结果的总概率：
+
+\begin{align}
+p(T=1) &= p(T=1|C=0)p(C=0)+p(T=1|C=1)p(C=1) \notag \\
+&= \frac{3}{100}\times\frac{99}{100}+\frac{90}{100}\times\frac{1}{100}=\frac{387}{10,000}=0.0387. \tag{2.20}
+\end{align}
+
+我们看到，如果一个人被随机测试，即使他们实际患有癌症的几率只有1\%，测试结果呈阳性的几率也大约为4\%。由此可知，利用求和法则，$p(T=0)=1-387/10,000=9613/10,000=0.9613$，因此，他们没有患癌症的几率大约为96\%。
+
+现在考虑我们的第二个问题，这是对被筛查者特别感兴趣的一个问题：如果测试结果是阳性，那么这个人患有癌症的概率是多少？这需要我们评估在测试结果条件下患癌症的概率，而(2.14)到(2.17)中的概率给出了在该人是否患有癌症的条件下测试结果的概率分布。我们可以通过使用贝叶斯定理 (2.10) 来解决逆转条件概率的问题，从而得到
+
+\begin{align}
+p(C=1|T=1) &= \frac{p(T=1|C=1)p(C=1)}{p(T=1)} \tag{2.21} \\
+&= \frac{90}{100}\times\frac{1}{100}\times\frac{10,000}{387}=\frac{90}{387}\simeq 0.23 \tag{2.22}
+\end{align}
+
+因此，如果一个人被随机测试且测试结果为阳性，那么他们实际患有癌症的概率为23\%。根据求和法则，可以得出 $p(C=0|T=1)=1-90/387=297/387\simeq 0.77$，这意味着他们有77\%的几率没有患癌症。
+
+\section{医学筛查案例的混淆矩阵}
+
+以下是根据这个医学筛查案例构建的混淆矩阵（Confusion Matrix）。该矩阵基于以下设定：
+
+总人群：10,000 人（便于计算）
+
+癌症患病率：1\% → 100 人有癌，9,900 人无癌
+
+真阳性率（灵敏度）：90\% → 有癌者中 90\% 测出阳性 → 90 人
+
+假阴性率：10\% → 有癌者中 10\% 测出阴性 → 10 人
+
+假阳性率：3\% → 无癌者中 3\% 测出阳性 → 297 人
+
+真阴性率：97\% → 无癌者中 97\% 测出阴性 → 9,603 人
+
+\begin{table}[ht]
+\centering
+\caption{医学筛查混淆矩阵（基于10,000人样本）}
+\label{tab:confusion_matrix}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{} & \multicolumn{2}{c|}{\textbf{实际状态}} \\ \cline{3-4} 
+\multicolumn{2}{|c|}{} & \textbf{患癌 (C=1)} & \textbf{未患癌 (C=0)} \\ \hline
+\multirow{2}{*}{\textbf{测试结果}} & \textbf{阳性 (T=1)} & 真阳性 (TP) = 90 & 假阳性 (FP) = 297 \\ \cline{2-4} 
+& \textbf{阴性 (T=0)} & 假阴性 (FN) = 10 & 真阴性 (TN) = 9603 \\ \hline
+\end{tabular}
+\end{table}
+
+\end{document}

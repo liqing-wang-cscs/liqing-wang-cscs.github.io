@@ -1,0 +1,104 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex,tikz}
+% 引入 positioning 库以便使用 "above of=", "right of=" 等简单定位语法
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局样式定义
+    node distance = 1.5cm and 1.2cm, % 节点之间的垂直和水平距离
+    box/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    % mainNode/.style = {
+    %     fill = blue!15, 
+    %     text = black, 
+    %     font = \sffamily\bfseries\large, 
+    %     line width = 2pt,
+    %     minimum size = 2.5cm,
+    %     circle % 中心设为圆形
+    % },
+    mainNode/.style = {
+        box, 
+        fill = blue!10, 
+        text width = 2.5cm, 
+        font = \sffamily\bfseries\normalsize,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        box, 
+        fill = white,
+        % text width = 1.8cm
+        font = \sffamily\small,
+    },
+    arrow/.style = {
+        ->, 
+        thick, 
+        >=stealth
+    }
+]
+
+    % --- 1. 核心节点 ---
+    \node[mainNode] (center) {深度学习 \\ Deep Learning};
+
+    % --- 2. 上方分支：核心架构 ---
+    \node[box, fill=red!10, above=of center] (archTitle) {核心架构};
+    \node[subNode, above left=of archTitle] (cnn) {CNN \\ 卷积网络};
+    \node[subNode, above=of archTitle] (rnn) {RNN/LSTM \\ 循环网络};
+    \node[subNode, above right=of archTitle] (trans) {Transformer \\ 注意力机制};
+    
+    % --- 3. 右侧分支：应用领域 ---
+    \node[box, fill=green!10, right=of center] (appTitle) {应用领域};
+    \node[subNode, above right=of appTitle] (cv) {计算机视觉 \\ CV};
+    \node[subNode, right=of appTitle] (nlp) {自然语言处理 \\ NLP};
+    \node[subNode, below right=of appTitle] (rec) {音频处理 \\ Audio AI};
+
+    % --- 4. 下方分支：优化训练 ---
+    \node[box, fill=orange!10, below=of center] (optTitle) {优化与训练};
+    \node[subNode, below left=of optTitle] (bp) {反向传播};
+    \node[subNode, below=of optTitle] (adam) {优化器 \\ Adam/SGD};
+    \node[subNode, below right=of optTitle] (drop) {Dropout \\ 正则化};
+
+    % --- 5. 左侧分支：数学基础 ---
+    \node[box, fill=purple!10, left=of center] (mathTitle) {数学基础};
+    \node[subNode, above left=of mathTitle] (linear) {线性代数};
+    \node[subNode, left=of mathTitle] (calc) {微积分};
+    \node[subNode, below left=of mathTitle] (prob) {概率统计};
+
+    % --- 绘制连线 ---
+    % 中心到四大分支标题
+    \draw[arrow] (center) -- (archTitle);
+    \draw[arrow] (center) -- (appTitle);
+    \draw[arrow] (center) -- (optTitle);
+    \draw[arrow] (center) -- (mathTitle);
+
+    % 分支标题到子节点 (上方)
+    \draw[arrow] (archTitle) -- (cnn);
+    \draw[arrow] (archTitle) -- (rnn);
+    \draw[arrow] (archTitle) -- (trans);
+
+    % 分支标题到子节点 (右侧)
+    \draw[arrow] (appTitle) -- (cv);
+    \draw[arrow] (appTitle) -- (nlp);
+    \draw[arrow] (appTitle) -- (rec);
+
+    % 分支标题到子节点 (下方)
+    \draw[arrow] (optTitle) -- (bp);
+    \draw[arrow] (optTitle) -- (adam);
+    \draw[arrow] (optTitle) -- (drop);
+
+    % 分支标题到子节点 (左侧)
+    \draw[arrow] (mathTitle) -- (linear);
+    \draw[arrow] (mathTitle) -- (calc);
+    \draw[arrow] (mathTitle) -- (prob);
+
+\end{tikzpicture}
+
+\end{document}

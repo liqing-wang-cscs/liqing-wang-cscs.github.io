@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第4章-单层网络-回归-5个习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{4.1} $(\star)$ 考虑由
+\begin{equation}
+E(\mathbf{w}) = \frac{1}{2} \sum\limits_{n=1}^{N} \left[ y(x_n,\mathbf{w})-t_n \right]^2
+\tag{1.2}
+\end{equation}
+给出的平方和误差函数，其中函数 $y(x, \mathbf{w})$ 由多项式
+\begin{equation}
+y(x, \mathbf{w}) = w_0 + w_1x_1 + w_2x^2 + \cdots + w_Mx^M 
+\tag{1.1}
+\end{equation}
+给出。证明最小化该误差函数的系数 $\mathbf{w} = \{w_i\}$ 由以下线性方程组的解给出：
+\begin{equation}
+\sum_{j=0}^{M} A_{ij} w_j = T_i \tag{4.53}
+\end{equation}
+其中
+\begin{equation}
+A_{ij} = \sum_{n=1}^{N} (x_n)^{i+j}, \qquad T_i = \sum_{n=1}^{N} (x_n)^i t_n. \tag{4.54}
+\end{equation}
+这里下标 $i$ 或 $j$ 表示分量的索引，而 $(x)^i$ 表示 $x$ 的 $i$ 次幂。
+
+
+\textbf{4.2} $(\star)$ 写出类似于
+\begin{equation}
+\sum_{j=0}^{M} A_{ij} w_j = T_i \tag{4.53}
+\end{equation}
+的一组耦合线性方程，这些方程由最小化误差函数
+\begin{equation}
+\tilde{E} (\mathbf{w}) = \frac{1}{2}\sum_{n=1}^{N} \left[ y(x_n,\mathbf{w})-t_n \right]^2 + \frac{\lambda}{2} \lVert \mathbf{w} \rVert^2
+\tag{1.4}
+\end{equation}
+中给出的正则化平方和误差函数的系数 $w_i$ 所满足。
+
+
+\textbf{4.4} $(\star\star\star)$ 证明矩阵
+\begin{equation}
+\boldsymbol{\Phi}(\boldsymbol{\Phi}^{\mathrm{T}}\boldsymbol{\Phi})^{-1}\boldsymbol{\Phi}^{\mathrm{T}} \tag{4.59}
+\end{equation}
+将任意向量 $\mathbf{v}$ 投影到由 $\boldsymbol{\Phi}$ 的列张成的空间上。利用此结果证明，最小二乘解
+\begin{equation}
+\mathbf{w}_{ML} = (\boldsymbol{\Phi}^{\mathrm{T}}\boldsymbol{\Phi})^{-1}\boldsymbol{\Phi}^{\mathrm{T}} \mathbf{t} \tag{4.14}
+\end{equation}
+对应于向量 $\mathbf{t}$ 到流形 $\mathcal{S}$ 上的正交投影，如图4.3所示。
+
+
+\textbf{4.8} $(\star)$ 考虑将单个目标变量 $t$ 的平方损失函数
+\begin{equation}
+\mathbb{E}[L(t, f(\mathbf{x}))] = \iint [f(\mathbf{x}) - t]^2 p(\mathbf{x}, t) \,\mathrm{d}\mathbf{x}\,\mathrm{d}t. \tag{4.35}
+\end{equation}
+推广到由向量 $\mathbf{t}$ 描述的多个目标变量，其形式为
+\begin{equation}
+\mathbb{E}[L(\mathbf{t}, \mathbf{f}(\mathbf{x}))] = \iint \lVert\mathbf{f}(\mathbf{x}) - \mathbf{t}\rVert^2 p(\mathbf{x}, \mathbf{t}) \,\mathrm{d}\mathbf{x}\,\mathrm{d}\mathbf{t}. \tag{4.64}
+\end{equation}
+使用变分法，证明使该期望损失最小化的函数 $\mathbf{f}(\mathbf{x})$ 由下式给出
+\begin{equation}
+\mathbf{f}(\mathbf{x}) = \mathbb{E}_{\mathbf{t}}[\mathbf{t}|\mathbf{x}]. \tag{4.65}
+\end{equation}
+
+
+\textbf{4.12} $(\star\star)$ 考虑在
+\begin{equation}
+\mathbb{E}[L_q] = \iint \lvert f(\mathbf{x}) - t\rvert^q p(\mathbf{x}, t) \,\mathrm{d}\mathbf{x}\,\mathrm{d}t. \tag{4.40}
+\end{equation}
+给出的 $L_q$ 损失函数下回归问题的期望损失。写出 $y(\mathbf{x})$ 必须满足以最小化 $\mathbb{E}[L_q]$ 的条件。证明，对于 $q = 1$，该解代表条件中位数，即函数 $y(\mathbf{x})$ 使得 $t < y(\mathbf{x})$ 的概率质量与 $t \ge y(\mathbf{x})$ 的概率质量相同。还证明，当 $q \to 0$ 时，最小期望 $L_q$ 损失由条件众数给出，即由函数 $y(\mathbf{x})$ 等于使每个 $\mathbf{x}$ 的 $p(t|\mathbf{x})$ 最大化的 $t$ 值给出。
+
+
+\end{document}

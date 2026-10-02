@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>第6章：深度神经网络、第4节：误差函数 - 自测题</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .option.correct {
+            background-color: #e8f5e8 !important; /* 淡绿色 */
+            border-color: #4CAF50 !important;
+        }
+        .option.incorrect {
+            background-color: #fdeeee !important; /* 淡红色 */
+            border-color: #f44336 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>第6章：深度神经网络、第4节：误差函数 - 自测题</h1>
+    <p class="instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+    
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+
+    <script>
+        // 转换后的题目数据 - 按照指定格式
+        const questions = [
+            {
+                id: 1,
+                topic: "回归问题",
+                question: "在神经网络解决回归问题时，最常用的输出单元激活函数是什么？",
+                options: {
+                    A: "Sigmoid函数",
+                    B: "恒等函数 (Identity)",
+                    C: "Softmax函数",
+                    D: "ReLU函数"
+                },
+                answer: "B",
+                explanation: "在回归问题中，网络的输出 \\( y(\\mathbf{x}, \\mathbf{w}) \\) 可以是任意实数值，用来预测连续的目标值 \\( t \\)。因此，最自然的激活函数是恒等函数 \\( y = a \\)，这样网络的原始输出 \\( a \\) 就直接作为最终输出。对应的误差函数是平方和误差。"
+            },
+            {
+                id: 2,
+                topic: "二分类问题",
+                question: "对于神经网络的二分类问题，与Sigmoid输出单元相匹配的标准误差函数是？",
+                options: {
+                    A: "平方和误差 (Sum-of-Squares)",
+                    B: "交叉熵 (Cross-Entropy)",
+                    C: "多类交叉熵 (Multi-class Cross-Entropy)",
+                    D: "Hinge Loss"
+                },
+                answer: "B",
+                explanation: "对于二分类，输出单元通常使用 Sigmoid 函数，其输出值在 \\( (0,1) \\) 之间，可以解释为属于正类的概率。从伯努利分布的最大似然推导出的负对数似然函数即为交叉熵误差函数：\\[ E(\\mathbf{w}) = -\\sum_{n} \\left\\{ t_n \\ln y_n + (1 - t_n) \\ln (1 - y_n) \\right\\}. \\]"
+            },
+            {
+                id: 3,
+                topic: "多分类问题",
+                question: "在多分类问题中，当使用1-of-K编码的目标向量时，输出层通常使用哪种激活函数？",
+                options: {
+                    A: "Sigmoid函数",
+                    B: "恒等函数 (Identity)",
+                    C: "Softmax函数",
+                    D: "Tanh函数"
+                },
+                answer: "C",
+                explanation: "在 \\( K \\) 类分类问题中，网络有 \\( K \\) 个输出单元。Softmax 函数能将 \\( K \\) 个原始输出值转化为一个有效的概率分布，使得所有输出值非负且总和为1，非常适合表示 \\( K \\) 个类别的概率。其公式为：\\[ y_k(\\mathbf{x}, \\mathbf{w}) = \\frac{\\exp(a_k(\\mathbf{x}, \\mathbf{w}))}{\\sum_j \\exp(a_j(\\mathbf{x}, \\mathbf{w}))}. \\]"
+            },
+            {
+                id: 4,
+                topic: "多分类误差函数",
+                question: "以下哪个误差函数最适合用于神经网络的多分类任务？",
+                options: {
+                    A: "\\( E(\\mathbf{w}) = \\frac{1}{2} \\sum_n \\{y_n - t_n\\}^2 \\)",
+                    B: "\\( E(\\mathbf{w}) = -\\sum_n \\left\\{ t_n \\ln y_n + (1 - t_n) \\ln (1 - y_n) \\right\\} \\)",
+                    C: "\\( E(\\mathbf{w}) = -\\sum_n \\sum_k t_{kn} \\ln y_k(\\mathbf{x}_n, \\mathbf{w}) \\)",
+                    D: "\\( E(\\mathbf{w}) = \\sum_n |y_n - t_n| \\)"
+                },
+                answer: "C",
+                explanation: "此公式是多类交叉熵误差函数的标准形式，与Softmax输出激活函数相匹配。其中 \\( t_{kn} \\) 是1-of-K编码的目标向量，\\( y_k \\) 是网络预测的第 \\( k \\) 类的概率。"
+            },
+            {
+                id: 5,
+                topic: "回归问题",
+                question: "关于回归问题的误差函数，以下哪项描述是正确的？",
+                options: {
+                    A: "它假设目标变量服从泊松分布",
+                    B: "它假设目标变量服从高斯分布",
+                    C: "它与Softmax激活函数配合使用",
+                    D: "它通常被称为交叉熵"
+                },
+                answer: "B",
+                explanation: "在回归分析中，一个常见的假设是目标值 \\( t \\) 由网络输出 \\( y(\\mathbf{x}, \\mathbf{w}) \\) 加上一个高斯噪声项构成，即 \\[ t \\sim \\mathcal{N}(y(\\mathbf{x}, \\mathbf{w}), \\sigma^2). \\]基于这个假设，通过最大化似然函数可以推导出平方和误差函数。"
+            }
+        ];
+
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+                
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+                
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+                
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+                
+                container.appendChild(qDiv);
+            });
+            
+            // 渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 选择选项的处理函数
+        function selectOption(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+            
+            // 移除之前的选择样式
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+            
+            // 应用新选择的样式
+            if(selectedOption == answerIndex) {
+                // 点击正确选项：显示为淡绿色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                // 点击错误选项：显示为淡红色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+            
+            // 重新渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        }
+
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

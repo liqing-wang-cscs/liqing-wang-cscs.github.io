@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>选择题测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+        }
+        .math-formula {
+            font-size: 1.2em;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>选择题测试</h1>
+    
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+
+    <script>
+        // 题目数据 - 按照指定格式
+        const questions = [
+            {
+                id: 1,
+                topic: "HTML基础",
+                question: "以下哪个是正确的HTML标签用于创建超链接？",
+                options: {
+                    A: "&lt; a &gt;",
+                    B: "&lt; link &gt;",
+                    C: "&lt; url &gt;",
+                    D: "&lt; href &gt;"
+                },
+                answer: "A",
+                explanation: "`&lt; a &gt;` 标签是HTML中用于创建超链接的标准标签，通过 `href` 属性指定链接地址。"
+            },
+            {
+                id: 2,
+                topic: "CSS基础",
+                question: "CSS中用于设置元素背景颜色的属性是什么？",
+                options: {
+                    A: "color",
+                    B: "background-color",
+                    C: "bg-color",
+                    D: "text-color"
+                },
+                answer: "B",
+                explanation: "`background-color` 是CSS中专门用于设置元素背景颜色的属性。"
+            },
+            {
+                id: 3,
+                topic: "数学",
+                question: "解方程 $\\frac{d}{dx}(x^2 + 3x + 2)$ 的结果是什么？",
+                options: {
+                    A: "$x + 3$",
+                    B: "$2x + 3$",
+                    C: "$2x^2 + 3$",
+                    D: "$x^2 + 3$"
+                },
+                answer: "B",
+                explanation: "根据导数的基本规则：$\\frac{d}{dx}(x^2 + 3x + 2) = 2x + 3$。其中 $\\frac{d}{dx}(x^2) = 2x$，$\\frac{d}{dx}(3x) = 3$，$\\frac{d}{dx}(2) = 0$。"
+            }
+        ];
+
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+                
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+                
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="showExplanation(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+                
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+                
+                container.appendChild(qDiv);
+            });
+            
+            // 渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 显示解释
+        function showExplanation(questionIndex, selectedOption) {
+            const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            
+            // 设置解释内容
+            if(selectedOption == answerIndex) {
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+            } else {
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+            }
+            
+            explanationDiv.style.display = 'block';
+            
+            // 重新渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        }
+
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

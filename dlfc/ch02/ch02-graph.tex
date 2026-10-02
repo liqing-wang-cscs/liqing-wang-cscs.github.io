@@ -1,0 +1,130 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+
+% 定义颜色
+\definecolor{bayesColor}{RGB}{52, 152, 219}    % 蓝：基础
+\definecolor{statsColor}{RGB}{46, 204, 113}    % 绿：统计
+\definecolor{infoColor}{RGB}{155, 89, 182}     % 紫：信息论
+\definecolor{learnColor}{RGB}{230, 126, 34}    % 橙：推断学习
+\definecolor{exColor}{RGB}{231, 76, 60}        % 红：习题
+
+\begin{document}
+
+\begin{tikzpicture}[
+    node distance = 1.2cm and 1.5cm,
+    % 通用节点样式
+    box/.style={
+        rectangle, rounded corners, draw, thick, align=center, 
+        font=\small\bfseries, minimum width=2.2cm, minimum height=0.9cm
+    },
+    % 分类标题样式
+    catTitle/.style={
+        rectangle, draw=#1, fill=#1!20, 
+        text=#1!80!black, font=\large\bfseries, 
+        minimum width=3cm, minimum height=0.8cm, thick
+    },
+    % 内容节点样式
+    content/.style={
+        rectangle, draw=gray, fill=white, align=center, 
+        %fonts=tiny,
+        font=\bfseries\small, 
+        text width=3.0cm, minimum height=0.7cm
+    },
+    % 习题节点样式
+    exercise/.style={
+        ellipse, draw=#1, fill=#1!10, 
+        text=#1!80!black, 
+        font=\small,
+        %font=\scriptsize\bfseries, 
+        inner sep=2pt, minimum width=1.4cm, thick
+    },
+    % 箭头样式
+    arr/.style={->, thick, >=Stealth, opacity=0.6}
+]
+
+    % ================= 中心主题 =================
+    % [修复] 添加 text width 强制换行，保持 circle 和 align=center
+    \node[catTitle=black, fill=blue!15, text=black, circle, 
+          minimum size=2.5cm, text width=2.5cm, align=center] (center) {深度学习中的概率论};
+
+    % ================= 第一象限：基础 (左上) =================
+    \node[catTitle=bayesColor, above left=of center, xshift=-0.5cm] (cat1) {基础概率};
+    
+    \node[content, text width=4.6cm, above=of cat1] (n11) {贝叶斯定理 \\ Prior/Likelihood/Posterior};
+    \node[content, left=of cat1] (n12) {PDF \& CDF \\ 密度与累积分布};
+    \node[content, below left=of cat1] (n13) {独立性 \\ i.i.d. / 条件独立};
+
+    % 习题关联 (基础)
+    \node[exercise=exColor, left=of n12, xshift=-0.3cm] (e2) {2.2 非传递骰子};
+    \node[exercise=exColor, left=of n13, yshift=0.2cm] (e3) {2.3 卷积公式};
+    \node[exercise=exColor, above=of n11, yshift=-0.2cm] (e19) {2.19 变量变换};
+
+    % ================= 第二象限：统计 (右上) =================
+    \node[catTitle=statsColor, above right=of center, xshift=0.5cm] (cat2) {统计量 \& 高斯};
+
+    \node[content, above=of cat2] (n21) {期望 \& 条件期望 \\ $\mathbb{E}[x]$, $\mathbb{E}[x|y]$};
+    \node[content, right=of cat2] (n22) {协方差矩阵 \\ 相关性 / PCA};
+    \node[content, below right=of cat2] (n23) {高斯分布 \\ 一元/多元 / 性质};
+
+    % 习题关联 (统计)
+    \node[exercise=exColor, above=of n21, yshift=-0.2cm] (e11) {2.11 期望方差分解};
+    \node[exercise=exColor, right=of n22, xshift=-0.3cm] (e16) {2.16 高斯二阶矩};
+    \node[exercise=exColor, right=of n23, yshift=0.2cm] (e20) {2.20 雅可比矩阵};
+
+    % ================= 第三象限：信息论 (左下) =================
+    \node[catTitle=infoColor, below left=of center, xshift=-0.5cm] (cat3) {信息论};
+
+    \node[content, left=of cat3] (n31) {熵 \& 微分熵 \\ 不确定性度量};
+    \node[content, below=of cat3] (n32) {KL 散度 \\ 分布差异 / 非对称};
+    \node[content, below left=of cat3] (n33) {互信息 \\ 依赖性 / 特征选择};
+
+    % 习题关联 (信息论)
+    \node[exercise=exColor, left=of n31, xshift=-0.3cm] (e25) {2.25 高斯熵};
+    \node[exercise=exColor, below=of n32, yshift=0.2cm] (e27) {2.27 KL 计算};
+    \node[exercise=exColor, below left=of n33] (e29) {2.29 联合熵不等式};
+    \node[exercise=exColor, left=of n33, yshift=0.5cm] (e30) {2.30 线性变换熵};
+
+    % ================= 第四象限：推断与应用 (右下) =================
+    \node[catTitle=learnColor, below right=of center, xshift=0.5cm] (cat4) {推断 \& 应用};
+
+    \node[content, right=of cat4] (n41) {MLE \& MAP \\ 点估计 / 正则化};
+    \node[content, below=of cat4] (n42) {过拟合问题 \\ 偏差 - 方差权衡};
+    \node[content, below right=of cat4] (n43) {贝叶斯机器学习 \\ 全分布推断 / 不确定性};
+
+    % 连线逻辑 (中心 -> 分类)
+    \draw[arr, bayesColor] (center) -- (cat1);
+    \draw[arr, statsColor] (center) -- (cat2);
+    \draw[arr, infoColor] (center) -- (cat3);
+    \draw[arr, learnColor] (center) -- (cat4);
+
+    % 连线逻辑 (分类 -> 内容)
+    \foreach \n in {n11, n12, n13} \draw[arr, bayesColor!60] (cat1) -- (\n);
+    \foreach \n in {n21, n22, n23} \draw[arr, statsColor!60] (cat2) -- (\n);
+    \foreach \n in {n31, n32, n33} \draw[arr, infoColor!60] (cat3) -- (\n);
+    \foreach \n in {n41, n42, n43} \draw[arr, learnColor!60] (cat4) -- (\n);
+
+    % 连线逻辑 (内容 -> 习题)
+    % 基础
+    \draw[arr, exColor] (n12) -- (e2);
+    \draw[arr, exColor] (n13) -- (e3);
+    \draw[arr, exColor] (n11) -- (e19);
+    % 统计
+    \draw[arr, exColor] (n21) -- (e11);
+    \draw[arr, exColor] (n22) -- (e16);
+    \draw[arr, exColor] (n23) -- (e20);
+    % 信息论
+    \draw[arr, exColor] (n31) -- (e25);
+    \draw[arr, exColor] (n32) -- (e27);
+    \draw[arr, exColor] (n33) -- (e29);
+    \draw[arr, exColor] (n31) -- (e30); 
+
+    % 添加图例说明
+    \node[below=of center, yshift=-1cm, font=\tiny, align=center, text=gray] 
+        {红色椭圆代表本章精选习题 \\ 理论与习题通过箭头对应};
+
+\end{tikzpicture}
+
+\end{document}

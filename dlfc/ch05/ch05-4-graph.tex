@@ -1,0 +1,110 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath, amssymb}
+\usepackage{ctex,tikz}
+% 引入 positioning 库
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局样式定义
+    node distance = 1.2cm and 1.0cm, % 调整间距以适应中文长文本
+    box/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\normalsize,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    % 中心节点样式
+    mainNode/.style = {
+        circle, 
+        align = center, 
+        fill = blue!15, 
+        text width = 4.2cm, 
+        font = \sffamily\bfseries\large,
+        line width = 2pt
+    },
+    % 核心定理/概念节点样式 (突出显示)
+    theoremNode/.style = {
+        box, 
+        fill = yellow!20, 
+        text width = 4.5cm, 
+        font = \sffamily\bfseries\normalsize,
+        line width = 1.5pt
+    },
+    % 细节子节点样式
+    detailNode/.style = {
+        box, 
+        fill = white,
+        font = \sffamily\normalsize,
+        text width = 4.5cm
+    },
+    % 箭头样式
+    arrow/.style = {
+        ->, 
+        thick, 
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % --- 1. 核心主题 ---
+    \node[mainNode] (center) {5.4.判别分类器\\(Discriminative Classifiers)};
+
+    % --- 2. 上方分支：广义线性模型框架 ---
+    \node[theoremNode, above=of center] (glm_framework) {广义线性模型\\(GLMs) 框架};
+    \node[detailNode, above left=of glm_framework] (glm_def) {定义:\\$y = f(\mathbf{w}^T\boldsymbol{\phi})$\\决策面线性};
+    \node[detailNode, above=of glm_framework] (glm_comp) {组件:\\1. 固定基函数 $\boldsymbol{\phi}(\mathbf{x})$\\2. 非线性激活 $f(\cdot)$\\3. 线性参数 $\mathbf{w}$};
+    \node[detailNode, above right=of glm_framework] (glm_adv) {优势:\\参数量少 (线性增长)\\对分布假设不敏感};
+
+    % --- 3. 右侧分支：二分类与逻辑回归 ---
+    \node[theoremNode, right=of center] (logistic_reg) {逻辑回归\\(Logistic Regression)};
+    \node[detailNode, above right=of logistic_reg] (log_act) {激活函数:\\Sigmoid $\sigma(a)$\\$p(\mathcal{C}_1|\boldsymbol{\phi}) = \sigma(\mathbf{w}^T\boldsymbol{\phi})$};
+    \node[detailNode, right=of logistic_reg] (log_err) {误差函数:\\交叉熵 (Cross-Entropy)\\$E = -\sum [t\ln y + (1-t)\ln(1-y)]$};
+    \node[detailNode, below right=of logistic_reg] (log_grad) {梯度形式:\\$\nabla E = \sum (y_n - t_n)\boldsymbol{\phi}_n$\\与线性回归形式一致};
+
+    % --- 4. 下方分支：多分类与典型链接 ---
+    \node[theoremNode, below=of center] (multi_canon) {多分类与典型链接};
+    \node[detailNode, below left=of multi_canon] (multi_soft) {多分类:\\Softmax 激活\\$y_k = \frac{e^{a_k}}{\sum e^{a_j}}$};
+    \node[detailNode, below=of multi_canon, text width=5.0cm] (canon_link) {典型链接函数\\(Canonical Link):\\选择 $f^{-1}(y)=\psi(y)$\\使梯度简化为 $(y-t)\boldsymbol{\phi}$};
+    \node[detailNode, below right=of multi_canon] (exp_fam) {理论基础:\\目标变量 $t$ 服从\\指数族分布};
+
+    % --- 5. 左侧分支：Probit 回归与对比 ---
+    \node[theoremNode, left=of center] (probit_reg) {Probit 回归\\与对比};
+    \node[detailNode, above left=of probit_reg] (prob_def) {定义:\\基于高斯累积分布\\$\Phi(a)$ (Probit 函数)};
+    \node[detailNode, left=of probit_reg] (prob_mot) {动机:\\噪声阈值模型\\$t=1$ if $a \ge \theta$};
+    \node[detailNode, below left=of probit_reg] (prob_diff) {差异:\\尾部衰减 $\exp(-x^2)$\\比 Logistic 更敏感于离群点};
+
+    % --- 绘制连线 ---
+    % 中心到四大分支
+    \draw[arrow] (center) -- (glm_framework);
+    \draw[arrow] (center) -- (logistic_reg);
+    \draw[arrow] (center) -- (multi_canon);
+    \draw[arrow] (center) -- (probit_reg);
+
+    % GLM 框架的子节点
+    \draw[arrow] (glm_framework) -- (glm_def);
+    \draw[arrow] (glm_framework) -- (glm_comp);
+    \draw[arrow] (glm_framework) -- (glm_adv);
+
+    % 逻辑回归的子节点
+    \draw[arrow] (logistic_reg) -- (log_act);
+    \draw[arrow] (logistic_reg) -- (log_err);
+    \draw[arrow] (logistic_reg) -- (log_grad);
+
+    % 多分类与典型链接的子节点
+    \draw[arrow] (multi_canon) -- (multi_soft);
+    \draw[arrow] (multi_canon) -- (canon_link);
+    \draw[arrow] (multi_canon) -- (exp_fam);
+
+    % Probit 回归的子节点
+    \draw[arrow] (probit_reg) -- (prob_def);
+    \draw[arrow] (probit_reg) -- (prob_mot);
+    \draw[arrow] (probit_reg) -- (prob_diff);
+
+\end{tikzpicture}
+
+\end{document}

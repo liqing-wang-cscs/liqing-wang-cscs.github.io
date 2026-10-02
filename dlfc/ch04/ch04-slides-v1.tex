@@ -1,0 +1,419 @@
+\documentclass[12pt, aspectratio=169]{beamer}
+
+% 中文支持
+\usepackage{ctex}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz} % 用于简单的几何示意（可选）
+
+% 主题设置
+\usetheme{Madrid}
+\usecolortheme{default} 
+
+% 标题信息
+\title{线性回归与相关核心概念}
+\subtitle{从基函数到偏差 - 方差权衡}
+% \institute{}
+\author{《深度学习基础》课程小组}
+\date{\today}
+
+% 数学命令简写
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bPhi}{\mathbf{\Phi}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\N}{\mathcal{N}}
+
+\begin{document}
+
+% 封面页
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 目录页 1
+\begin{frame}{目录}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \tableofcontents[sections={1-7}]
+        \column{0.5\textwidth}
+        \tableofcontents[sections={8-13}]
+    \end{columns}
+\end{frame}
+
+%% 目录页 2
+%\begin{frame}{目录 (2/2)}
+%    \begin{columns}[t]
+%        \column{0.5\textwidth}
+%        \tableofcontents[sections={8-10}]
+%        \column{0.5\textwidth}
+%        \tableofcontents[sections={11-13}]
+%    \end{columns}
+%\end{frame}
+
+% 1. Linear Regression
+\section{Linear Regression}
+\begin{frame}{线性回归 (Linear Regression)}
+    \begin{block}{定义}
+        一种监督学习算法，假设目标变量 $t$ 与输入变量 $\bx$ 之间存在线性关系。
+    \end{block}
+    
+    \begin{equation*}
+        y(\bx, \bw) = w_0 + \sum_{i=1}^D w_i x_i = \bw^T \tilde{\bx}
+    \end{equation*}
+    其中 $\tilde{\bx}$ 是增广向量 $(1, x_1, \dots, x_D)^T$。
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{目标}: 找到参数 $\bw$，使得预测值 $y$ 尽可能接近真实值 $t$。
+        \item \textbf{线性含义}: 对参数 $\bw$ 是线性的（而非必须对输入 $x$ 线性，可通过基函数扩展）。
+        \item 是最基础且广泛使用的回归模型。
+    \end{itemize}
+\end{frame}
+
+% 2. Basis functions
+\section{Basis functions}
+\begin{frame}{基函数 (Basis Functions)}
+    \begin{block}{定义}
+        一组固定的非线性函数 $\phi_j(\bx)$，用于将原始输入空间映射到新的高维特征空间，从而允许线性模型拟合非线性关系。
+    \end{block}
+    
+    \begin{equation*}
+        y(\bx, \bw) = w_0 + \sum_{j=1}^M w_j \phi_j(\bx)
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{常见类型}:
+        \begin{itemize}
+            \item 多项式基：$\phi_j(x) = x^j$
+            \item 高斯基：$\phi_j(x) = \exp(-\frac{(x-\mu_j)^2}{2s^2})$
+            \item Sigmoid 基：$\phi_j(x) = \sigma(\frac{x-\mu_j}{s})$
+        \end{itemize}
+        \item 模型对 $\bw$ 仍然是线性的，因此求解方法不变。
+    \end{itemize}
+\end{frame}
+
+% 3. Feature extraction
+\section{Feature extraction}
+\begin{frame}{特征提取 (Feature Extraction)}
+    \begin{block}{定义}
+        通过变换原始数据，构建出一组新的、更具代表性或更紧凑的特征（即基函数的输出）的过程。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{目的}:
+        \begin{itemize}
+            \item 降低维度 (Dimensionality Reduction)。
+            \item 去除噪声和冗余信息。
+            \item 使数据在新空间中线性可分或更适合回归。
+        \end{itemize}
+        \item \textbf{方法}:
+        \begin{itemize}
+            \item 手动设计基函数 (Domain Knowledge)。
+            \item 主成分分析 (PCA)。
+            \item 自动学习特征 (如深度学习)。
+        \end{itemize}
+        \item 在线性回归语境下，特征提取通常指计算 $\phi(\bx)$。
+    \end{itemize}
+\end{frame}
+
+% 4. Likelihood function
+\section{Likelihood function}
+\begin{frame}{似然函数 (Likelihood Function)}
+    \begin{block}{定义}
+        在给定参数 $\bw$ 和输入 $\mathbf{X}$ 的情况下，观测到目标数据 $\mathbf{t}$ 的概率。
+    \end{block}
+    
+    假设噪声服从高斯分布 $t = y(\bx, \bw) + \epsilon, \quad \epsilon \sim \N(0, \beta^{-1})$：
+    \begin{equation*}
+        p(\mathbf{t}|\mathbf{X}, \bw, \beta) = \prod_{n=1}^N \N(t_n | \bw^T \phi(\bx_n), \beta^{-1})
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{最大似然估计 (MLE)}: 寻找 $\bw$ 最大化该函数。
+        \item 取对数后，最大化似然等价于\textbf{最小化平方和误差}。
+        \item 提供了概率视角的回归推导基础。
+    \end{itemize}
+\end{frame}
+
+% 5. Moore–Penrose pseudo-inverse
+\section{Moore–Penrose Pseudo-inverse}
+\begin{frame}{摩尔 - 彭若斯伪逆 (Moore–Penrose Pseudo-inverse)}
+    \begin{block}{定义}
+        对于非方阵或奇异矩阵 $\Phi$，其伪逆 $\Phi^\dagger$ 是逆矩阵概念的推广，用于求解线性方程组的最小二乘解。
+    \end{block}
+    
+    \begin{equation*}
+        \bw_{ML} = \Phi^\dagger \bt
+    \end{equation*}
+    其中 $\Phi^\dagger = (\Phi^T \Phi)^{-1} \Phi^T$ (当 $\Phi^T \Phi$ 可逆时)。
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{作用}: 即使样本数 $N$ 不等于特征数 $M$，或者特征间存在线性相关，也能给出一个解。
+        \item 如果解不唯一，伪逆给出的是\textbf{范数最小}的解 ($||\bw||_2$ 最小)。
+        \item 数值计算中通常通过 SVD (奇异值分解) 实现，比直接求逆更稳定。
+    \end{itemize}
+\end{frame}
+
+% 6. Geometry of least squares
+\section{Geometry of least squares}
+\begin{frame}{最小二乘的几何意义 (1/2)}
+    \begin{block}{向量空间视角}
+        将问题看作在由基函数张成的列空间 $\mathcal{R}(\Phi)$ 中寻找一个向量，使其最接近目标向量 $\bt$。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item 设计矩阵 $\Phi$ 的列向量张成一个子空间。
+        \item 预测向量 $\by = \Phi \bw$ 必须位于这个子空间内。
+        \item 目标向量 $\bt$ 通常位于该子空间之外。
+    \end{itemize}
+    
+    \vspace{0.5cm}
+    \begin{alertblock}{核心结论}
+        最小二乘解 $\bw_{ML}$ 对应的预测值 $\hat{\bt} = \Phi \bw_{ML}$ 是 $\bt$ 在 $\mathcal{R}(\Phi)$ 上的\textbf{正交投影}。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{最小二乘的几何意义 (2/2)}
+    \begin{center}
+        % 这里可以用 TikZ 画图，或者文字描述
+        \begin{tikzpicture}[scale=0.6]
+            \draw[->] (0,0) -- (5,0) node[right] {特征空间 $\mathcal{R}(\Phi)$};
+            \draw[->] (0,0) -- (0,4) node[above] {另一维度};
+            \draw[->, thick, cyan] (0,0) -- (4,3) node[right, above] {$\bt$ (真实目标)};
+            \draw[->, thick, blue] (0,0) -- (4, 0) node[midway, below] {$\hat{\bt}$ (投影/预测)};
+            \draw[->, thick, red] (4, 0) -- (4,3) node[midway, right] {$\mathbf{e}$ (残差)};
+            \draw (3.6,0) -- (3.6,0.4) -- (4,0.4) ; 
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{残差向量} $\mathbf{e} = \bt - \hat{\bt}$ 垂直于子空间 $\mathcal{R}(\Phi)$。
+        \item 数学表达：$\Phi^T (\bt - \Phi \bw) = 0$ (正规方程)。
+        \item 最小化误差平方和 $||\mathbf{e}||^2$ 等价于寻找最短的垂直距离。
+    \end{itemize}
+\end{frame}
+
+% 7. Sequential learning
+\section{Sequential learning}
+\begin{frame}{顺序学习 (Sequential Learning)}
+    \begin{block}{定义}
+        数据逐个（或小批量）到达，模型参数随着新数据的到来实时更新，而无需重新遍历所有历史数据。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{场景}: 在线广告、股票预测、传感器数据流。
+        \item \textbf{优势}:
+        \begin{itemize}
+            \item 内存效率高（不需要存储所有数据）。
+            \item 能快速适应数据分布的变化 (Concept Drift)。
+        \end{itemize}
+        \item \textbf{典型算法}: 
+        \begin{itemize}
+            \item 随机梯度下降 (SGD)。
+            \item 递归最小二乘法 (RLS)。
+            \item 卡尔曼滤波。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 8. Stochastic gradient descent
+\section{Stochastic gradient descent}
+\begin{frame}{随机梯度下降 (SGD)}
+    \begin{block}{定义}
+        一种优化算法，每次迭代仅使用\textbf{一个}（或一小批）样本计算梯度来更新参数，而不是整个数据集。
+    \end{block}
+    
+    \begin{equation*}
+        \bw^{(\tau+1)} = \bw^{(\tau)} - \eta \nabla E_n(\bw^{(\tau)})
+    \end{equation*}
+    其中 $E_n$ 是第 $n$ 个样本的误差。
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{优点}: 计算速度快，支持在线学习，能跳出局部极小值（由于噪声）。
+        \item \textbf{缺点}: 收敛路径震荡，需要仔细调整学习率 $\eta$（通常需要衰减）。
+        \item 是大规模机器学习和深度学习的基石。
+    \end{itemize}
+\end{frame}
+
+% 9. Regularized least squares
+\section{Regularized least squares}
+\begin{frame}{正则化最小二乘 (Regularized Least Squares)}
+    \begin{block}{定义}
+        在平方和误差函数基础上增加一个惩罚项，以限制参数的大小，防止过拟合。
+    \end{block}
+    
+    \begin{equation*}
+        E(\bw) = \frac{1}{2}\sum_{n=1}^N (y(\bx_n, \bw) - t_n)^2 + \frac{\lambda}{2} ||\bw||^2
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item $\lambda$: 正则化系数，控制惩罚力度。
+        \item \textbf{解析解}: $\bw_{reg} = (\Phi^T \Phi + \lambda \bI)^{-1} \Phi^T \bt$。
+        \item 加入 $\lambda \bI$ 保证了矩阵 $(\Phi^T \Phi + \lambda \bI)$ 总是可逆的，解决了病态矩阵问题。
+        \item 贝叶斯视角：等价于引入高斯先验的最大后验估计 (MAP)。
+    \end{itemize}
+\end{frame}
+
+% 10. Parameter shrinkage method
+\section{Parameter shrinkage method}
+\begin{frame}{参数收缩方法 (Parameter Shrinkage)}
+    \begin{block}{定义}
+        一类通过迫使模型参数向零（或某个先验值）“收缩”来降低模型复杂度的技术。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{L2 正则化 (Ridge Regression)}:
+        \begin{itemize}
+            \item 惩罚项 $\lambda \sum w_i^2$。
+            \item 使参数变小但通常不为零，平滑模型。
+        \end{itemize}
+        \item \textbf{L1 正则化 (Lasso)}:
+        \begin{itemize}
+            \item 惩罚项 $\lambda \sum |w_i|$。
+            \item 具有\textbf{稀疏性}，能将部分参数精确压缩为 0，实现特征选择。
+        \end{itemize}
+        \item \textbf{作用}: 权衡偏差与方差，提高泛化能力。
+    \end{itemize}
+\end{frame}
+
+% 11. Decision theory
+\section{Decision theory}
+\begin{frame}{决策理论 (Decision Theory)}
+    \begin{block}{定义}
+        在不确定性下做出最优决策的数学框架。在机器学习中，用于将概率预测转化为具体的类别或数值决策。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{核心要素}:
+        \begin{enumerate}
+            \item 损失函数 (Loss Function) $L(t, y)$: 衡量预测 $y$ 与真实 $t$ 的差异代价。
+            \item 期望损失 (Expected Loss): $R = \E[L(t, y)]$。
+        \end{enumerate}
+        \item \textbf{最优决策}: 选择使期望损失最小的 $y$。
+        \item \textbf{回归例子}: 若 $L=(t-y)^2$，最优解是条件期望 $y=\E[t|x]$；若 $L=|t-y|$，最优解是中位数。
+    \end{itemize}
+\end{frame}
+
+% 12. Predictive distribution
+\section{Predictive distribution}
+\begin{frame}{预测分布 (Predictive Distribution)}
+    \begin{block}{定义}
+        不仅给出一个点预测值，而是给出新输入 $\bx$ 对应目标 $t$ 的完整概率分布 $p(t|\bx, D)$，包含了预测的不确定性。
+    \end{block}
+    
+    \begin{equation*}
+        p(t|\bx, D) = \int p(t|\bx, \bw) p(\bw|D) d\bw
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{组成}:
+        \begin{itemize}
+            \item \textbf{数据噪声}: $p(t|\bx, \bw)$ 固有的方差。
+            \item \textbf{参数不确定性}: 由 $p(\bw|D)$ 引起，数据越少，这部分越大。
+        \end{itemize}
+        \item 贝叶斯线性回归可以直接计算出解析的高斯预测分布。
+        \item 对于风险敏感的应用（如医疗、自动驾驶）至关重要。
+    \end{itemize}
+\end{frame}
+
+% 13. The Bias–Variance Trade-off
+\section{The Bias–Variance Trade-off}
+\begin{frame}{偏差 - 方差权衡 (1/2): 定义}
+    \begin{block}{核心概念}
+        模型泛化误差可以分解为三个部分：偏差、方差和不可约误差。
+    \end{block}
+    
+    \begin{equation*}
+        \text{Error} = \underbrace{(\E[\hat{f}(x)] - f(x))^2}_{\text{Bias}^2} + \underbrace{\E[(\hat{f}(x) - \E[\hat{f}(x)])^2]}_{\text{Variance}} + \underbrace{\sigma^2}_{\text{Noise}}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{偏差 (Bias)}: 模型本身的假设与真实函数的差距。高偏差导致\textbf{欠拟合}。
+        \item \textbf{方差 (Variance)}: 模型对训练数据微小变化的敏感程度。高方差导致\textbf{过拟合}。
+        \item \textbf{权衡}: 降低偏差通常会增加方差，反之亦然。目标是找到总误差最小的平衡点。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{偏差 - 方差权衡 (2/2): 直观理解}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{简单模型} (如线性):
+            \begin{itemize}
+                \item 高偏差，低方差。
+                \item 无论数据怎么变，模型都太简单，无法捕捉规律。
+            \end{itemize}
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{复杂模型} (如高阶多项式):
+            \begin{itemize}
+                \item 低偏差，高方差。
+                \item 完美拟合当前数据，但数据一变，模型剧烈波动。
+            \end{itemize}
+        \end{itemize}
+    \end{columns}
+    
+    \vspace{0.5cm}
+    \begin{alertblock}{解决方法}
+        \begin{itemize}
+            \item 增加数据量 (降低方差)。
+            \item 正则化 (增加一点偏差以大幅降低方差)。
+            \item 集成学习 (Bagging 降低方差，Boosting 降低偏差)。
+            \item 选择合适的模型复杂度。
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\end{document}
+
+
+% 做一个latex beamer, 解释单层网络-回归模型里的关键名词，每个名词一页slide（必要时可多页）， 请输出中文 latex 代码。以下是部分术语，请参考：
+
+% Linear Regression
+
+% Basis functions
+
+% Feature extraction
+
+% Likelihood function
+
+% Moore–Penrose pseudo-inverse of the matrix
+
+% Geometry of least squares
+
+% Sequential learning
+
+% Stochastic gradient descent
+
+% Regularized least squares
+
+% Parameter shrinkage method
+
+% Decision theory
+
+% Predictive distribution
+
+% The Bias–Variance Trade-off
+

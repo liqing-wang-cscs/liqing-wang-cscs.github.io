@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>第6章：深度神经网络、第2节：多层网络 - 自测题</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .option.correct {
+            background-color: #e8f5e8 !important; /* 淡绿色 */
+            border-color: #4CAF50 !important;
+        }
+        .option.incorrect {
+            background-color: #fdeeee !important; /* 淡红色 */
+            border-color: #f44336 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>第6章：深度神经网络、第2节：多层网络 - 自测题</h1>
+    <p class="instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+    
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+
+    <script>
+        // 转换后的题目数据 - 按照指定格式
+        const questions = [
+    {
+        "id": 1,
+        "topic": "多层网络基础概念",
+        "question": "在多层神经网络中，隐藏单元（hidden units）的作用是什么？",
+        "options": {
+            "A": "直接输出最终预测结果",
+            "B": "作为输入变量的非线性基函数，提取特征",
+            "C": "仅用于计算偏置项",
+            "D": "存储训练数据"
+        },
+        "answer": "B",
+        "explanation": "在多层神经网络中，隐藏单元通过非线性激活函数对输入的线性组合进行变换，起到非线性基函数的作用，能够提取输入数据的特征。它们不是直接输出预测结果，而是作为中间层处理单元。"
+    },
+    {
+        "id": 2,
+        "topic": "网络表示",
+        "question": "在两层神经网络中，以下哪个公式正确表示了第一层的预激活值 $a_j^{(1)}$？",
+        "options": {
+            "A": "$a_j^{(1)} = \\sum_{i=1}^{D} w_{ji}^{(1)} x_i$",
+            "B": "$a_j^{(1)} = \\sum_{i=1}^{D} w_{ji}^{(1)} x_i + w_{j0}^{(1)}$",
+            "C": "$a_j^{(1)} = \\sum_{i=0}^{D} w_{ji}^{(1)} x_i$",
+            "D": "$a_j^{(1)} = \\sum_{j=1}^{M} w_{kj}^{(2)} z_j^{(1)} + w_{k0}^{(2)}$"
+        },
+        "answer": "B",
+        "explanation": "根据公式(6.7)，第一层的预激活值包含权重与输入的乘积之和以及偏置项：$a_j^{(1)} = \\sum_{i=1}^{D} w_{ji}^{(1)} x_i + w_{j0}^{(1)}$。选项A缺少偏置项，选项C是将偏置合并后的形式，选项D是第二层的公式。"
+    },
+    {
+        "id": 3,
+        "topic": "激活函数",
+        "question": "以下哪种激活函数在输入为大正数时梯度不会趋于零，有助于缓解梯度消失问题？",
+        "options": {
+            "A": "Logistic Sigmoid $\\sigma(a) = \\frac{1}{1 + \\exp(-a)}$",
+            "B": "Tanh $\\tanh(a) = \\frac{e^a - e^{-a}}{e^a + e^{-a}}$",
+            "C": "Softplus $h(a) = \\ln(1 + \\exp(a))$",
+            "D": "线性函数 $h(a) = a$"
+        },
+        "answer": "C",
+        "explanation": "Softplus函数当$a \\gg 1$时，有$h(a) \\simeq a$，梯度保持非零状态，有助于缓解梯度消失问题。而Logistic Sigmoid和Tanh在输入绝对值很大时梯度都会趋于零。"
+    },
+    {
+        "id": 4,
+        "topic": "ReLU变体",
+        "question": "Leaky ReLU激活函数的主要优势相对于标准ReLU是什么？",
+        "options": {
+            "A": "计算更简单",
+            "B": "在负输入值时也有非零梯度，避免某些隐藏单元接收不到误差信号",
+            "C": "输出范围更广",
+            "D": "对噪声更敏感"
+        },
+        "answer": "B",
+        "explanation": "Leaky ReLU定义为$h(a) = \\max(0, a) + \\alpha \\min(0, a)$，其中$0 < \\alpha < 1$。与标准ReLU不同，它在$a < 0$时有非零梯度，确保了训练过程中的信号传递，避免了某些隐藏单元可能无法更新的问题。"
+    },
+    {
+        "id": 5,
+        "topic": "权重空间对称性",
+        "question": "对于一个具有$M$个隐藏单元的两层网络，如果使用Tanh激活函数，权重空间的符号翻转对称性数量是多少？",
+        "options": {
+            "A": "$M$",
+            "B": "$2^M$",
+            "C": "$M!$",
+            "D": "$M! 2^M$"
+        },
+        "answer": "B",
+        "explanation": "对于$M$个隐藏单元，每个单元都可以独立地改变其输入权重和偏置的符号，同时改变输出权重的符号来补偿，因此有$M$个'符号翻转'对称性，总共形成$2^M$个等效的权重向量集合。"
+    }
+];
+
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+                
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+                
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+                
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+                
+                container.appendChild(qDiv);
+            });
+            
+            // 渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 选择选项的处理函数
+        function selectOption(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+            
+            // 移除之前的选择样式
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+            
+            // 应用新选择的样式
+            if(selectedOption == answerIndex) {
+                // 点击正确选项：显示为淡绿色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                // 点击错误选项：显示为淡红色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+            
+            // 重新渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        }
+
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

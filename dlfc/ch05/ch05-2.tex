@@ -1,0 +1,620 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx, color}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace} % 行距控制
+\setlength{\parindent}{0pt} % 取消首行缩进
+\setlength{\parskip}{1.5em} % 设置段落之间的距离（例如 1em）
+\title{第5章-单层网络-分类 -- 第5.2节-决策理论}%{Decision Theory}
+\author{《深度学习基础》课程小组}
+% \date{}
+ 
+\begin{document}
+\maketitle
+\tableofcontents
+
+When we discussed linear regression we saw how the process of making predictions in machine learning can be broken down into the two stages of inference and decision. 
+
+We now explore this perspective in much greater depth specifically in the context of classifiers.
+
+Suppose we have an input vector $\mathbf{x}$ together with a corresponding vector $\mathbf{t}$ of target variables, and our goal is to predict $\mathbf{t}$ given a new value for $\mathbf{x}$. 
+
+For regression problems, $\mathbf{t}$ will comprise continuous variables and in general will be a vector as we may wish to predict several related quantities. 
+
+For classification problems, $\mathbf{t}$ will represent class labels. 
+
+Again, $\mathbf{t}$ will in general be a vector if we have more than two classes. 
+
+The joint probability distribution $p(\mathbf{x}, \mathbf{t})$ provides a complete summary of the uncertainty associated with these variables. 
+
+Determining $p(\mathbf{x}, \mathbf{t})$ from a set of training data is an example of \underline{\color{red}inference} and is typically a very difficult problem whose solution forms the subject of much of this book. 
+
+In a practical application, however, we most often make a specific prediction for the value of $\mathbf{t}$ or more generally take a specific action based on our understanding of the values $\mathbf{t}$ is likely to take, and this second aspect is the subject of decision theory.
+
+Consider, for example, our earlier medical diagnosis problem in which we have taken an image of a skin lesion on a patient, and we wish to determine whether the patient has cancer. 
+
+In this case, the input vector $\mathbf{x}$ is the set of pixel intensities in the image, and the output variable $t$ will represent the absence of cancer, which we denote by the class $\mathcal{C}_{1}$, or the presence of cancer, which we denote by the class $\mathcal{C}_{2}$. 
+
+We might, for instance, choose $t$ to be a binary variable such that $t=0$ corresponds to class $\mathcal{C}_{1}$ and $t=1$ corresponds to class $\mathcal{C}_{2}$. 
+
+We will see later that this choice of label values is particularly convenient when working with probabilities. 
+
+The general inference problem then involves determining the joint distribution $p(\mathbf{x}, \mathcal{C}_{k})$, or equivalently $p(\mathbf{x}, t)$, which gives us the most complete probabilistic description of the variables. 
+
+Although this can be a very useful and informative quantity, ultimately, we must decide either to give treatment to the patient or not, and we would like this choice to be optimal according to some appropriate criterion (Duda and Hart, 1973). 
+
+This is the \underline{\color{red}decision} step, and the aim of decision theory is that it should tell us how to make optimal decisions given the appropriate probabilities. 
+
+We will see that the decision stage is generally very simple, even trivial, once we have solved the inference problem. 
+
+Here we give an introduction to the key ideas of decision theory as required for the rest of the book. 
+
+Further background, as well as more detailed accounts, can be found in Berger (1985) and Barber (2006).
+
+Before giving a more detailed analysis, let us first consider informally how we might expect probabilities to play a role in making decisions. 
+
+When we obtain the skin image $\mathbf{x}$ for a new patient, our goal is to decide which of the two classes to assign the image to. 
+
+We are therefore interested in the probabilities of the two classes, given the image, which are given by $p(\mathcal{C}_{k}|\mathbf{x})$. 
+
+Using Bayes' theorem, these probabilities can be expressed in the form
+
+\begin{equation}
+p(\mathcal{C}_{k}|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_{k})p(\mathcal{C}_{k})}{p(\mathbf{x})}.
+\tag{5.19}
+\end{equation}
+
+Note that any of the quantities appearing in Bayes' theorem can be obtained from the joint distribution $p(\mathbf{x}, \mathcal{C}_{k})$ by either marginalizing or conditioning with respect to the appropriate variables. 
+
+We can now interpret $p(\mathcal{C}_{k})$ as the prior probability for the class $\mathcal{C}_{k}$ and $p(\mathcal{C}_{k}|\mathbf{x})$ as the corresponding posterior probability. 
+
+{\color{red}
+Prior = Pre-data = 先验的\\ 
+Posterior = Post-data = 后验的
+}
+
+Thus, $p(\mathcal{C}_{1})$ represents the probability that a person has cancer, before the image is taken. 
+
+Similarly, $p(\mathcal{C}_{k}|\mathbf{x})$ is the posterior probability, revised using Bayes' theorem in light of the information contained in the image. 
+
+If our aim is to minimize the chance of assigning $\mathbf{x}$ to the wrong class, then intuitively we would choose the class having the higher posterior probability. 
+
+We now show that this intuition is correct, and we also discuss more general criteria for making decisions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Misclassification rate}
+
+Suppose that our goal is simply to make as few misclassifications as possible. 
+
+We need a rule that assigns each value of $\mathbf{x}$ to one of the available classes. 
+
+Such a rule will divide the input space into regions $\mathcal{R}_{k}$ called decision regions, one for each class, such that all points in $\mathcal{R}_{k}$ are assigned to class $\mathcal{C}_{k}$. 
+
+The boundaries between decision regions are called \underline{\color{red}decision boundaries} or \underline{\color{red}decision surfaces}. 
+
+Note that each decision region need not be contiguous but could comprise some number of disjoint regions. 
+
+To find the optimal decision rule, consider first the case of two classes, as in the cancer problem, for instance. 
+
+A mistake occurs when an input vector belonging to class $\mathcal{C}_{1}$ is assigned to class $\mathcal{C}_{2}$ or vice versa. 
+
+The probability of this occurring is given by
+
+\begin{align}
+p(\text{mistake}) &= p(\mathbf{x}\in\mathcal{R}_{1},\mathcal{C}_{2}) + p(\mathbf{x}\in\mathcal{R}_{2},\mathcal{C}_{1}) \\
+&= \int_{\mathcal{R}_{1}}p(\mathbf{x},\mathcal{C}_{2})\,\mathrm{d}\mathbf{x} + \int_{\mathcal{R}_{2}}p(\mathbf{x},\mathcal{C}_{1})\,\mathrm{d}\mathbf{x}.
+\tag{5.20}
+\end{align}
+
+We are free to choose the decision rule that assigns each point $\mathbf{x}$ to one of the two classes. 
+
+Clearly, to minimize $p(\text{mistake})$ we should arrange that each $\mathbf{x}$ is assigned to whichever class has the smaller value of the integrand in (5.20). 
+
+Thus, if $p(\mathbf{x},\mathcal{C}_{1}) > p(\mathbf{x},\mathcal{C}_{2})$ for a given value of $\mathbf{x}$, then we should assign that $\mathbf{x}$ to class $\mathcal{C}_{1}$. 
+
+From the product rule of probability, we have $p(\mathbf{x},\mathcal{C}_{k}) = p(\mathcal{C}_{k}|\mathbf{x})p(\mathbf{x})$. 
+
+Because the factor $p(\mathbf{x})$ is common to both terms, we can restate this result as saying that the minimum probability of making a mistake is obtained if each value of $\mathbf{x}$ is assigned to the class for which the posterior probability $p(\mathcal{C}_{k}|\mathbf{x})$ is largest. 
+
+This result is illustrated for two classes and a single input variable $x$ in Figure 5.5.
+
+For the more general case of $K$ classes, it is slightly easier to maximize the probability of being correct, which is given by
+
+\begin{align}
+p(\text{correct}) &= \sum_{k=1}^{K}p(\mathbf{x}\in\mathcal{R}_{k},\mathcal{C}_{k}) \\
+&= \sum_{k=1}^{K}\int_{\mathcal{R}_{k}}p(\mathbf{x},\mathcal{C}_{k})\,\mathrm{d}\mathbf{x},
+\tag{5.21}
+\end{align}
+
+which is maximized when the regions $\mathcal{R}_{k}$ are chosen such that each $\mathbf{x}$ is assigned to the class for which $p(\mathbf{x},\mathcal{C}_{k})$ is largest. 
+
+Again, using the product rule $p(\mathbf{x},\mathcal{C}_{k}) = p(\mathcal{C}_{k}|\mathbf{x})p(\mathbf{x})$, and noting that the factor of $p(\mathbf{x})$ is common to all terms, we see that each $\mathbf{x}$ should be assigned to the class having the largest posterior probability $p(\mathcal{C}_{k}|\mathbf{x})$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Expected loss}
+
+For many applications, our objective will be more complex than simply minimizing the number of misclassifications. 
+
+Let us consider again the medical diagnosis problem. 
+
+We note that, if a patient who does not have cancer is incorrectly diagnosed as having cancer, the consequences may be that they experience some distress plus there is the need for further investigations. 
+
+Conversely, if a patient with cancer is diagnosed as healthy, the result may be premature death due to lack of treatment. 
+
+Thus, the consequences of these two types of mistake can be dramatically different. 
+
+It would clearly be better to make fewer mistakes of the second kind, even if this was at the expense of making more mistakes of the first kind.
+
+{\color{red}
+假阳、假阴这两类分类错误的代价是不一样的。
+}
+
+We can formalize such issues through the introduction of a \underline{\color{red}loss function}, also called a \underline{\color{red}cost function}, which is a simple, overall measure of loss incurred in taking any of the available decisions or actions. 
+
+{\color{red}
+损失函数（成本函数、效用函数）衡量了所有决策的代价。
+}
+
+Our goal is then to minimize the total loss incurred. 
+
+Note that some authors consider instead a \underline{\color{red}utility function}, whose value they aim to maximize. 
+
+These are equivalent concepts if we take the utility to be simply the negative of the loss. 
+
+Throughout this text we will use the loss function convention. 
+
+Suppose that, for a new value of $\mathbf{x}$, the true class is $\mathcal{C}_{k}$ and that we assign $\mathbf{x}$ to class $\mathcal{C}_{j}$ (where $j$ may or may not be equal to $k$). 
+
+In so doing, we incur some level of loss that we denote by $L_{kj}$, which we can view as the $k,j$ element of a \underline{\color{red}loss matrix}. 
+
+For instance, in our cancer example, we might have a loss matrix of the form shown in Figure 5.6. 
+
+This particular loss matrix says that there is no loss incurred if the correct decision is made, there is a loss of 1 if a healthy patient is diagnosed as having cancer, whereas there is a loss of 100 if a patient having cancer is diagnosed as healthy.
+
+The optimal solution to the one that minimizes the loss function. 
+
+However, the loss function depends on the true class, which is unknown. 
+
+For a given input vector $\mathbf{x}$, our uncertainty in the true class is expressed through the joint probability distribution $p(\mathbf{x},\mathcal{C}_{k})$, and so we seek instead to minimize the average loss, where the average is computed with respect to this distribution and is given by
+
+\begin{equation}
+\mathbb{E}[L] = \sum_{k}\sum_{j}\int_{\mathcal{R}_{j}}L_{kj}p(\mathbf{x},\mathcal{C}_{k})\,\mathrm{d}\mathbf{x}.
+\tag{5.22}
+\end{equation}
+
+Each $\mathbf{x}$ can be assigned independently to one of the decision regions $\mathcal{R}_{j}$. 
+
+Our goal is to choose the regions $\mathcal{R}_{j}$ to minimize the expected loss (5.22), which implies that for each $\mathbf{x}$, we should minimize $\sum_{k}L_{kj}p(\mathbf{x},\mathcal{C}_{k})$. 
+
+As before, we can use the product rule $p(\mathbf{x},\mathcal{C}_{k}) = p(\mathcal{C}_{k}|\mathbf{x})p(\mathbf{x})$ to eliminate the common factor of $p(\mathbf{x})$. 
+
+Thus, the decision rule that minimizes the expected loss assigns each new $\mathbf{x}$ to the class $j$ for which the quantity
+
+\begin{equation}
+\sum_{k}L_{kj}p(\mathcal{C}_{k}|\mathbf{x})
+\tag{5.23}
+\end{equation}
+
+is a minimum. 
+
+Once we have chosen values for the loss matrix elements $L_{kj}$, this is clearly trivial to do.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The reject option}
+
+We have seen that classification errors arise from the regions of input space where the largest of the posterior probabilities $p(\mathcal{C}_{k}|\mathbf{x})$ is significantly less than unity or equivalently where the joint distributions $p(\mathbf{x},\mathcal{C}_{k})$ have comparable values. 
+
+{\color{red}
+输入数据 $\mathbf{x}$ 使后验概率 $p(\mathcal{C}_{1}|\mathbf{x})$ 与 $p(\mathcal{C}_{2}|\mathbf{x})$ 相差不大的时候，分类容易产生错误。
+}
+
+These are the regions where we are relatively uncertain about class membership. 
+
+In some applications, it will be appropriate to avoid making decisions on the difficult cases in anticipation of obtaining a lower error rate on those examples for which a classification decision is made. 
+
+This is known as the \underline{\color{red}reject option}. 
+
+{\color{red}
+在输入数据空间的这些区域，拒绝做出分类可能是明智的。
+}
+
+For example, in our hypothetical cancer screening example, it may be appropriate to use an automatic system to classify those images for which there is little doubt as to the correct class, while requesting a biopsy to classify the more ambiguous cases. 
+
+We can achieve this by introducing a threshold $\theta$ and rejecting those inputs $\mathbf{x}$ for which the largest of the posterior probabilities $p(\mathcal{C}_{k}|\mathbf{x})$ is less than or equal to $\theta$. 
+
+{\color{red}
+引入阈值 $\theta$, 当每个类别的后验概率都小于这个阈值时，拒绝做出分类。
+}
+
+This is illustrated for two classes and a single continuous input variable $x$ in Figure 5.7. 
+
+Note that setting $\theta=1$ will ensure that all examples are rejected, whereas if there are $K$ classes, then setting $\theta<1/K$ will ensure that no examples are rejected. 
+
+Thus, the fraction of examples that are rejected is controlled by the value of $\theta$.
+
+We can easily extend the reject criterion to minimize the expected loss, when a loss matrix is given, by taking account of the loss incurred when a reject decision is made.
+
+{\color{red}
+设已知拒绝分类的损失，则根据损失矩阵（错误分类的损失），可以调整拒绝分类的阈值，使得总损失最小。
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inference and decision}
+
+We have broken the classification problem down into two separate stages, the \underline{\color{red}inference} stage in which we use training data to learn a model for $p(\mathcal{C}_{k}|\mathbf{x})$ and the subsequent \underline{\color{red}decision} stage in which we use these posterior probabilities to make optimal class assignments. 
+
+{\color{red}
+分类 = 推理（导出模型） + 决策（导出分类）
+}
+
+An alternative possibility would be to solve both problems together and simply learn a function that maps inputs $\mathbf{x}$ directly into decisions. 
+
+Such a function is called a \underline{\color{red}discriminant function}.
+
+In fact, we can identify three distinct approaches to solving decision problems, all of which have been used in practical applications. 
+
+These are, in decreasing order of complexity, as follows:
+
+(a) First, solve the inference problem of determining the class-conditional densities $p(\mathbf{x}|\mathcal{C}_{k})$ for each class $\mathcal{C}_{k}$ individually. 
+
+Separately infer the prior class probabilities $p(\mathcal{C}_{k})$. 
+
+Then use Bayes' theorem in the form
+
+\begin{equation}
+p(\mathcal{C}_{k}|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_{k})p(\mathcal{C}_{k})}{p(\mathbf{x})}
+\tag{5.24}
+\end{equation}
+
+to find the posterior class probabilities $p(\mathcal{C}_{k}|\mathbf{x})$. 
+
+As usual, the denominator in Bayes' theorem can be found in terms of the quantities in the numerator, using
+
+\begin{equation}
+p(\mathbf{x}) = \sum_{k}p(\mathbf{x}|\mathcal{C}_{k})p(\mathcal{C}_{k}).
+\tag{5.25}
+\end{equation}
+
+{\color{red}
+全概率公式：
+\begin{equation*}
+p(\mathbf{x}) = \sum_{k}p(\mathbf{x}, \mathcal{C}_{k}).
+\end{equation*}
+}
+
+Equivalently, we can model the joint distribution $p(\mathbf{x},\mathcal{C}_{k})$ directly and then normalize to obtain the posterior probabilities. 
+
+Having found the posterior probabilities, we use decision theory to determine the class membership for each new input $\mathbf{x}$. 
+
+Approaches that explicitly or implicitly determine the distribution of inputs as well as outputs are known as \underline{\color{red}generative models}, because by sampling from them, it is possible to generate synthetic data points in the input space.
+
+{\color{red}
+生成分类器：先估计了输入数据和输出数据（分类结果）的分布律 $p(\mathbf{x}, \mathcal{C}_{k})$，然后可以由此模拟生成数据。
+}
+
+(b) First, solve the inference problem of determining the posterior class probabilities $p(\mathcal{C}_{k}|\mathbf{x})$, and then subsequently use decision theory to assign each new $\mathbf{x}$ to one of the classes. 
+
+Approaches that model the posterior probabilities directly are called \underline{\color{red}discriminative models}.
+
+{\color{red}
+判别分类器：先估计后验概率 $p(\mathcal{C}_{k}|\mathbf{x})$. 
+}
+
+(c) Find a function $f(\mathbf{x})$, called a discriminant function, that maps each input $\mathbf{x}$ directly onto a class label. 
+
+For instance, for two-class problems, $f(\cdot)$ might be binary valued and such that $f=0$ represents class $\mathcal{C}_{1}$ and $f=1$ represents class $\mathcal{C}_{2}$. 
+
+In this case, probabilities play no role.
+
+{\color{red}
+直接估计分类结果 $y=f(\mathbf{x})$. 
+}
+
+Let us consider the relative merits of these three alternatives. 
+
+Approach (a) is the most demanding because it involves finding the joint distribution over both $\mathbf{x}$ and $\mathcal{C}_{k}$. 
+
+For many applications, $\mathbf{x}$ will have high dimensionality, and consequently, we may need a large training set to be able to determine the class-conditional densities to reasonable accuracy. 
+
+Note that the class priors $p(\mathcal{C}_{k})$ can often be estimated simply from the fractions of the training set data points in each of the classes. 
+
+One advantage of approach (a), however, is that it also allows the marginal density of data $p(\mathbf{x})$ to be determined from (5.25). 
+
+This can be useful for detecting new data points that have low probability under the model and for which the predictions may be of low accuracy, which is known as \underline{\color{red}outlier detection} or \underline{\color{red}novelty detection} (Bishop, 1994; Tarassenko, 1995).
+
+However, if we wish only to make classification decisions, then it can be wasteful of computational resources and excessively demanding of data to find the joint distribution $p(\mathbf{x},\mathcal{C}_{k})$ when in fact we really need only the posterior probabilities $p(\mathcal{C}_{k}|\mathbf{x})$, which can be obtained directly through approach (b). 
+
+Indeed, the class-conditional densities may contain a significant amount of structure that has little effect on the posterior probabilities, as illustrated in Figure 5.8. 
+
+There has been much interest in exploring the relative merits of generative and discriminative approaches to machine learning and in finding ways to combine them (Jebara, 2004; Lasserre, Bishop, and Minka, 2006).
+
+An even simpler approach is (c) in which we use the training data to find a discriminant function $f(\mathbf{x})$ that maps each $\mathbf{x}$ directly onto a class label, thereby combining the inference and decision stages into a single learning problem. 
+
+In the example of Figure 5.8, this would correspond to finding the value of $x$ shown by the vertical green line, because this is the decision boundary giving the minimum probability of misclassification.
+
+With option (c), however, we no longer have access to the posterior probabilities $p(\mathcal{C}_{k}|\mathbf{x})$. 
+
+There are many powerful reasons for wanting to compute the posterior probabilities, even if we subsequently use them to make decisions. 
+
+These include:
+
+\textbf{Minimizing risk.} Consider a problem in which the elements of the loss matrix are subjected to revision from time to time (such as might occur in a financial application). 
+
+If we know the posterior probabilities, we can trivially revise the minimum risk decision criterion by modifying (5.23) appropriately. 
+
+If we have only a discriminant function, then any change to the loss matrix would require that we return to the training data and solve the inference problem afresh.
+
+\textbf{Reject option.} Posterior probabilities allow us to determine a rejection criterion that will minimize the misclassification rate, or more generally the expected loss, for a given fraction of rejected data points.
+
+\textbf{Compensating for class priors.} Consider our cancer screening example again, and suppose that we have collected a large number of images from the general population for use as training data, which we use to build an automated screening system. 
+
+Because cancer is rare amongst the general population, we might find that, say, only 1 in every 1,000 examples corresponds to the presence of cancer. 
+
+If we used such a data set to train an adaptive model, we could run into severe difficulties due to the small proportion of those in the cancer class. 
+
+For instance, a classifier that assigned every point to the normal class would achieve 99.9\% accuracy and yet be difficult to avoid this trivial solution. 
+
+Also, even a large data set will contain very few examples of skin images corresponding to cancer, and so the learning algorithm will not be exposed to a broad range of examples of such images and hence is not likely to generalize well. 
+
+A balanced data set with equal numbers of examples from each of the classes would allow us to find a more accurate model. 
+
+However, we then have to compensate for the effects of our modifications to the training data. 
+
+Suppose we have used such a modified data set and found models for the posterior probabilities. 
+
+From Bayes' theorem (5.24), we see that the posterior probabilities are proportional to the prior probabilities, which we can interpret as the fractions of points in each class. 
+
+We can therefore simply take the posterior probabilities obtained from our artificially balanced data set, divide by the class fractions in that data set, and then multiply by the class fractions in the population to which we wish to apply the model. 
+
+Finally, we need to normalize to ensure that the new posterior probabilities sum to one. 
+
+Note that this procedure cannot be applied if we have learned a discriminant function directly instead of determining posterior probabilities.
+
+\textbf{Combining models.} For complex applications, we may wish to break the problem into a number of smaller sub-problems each of which can be tackled by a separate module. 
+
+For example, in our hypothetical medical diagnosis example, we may have information available from say, blood tests as well as skin images. 
+
+Rather than combine all of this heterogeneous information into one huge input space, it may be more effective to build one system to interpret the images and a different one to interpret the blood data. 
+
+If each of the two systems gives posterior probabilities for the classes, then we can combine the outputs systematically using the rules of probability. 
+
+One simple way to do this is to assume that, for each class separately, the distributions of inputs for the images, denoted by $\mathbf{x}_{1}$, and the blood data, denoted by $\mathbf{x}_{2}$, are independent, so that
+
+\begin{equation}
+p(\mathbf{x}_{1},\mathbf{x}_{2}|\mathcal{C}_{k}) = p(\mathbf{x}_{1}|\mathcal{C}_{k})p(\mathbf{x}_{2}|\mathcal{C}_{k}).
+\tag{5.26}
+\end{equation}
+
+This is an example of a \underline{\color{red}conditional independence} property, because the independence holds when the distribution is conditioned on the class $\mathcal{C}_{k}$. 
+
+The posterior probability, given both the image and blood data, is then given by
+
+\begin{align}
+p(\mathcal{C}_{k}|\mathbf{x}_{1},\mathbf{x}_{2}) &\propto p(\mathbf{x}_{1},\mathbf{x}_{2}|\mathcal{C}_{k})p(\mathcal{C}_{k}) \\
+&\propto p(\mathbf{x}_{1}|\mathcal{C}_{k})p(\mathbf{x}_{2}|\mathcal{C}_{k})p(\mathcal{C}_{k}) \\
+&\propto \frac{p(\mathcal{C}_{k}|\mathbf{x}_{1})p(\mathcal{C}_{k}|\mathbf{x}_{2})}{p(\mathcal{C}_{k})},
+\tag{5.27}
+\end{align}
+
+Thus, we need the class prior probabilities $p(\mathcal{C}_{k})$, which we can easily estimate from the fractions of data points in each class, and then we need to normalize the resulting posterior probabilities so they sum to one. 
+
+The particular conditional independence assumption (5.26) is an example of a \underline{\color{red}naive Bayes model}. 
+
+Note that the joint marginal distribution $p(\mathbf{x}_{1},\mathbf{x}_{2})$ will typically not factorize under this model. 
+
+We will see in later chapters how to construct models for combining data that do not require the conditional independence assumption (5.26). 
+
+A further advantage of using models that output probabilities rather than decisions is that they can easily be made differentiable with respect to any adjustable parameters (such as the weight coefficients in the polynomial regression example), which allows them to be composed and trained jointly using gradient-based optimization methods.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Classifier accuracy}
+
+The simplest measure of performance for a classifier is the fraction of test set points that are correctly classified. 
+
+However, we have seen that different types of error have different consequences, expressed through the loss matrix, and often we therefore do not simply wish to minimize the number of misclassifications. 
+
+{\color{red}
+不同的分类错误，代价是不一样的。
+}
+
+By changing the location of the decision boundary, we can make trade-offs between different kinds of error, for example with the goal of minimizing an expected loss. 
+
+Because this is such an important concept, we will introduce some definitions and terminology so that the performance of a classifier can be better characterized.
+
+We will consider again our cancer screening example. 
+
+For each person tested, there is a 'true label' of whether they have cancer or not, and there is also the prediction made by the classifier. 
+
+If, for a particular person, the classifier predicts cancer and this is in fact the true label, then the prediction is called a \underline{\color{red}true positive}. 
+
+{\color{red}
+真阳：真的有病，模型也认为有病。
+}
+
+However, if the person does not have cancer and this is false positive. 
+
+{\color{red}
+假阳：其实没病，但是模型认为有病。
+}
+
+Likewise, if the classifier predicts that a person does not have cancer and this is correct, then the prediction is called a \underline{\color{red}true negative}, otherwise it is a \underline{\color{red}false negative}. 
+
+{\color{red}
+真阴：其实没病，模型也认为没病。\\
+假阴：其实有病，但是模型认为没病。
+}
+
+The false positives are also known as \underline{\color{red}type 1 errors} whereas the false negatives are called \underline{\color{red}type 2 errors}. 
+
+{\color{red}
+假阳：第一类错误。\\
+假阴：第二类错误。
+}
+
+If $N$ is the total number of people taking the test, then $N_{\text{TP}}$ is the number of true positives, $N_{\text{FP}}$ is the number of false positives, $N_{\text{TN}}$ is the number of true negatives, and $N_{\text{FN}}$ is the number of false negatives, where
+
+\begin{equation}
+N = N_{\text{TP}} + N_{\text{FP}} + N_{\text{TN}} + N_{\text{FN}}.
+\tag{5.28}
+\end{equation}
+
+This can be represented as a \underline{\color{red}confusion matrix} as shown in Figure 5.9. 
+
+Accuracy, measured by the fraction of correct classifications, is then given by
+
+\begin{equation}
+\text{Accuracy} = \frac{N_{\text{TP}} + N_{\text{TN}}}{N_{\text{TP}} + N_{\text{FP}} + N_{\text{TN}} + N_{\text{FN}}}.
+\tag{5.29}
+\end{equation}
+
+{\color{red}
+$$
+\text{准确率} = \frac{\text{模型准确的人数}}{\text{总人数}}
+$$
+}
+
+We can see that accuracy can be misleading if there are strongly imbalanced classes. 
+
+{\color{red}
+准确率的局限性。
+}
+
+In our cancer screening example, for instance, where only 1 person in 1,000 has cancer, a naive classifier that simply decides that nobody has cancer will achieve 99.9\% accuracy and yet is completely useless.
+
+Several other quantities can be defined in terms of these numbers, of which the most commonly encountered are
+
+\begin{align}
+\text{Precision} &= \frac{N_{\text{TP}}}{N_{\text{TP}} + N_{\text{FP}}} \tag{5.30} \\
+\text{Recall} &= \frac{N_{\text{TP}}}{N_{\text{TP}} + N_{\text{FN}}} \tag{5.31} \\
+\text{False positive rate} &= \frac{N_{\text{FP}}}{N_{\text{FP}} + N_{\text{TN}}} \tag{5.32} \\
+\text{False discovery rate} &= \frac{N_{\text{FP}}}{N_{\text{FP}} + N_{\text{TP}}} \tag{5.33}
+\end{align}
+
+{\color{red}
+Precision = 精确率 \\ 
+Recall = 召回率 \\
+False Positive Rate = 假阳率 \\
+False Discovery Rate = 假发现率 \\
+}
+
+In our cancer screening example, precision represents an estimate of the probability that a person who has a positive test does indeed have cancer, whereas recall is an estimate of the probability that a person who has cancer is correctly detected by the test. 
+
+The false positive rate is an estimate of the probability that a person who is normal will be classified as having cancer, whereas the false discovery rate represents the fraction of those testing positive who do not in fact have cancer.
+
+By altering the location of the decision boundary, we can change the trade-offs between the two kinds of errors. 
+
+To understand this trade-off, we revisit Figure 5.5, but now we label the various regions as shown in Figure 5.10. 
+
+We can relate the labelled regions to the various true and false rates as follows:
+
+\begin{align}
+N_{\text{FP}}/N &= E \tag{5.34} \\
+N_{\text{TP}}/N &= D+E \tag{5.35} \\
+N_{\text{FN}}/N &= B+C \tag{5.36} \\
+N_{\text{TN}}/N &= A+C \tag{5.37}
+\end{align}
+
+where we are implicitly considering the limit $N\rightarrow\infty$ so that we can relate number of observations to probabilities.
+
+{\color{red}
+在图5-10的两个密度函数 $p(x|C_1)$ 与 $p(x|C_2)$ 有重叠的区域 $C,E$ 意味这什么？
+
+是否意味着无论阈值取什么，这个模型都无法做出正确判断？
+
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ROC curve}
+
+A probabilistic classifier will output a posterior probability, which can be converted to a decision by applying a threshold. 
+
+{\color{red}
+从后验概率到决策，中间差一个“阈值”。就像课程考试的“及格线”。
+}
+
+As the value of the threshold is varied, we can reduce type 1 errors at the expense of increasing type 2 errors, or vice versa. 
+
+To better understand this trade-off, it is useful to plot the \underline{\color{red}receiver operating characteristic} or \\ 
+\underline{\color{red}ROC curve} (Fawcett, 2006), a name that originates from efforts to measure the performance of radar receivers. 
+
+This is a graph of true positive rate versus false positive rate, as shown in Figure 5.11.
+
+{\color{red}
+这个ROC曲线的横坐标是“假阳率”，纵坐标是“真阳率”。
+% 是否也可以设计其它形式的ROC曲线？
+}
+
+As the decision boundary in Figure 5.10 is moved from $-\infty$ to $\infty$, the ROC curve is traced out and can then be generated by plotting the cumulative fraction of correct detection of cancer on the $y$-axis versus the cumulative fraction of incorrect detection on the $x$-axis. 
+
+{\color{red}
+当阈值从负无穷移动到正无穷，每个阈值都对应ROC曲线上的一个点。
+}
+
+Note that a specific confusion matrix represents one point along the ROC curve. 
+
+The best possible conditioning will be represented by a point at the top left corner of the ROC diagram. 
+
+The bottom left corner represents a simple classifier that assigns every point to the normal class and therefore has no true positives but also no false positives. 
+
+{\color{red}
+左下角的顶点，代表预测的阳性个数为零，因此既无假阳，也无真阳。
+}
+
+Similarly, the top right corner represents a classifier that assigns everything to the cancer class and therefore has no false negatives but also no true negatives. 
+
+In Figure 5.11, the classifiers represented by the blue curve are better than those of the red curve for any choice of say, false positive rate. 
+
+It is also possible, however, for such curves to cross over, in which case the choice of which is better will depend on the choice of operating point.
+
+As a baseline, we can consider a random classifier that simply assigns each data point to cancer with probability $\mu$ and to normal with probability $1-\mu$. 
+
+As we vary the value of $\mu$ it will trace out an ROC curve given by a diagonal straight line, as shown in Figure 5.11. 
+
+{\color{red}
+ROC图里的对角线代表随机决策，即决策正误概率都是50\%。
+}
+
+Any classifier below the diagonal line performs worse than random guessing.
+
+
+Sometimes it is useful to have a single number that characterises the whole ROC curve. 
+
+One approach is to measure the area under the curve (AUC). 
+
+A value of 0.5 for the AUC represents random guessing whereas a value of 1.0 represents a perfect classifier.
+
+{\color{red}
+AUC这个数字从整体上衡量的模型的预测准确程度。
+}
+
+Another measure is the \underline{\color{red}F-score}, which is the geometric mean of precision and recall, and is therefore defined by
+
+\begin{equation}
+F = \frac{2\times\text{precision}\times\text{recall}}{\text{precision}+\text{recall}} = \frac{2N_{\text{TP}}}{2N_{\text{TP}}+N_{\text{FP}}+N_{\text{FN}}}.
+\tag{5.38, 5.39}
+\end{equation}
+
+{\color{red}
+几何平均的定义是求倒数，加起来求平均，再求倒数。
+\begin{equation*}
+F = \frac{2}{\frac{1}{\text{precision}} + \frac{1}{\text{recall}}}
+\end{equation*}
+精确率 precision 是在预测的所有阳性中，真阳性的比例。\\
+召回率 recall 是在真正的所有阳性中，成功预测为阳性的比例。\\
+召回率100\%, 意味着所有潜在病人都被成功预测了。\\
+因此 $F$值越接近1，模型预测效果越好。
+}
+
+Of course, we can also combine the confusion matrix in Figure 5.9 with the loss matrix in Figure 5.6 to compute the expected loss by multiplying the elements pointwise and summing the resulting products.
+
+{\color{red}
+混淆矩阵、损失矩阵，有什么区别？\\
+混淆矩阵里的数字是人数，损失矩阵里的数字是钱财。
+}
+
+Although the ROC curve can be extended to more than two classes, it rapidly becomes cumbersome as the number of classes increases.
+
+{\color{red}
+三个类别的混淆矩阵和损失矩阵，还可以在论文里考虑考虑。
+}
+
+\end{document}

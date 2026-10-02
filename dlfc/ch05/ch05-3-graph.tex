@@ -1,0 +1,110 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex,tikz}
+% 引入 positioning 库
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局样式定义
+    node distance = 1.2cm and 0.8cm, % 增加间距以适应长文本
+    box/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\normalsize,
+        minimum width = 3.5cm,
+        minimum height = 0.9cm
+    },
+    % 中心节点样式
+    mainNode/.style = {
+        circle, %box, 
+        align = center, 
+        fill = blue!15, 
+        text width = 4.0cm, 
+        font = \sffamily\bfseries\large,
+        line width = 2pt
+    },
+    % 核心定理节点样式 (突出显示)
+    theoremNode/.style = {
+        box, 
+        fill = yellow!20, 
+        text width = 4.5cm, 
+        font = \sffamily\bfseries\normalsize,
+        line width = 1.5pt
+        % 移除了无效的 'border shifted'
+    },
+    % 细节子节点样式
+    detailNode/.style = {
+        box, 
+        fill = white,
+        font = \sffamily\normalsize,
+        text width = 4.5cm
+    },
+    % 箭头样式
+    arrow/.style = {
+        ->, 
+        thick, 
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % --- 1. 核心主题 ---
+    \node[mainNode] (center) {5.3.生成式分类器\\Generative Classifiers};
+
+    % --- 2. 上方分支：两类别问题 ---
+    \node[theoremNode, above=of center] (two_class) {两类别问题\\Two Classes};
+    \node[detailNode, above left=of two_class] (posterior_form) {后验概率形式:\\$p(\mathcal{C}_1|\mathbf{x}) = \sigma(a)$};
+    \node[detailNode, above=of two_class] (logit_def) {Logit函数:\\$a = \ln \frac{p(\mathbf{x}|\mathcal{C}_1)p(\mathcal{C}_1)}{p(\mathbf{x}|\mathcal{C}_2)p(\mathcal{C}_2)}$};
+    \node[detailNode, above right=of two_class] (sigmoid_prop) {Sigmoid性质:\\$\sigma(-a) = 1 - \sigma(a)$};
+
+    % --- 3. 右侧分支：多类别推广 ---
+    \node[theoremNode, right=of center] (multi_class) {多类别推广\\K > 2 Classes};
+    \node[detailNode, above right=of multi_class] (softmax_def) {Softmax函数:\\归一化指数};
+    \node[detailNode, right=of multi_class] (ak_def) {线性判别函数:\\$a_k(\mathbf{x}) = \mathbf{w}_k^T\mathbf{x} + w_{k0}$};
+    \node[detailNode, below right=of multi_class] (decision_boundary) {决策边界:\\由线性函数定义};
+
+    % --- 4. 下方分支：连续输入与高斯假设 ---
+    \node[theoremNode, below=of center] (gaussian_model) {连续输入: 高斯模型\\Gaussian Inputs};
+    \node[detailNode, below left=of gaussian_model] (shared_cov) {共享协方差矩阵:\\导致线性判别};
+    \node[detailNode, below=of gaussian_model, text width=5.0cm] (ml_solution) {最大似然解:\\均值、先验概率、协方差};
+    \node[detailNode, below right=of gaussian_model] (quad_discrim) {二次判别:\\若协方差矩阵不同};
+
+    % --- 5. 左侧分支：离散特征与指数族 ---
+    \node[theoremNode, left=of center] (discrete_exp) {离散特征与指数族\\Discrete \& Exponential};
+    \node[detailNode, above left=of discrete_exp] (naive_bayes) {朴素贝叶斯假设:\\特征条件独立};
+    \node[detailNode, left=of discrete_exp] (binary_features) {二值特征:\\仍得线性判别};
+    \node[detailNode, below left=of discrete_exp] (exp_family) {指数族分布:\\更一般的结果};
+
+    % --- 绘制连线 ---
+    % 中心到四大定理
+    \draw[arrow] (center) -- (two_class);
+    \draw[arrow] (center) -- (multi_class);
+    \draw[arrow] (center) -- (gaussian_model);
+    \draw[arrow] (center) -- (discrete_exp);
+
+    % Two Class 的子节点
+    \draw[arrow] (two_class) -- (posterior_form);
+    \draw[arrow] (two_class) -- (logit_def);
+    \draw[arrow] (two_class) -- (sigmoid_prop);
+
+    % Multi Class 的子节点
+    \draw[arrow] (multi_class) -- (softmax_def);
+    \draw[arrow] (multi_class) -- (ak_def);
+    \draw[arrow] (multi_class) -- (decision_boundary);
+
+    % Gaussian Model 的子节点
+    \draw[arrow] (gaussian_model) -- (shared_cov);
+    \draw[arrow] (gaussian_model) -- (ml_solution);
+    \draw[arrow] (gaussian_model) -- (quad_discrim);
+
+    % Discrete & Exponential 的子节点
+    \draw[arrow] (discrete_exp) -- (naive_bayes);
+    \draw[arrow] (discrete_exp) -- (binary_features);
+    \draw[arrow] (discrete_exp) -- (exp_family);
+
+\end{tikzpicture}
+
+\end{document}

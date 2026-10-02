@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>第6章：深度神经网络、第1节：固定基函数的局限性 - 自测题</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .option.correct {
+            background-color: #e8f5e8 !important; /* 淡绿色 */
+            border-color: #4CAF50 !important;
+        }
+        .option.incorrect {
+            background-color: #fdeeee !important; /* 淡红色 */
+            border-color: #f44336 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+            color: blue;
+        }
+        h2 {
+            text-align: center;
+            color: blueviolet;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>第6章：深度神经网络 - 自测题</h1>
+    <h2>第1节：固定基函数的局限性</h2>
+    <p class="instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+    
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+
+    <script>
+        // 转换后的题目数据 - 按照指定格式
+        const questions = [
+    {
+        "id": 1,
+        "topic": "固定基函数模型",
+        "question": "对于一个用于分类的线性基函数模型 $$y(\\mathbf{x}, \\mathbf{w}) = f\\left( \\sum_{j=1}^{M} w_j \\phi_j(\\mathbf{x}) + w_0 \\right),$$ 其中 $f(\\cdot)$ 是非线性输出激活函数，下列哪项描述最准确地指出了其主要局限性？",
+        "options": {
+            "A": "模型无法表达任何非线性变换",
+            "B": "基函数 $\\phi_j(\\mathbf{x})$ 是固定的且独立于训练数据",
+            "C": "模型只能处理一维输入数据",
+            "D": "激活函数 $f(\\cdot)$ 必须是线性的"
+        },
+        "answer": "B",
+        "explanation": "固定基函数模型的主要局限性在于基函数 $\\phi_j(\\mathbf{x})$ 是预先确定的，并且不依赖于具体的训练数据或待解决的问题。这使得模型难以适应特定任务的数据分布，尤其在高维空间中表现不佳。"
+    },
+    {
+        "id": 2,
+        "topic": "维度诅咒",
+        "question": "在包含 $D$ 个输入变量的空间中，如果用一个最高阶为3的多项式来建模，其系数的数量大致按什么方式增长？",
+        "options": {
+            "A": "$\\mathcal{O}(D)$",
+            "B": "$\\mathcal{O}(D^2)$",
+            "C": "$\\mathcal{O}(D^3)$",
+            "D": "$\\mathcal{O}(3^D)$"
+        },
+        "answer": "C",
+        "explanation": "根据文本，当输入变量数量为 $D$ 时，一个最高阶为3的多项式的系数数量的增长是 $\\mathcal{O}(D^3)$。对于更高阶 $M$ 的多项式，增长为 $\\mathcal{O}(D^M)$。这体现了维度诅咒，即随着维度增加，模型复杂度急剧上升。"
+    },
+    {
+        "id": 3,
+        "topic": "高维空间几何",
+        "question": "考虑一个 $D$ 维单位超球体（半径 $r=1$），其体积大部分集中在哪里？",
+        "options": {
+            "A": "球体的中心附近",
+            "B": "整个球体内均匀分布",
+            "C": "靠近表面的薄壳内",
+            "D": "取决于维度 $D$，无法确定"
+        },
+        "answer": "C",
+        "explanation": "在高维空间中，超球体的体积会集中在其表面附近的薄壳中。文中通过计算 $$\\frac{V_D(1) - V_D(1 - \\epsilon)}{V_D(1)} = 1 - (1 - \\epsilon)^D$$ 证明了这一点：当 $D$ 很大时，即使 $\\epsilon$ 很小，这个比值也会趋向于1，意味着大部分体积都在半径 $1-\\epsilon$ 和 1 之间的薄壳里。"
+    },
+    {
+        "id": 4,
+        "topic": "数据流形",
+        "question": "为什么说真实数据通常生活在一个低维流形（manifold）上？",
+        "options": {
+            "A": "因为数据总是二维或三维的",
+            "B": "因为高维数据本身没有意义",
+            "C": "因为数据虽然在高维空间表示，但其变化自由度远小于总维度",
+            "D": "因为流形是数学上的抽象概念，与实际数据无关"
+        },
+        "answer": "C",
+        "explanation": "数据流形的概念是指，虽然数据点可能由大量维度（如图像的像素数）表示，但它们的实际变化模式往往由少数几个内在因素决定（如物体的位置、角度）。因此，这些数据点实际上分布在高维空间中一个低维的、通常是弯曲的子空间（流形）上。例如，一组不同位置和方向的图像虽然像素很多，但本质变化只有3个自由度。"
+    },
+    {
+        "id": 5,
+        "topic": "解决方案对比",
+        "question": "相比径向基函数（RBF）和支持向量机（SVM），深度神经网络（DNN）的主要优势是什么？",
+        "options": {
+            "A": "DNN的数学原理更简单",
+            "B": "DNN不需要任何训练数据",
+            "C": "DNN能更高效地利用大数据集，并能学习深层层次表示",
+            "D": "DNN总是能找到全局最优解"
+        },
+        "answer": "C",
+        "explanation": "文本明确指出，RBF和SVM等方法在大数据集上计算效率低下，且RBF需要仔细正则化防止过拟合，SVM不直接产生概率输出。相比之下，深度神经网络能够更有效地利用大规模数据集，并且能够学习对复杂应用至关重要的深层层次表示（hierarchical representations）。"
+    }
+];
+
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+                
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+                
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+                
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+                
+                container.appendChild(qDiv);
+            });
+            
+            // 渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 选择选项的处理函数
+        function selectOption(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+            
+            // 移除之前的选择样式
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+            
+            // 应用新选择的样式
+            if(selectedOption == answerIndex) {
+                // 点击正确选项：显示为淡绿色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                // 点击错误选项：显示为淡红色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+            
+            // 重新渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        }
+
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+
+% 定义颜色
+\definecolor{discColor}{RGB}{231, 76, 60}      % 红：离散分布
+\definecolor{gaussColor}{RGB}{52, 152, 219}    % 蓝：多元高斯
+\definecolor{mixColor}{RGB}{142, 68, 173}      % 紫：混合与特殊
+\definecolor{genColor}{RGB}{46, 204, 113}      % 绿：通用与非参数
+\definecolor{exColor}{RGB}{243, 156, 18}       % 橙：习题
+
+\begin{document}
+
+\begin{tikzpicture}[
+    node distance = 1.2cm and 1.5cm,
+    % 分类标题样式
+    catTitle/.style={
+        rectangle, draw=#1, fill=#1!20, 
+        text=#1!80!black, font=\large\bfseries, 
+        minimum width=3cm, minimum height=0.8cm, thick, rounded corners
+    },
+    % 内容节点样式
+    content/.style={
+        rectangle, draw=gray, fill=white, align=center, 
+        %font=\small, 
+        text width=3.2cm, minimum height=0.7cm, rounded corners
+    },
+    % 习题节点样式
+    exercise/.style={
+        ellipse, draw=#1, fill=#1!10, 
+        text=#1!80!black, font=\scriptsize\bfseries, 
+        inner sep=2pt, minimum width=1.5cm, thick
+    },
+    % 箭头样式
+    arr/.style={->, thick, >=Stealth, opacity=0.6}
+]
+
+    % ================= 中心主题 =================
+    \node[catTitle=black, fill=black!80, text=white, circle, 
+          minimum size=2.5cm, text width=2.2cm, align=center] (center) {第三章 \\ 标准分布};
+
+    % ================= 第一象限：离散分布 (左上) =================
+    \node[catTitle=discColor, above left=of center, xshift=1.0cm, yshift=-0.5cm] (cat1) {离散分布};
+    
+    \node[content, above=of cat1, text width=4.2cm] (n11) {伯努利分布 Bernoulli \\ 均值/方差/熵};
+    \node[content, above left=of cat1, text width=4.2cm] (n12) {二项分布 Binomial \\ N次试验};
+    \node[content, left=of cat1, text width=4.2cm] (n13) {多项分布 Multinomial \\ 1-of-K编码};
+
+    % 习题关联 (离散)
+    \node[exercise=exColor, above=of n11, yshift=-0.2cm] (e1) {3.1 伯努利性质};
+
+    % ================= 第二象限：多元高斯 (右上) =================
+    \node[catTitle=gaussColor, above right=of center, xshift=-1.0cm, yshift=-0.5cm] (cat2) {多元高斯};
+
+    \node[content, above=of cat2] (n21) {核心定义 \\ PDF / 协方差矩阵};
+    \node[content, above right=of cat2] (n22) {关键性质 \\ 马氏距离 / 矩};
+    \node[content, right=of cat2, text width=3.6cm] (n23) {高斯运算 \\ 条件/边缘/线性模型};
+
+    % 习题关联 (高斯)
+    \node[exercise=exColor, above=of n21, yshift=0.0cm] (e7) {3.7 KL散度};
+    \node[exercise=exColor, right=of n22, xshift=0.0cm] (e9) {3.9 高斯熵};
+    \node[exercise=exColor, right=of n23, yshift=0.0cm] (e25) {3.25 线性高斯和};
+    \node[exercise=exColor, above right=of n21, xshift=0.0cm, yshift=0.0cm] (e20) {3.20 伍德伯里公式};
+
+    % ================= 第三象限：混合与特殊 (左下) =================
+    \node[catTitle=mixColor, below left=of center, xshift=1.0cm, yshift=0.5cm] (cat3) {混合与特殊};
+
+    \node[content, left=of cat3] (n31) {高斯混合模型 \\ GMM / EM算法};
+    \node[content, below=of cat3] (n32) {冯·米塞斯分布 \\ 周期性变量};
+    \node[content, below left=of cat3] (n33) {最大熵原理 \\ 约束优化};
+
+    % 习题关联 (混合)
+    \node[exercise=exColor, left=of n33, yshift=0.0cm] (e8) {3.8 最大熵推导};
+    \node[exercise=exColor, below=of n32, xshift=0.0cm] (e31) {3.31 冯·米塞斯极限};
+
+    % ================= 第四象限：通用与非参数 (右下) =================
+    \node[catTitle=genColor, below right=of center, xshift=-1.0cm, yshift=0.5cm] (cat4) {通用与非参数};
+
+    \node[content, right=of cat4, text width=3.8cm] (n41) {指数族分布 \\ 自然参数/充分统计量};
+    \node[content, below=of cat4] (n42) {非参数方法 \\ KDE / K近邻};
+    \node[content, below right=of cat4] (n43) {直方图模型 \\ 最大似然估计};
+
+    % 习题关联 (通用)
+    \node[exercise=exColor, right=of n41, xshift=0.0cm] (e36) {3.36 指数族二阶导};
+    \node[exercise=exColor, right=of n43, yshift=0.0cm] (e37) {3.37 直方图MLE};
+    \node[exercise=exColor, below=of n42] (e38) {3.38 KNN非正常分布};
+
+    % 连线逻辑 (中心 -> 分类)
+    \draw[arr, discColor] (center) -- (cat1);
+    \draw[arr, gaussColor] (center) -- (cat2);
+    \draw[arr, mixColor] (center) -- (cat3);
+    \draw[arr, genColor] (center) -- (cat4);
+
+    % 连线逻辑 (分类 -> 内容)
+    \foreach \n in {n11, n12, n13} \draw[arr, discColor!60] (cat1) -- (\n);
+    \foreach \n in {n21, n22, n23} \draw[arr, gaussColor!60] (cat2) -- (\n);
+    \foreach \n in {n31, n32, n33} \draw[arr, mixColor!60] (cat3) -- (\n);
+    \foreach \n in {n41, n42, n43} \draw[arr, genColor!60] (cat4) -- (\n);
+
+    % 连线逻辑 (内容 -> 习题)
+    % 离散
+    \draw[arr, exColor] (n11) -- (e1);
+    % 高斯
+    \draw[arr, exColor] (n21) -- (e7);
+    \draw[arr, exColor] (n22) -- (e9);
+    \draw[arr, exColor] (n23) -- (e25);
+    \draw[arr, exColor] (n21) -- (e20); % 伍德伯里连到核心定义
+    % 混合
+    \draw[arr, exColor] (n33) -- (e8);
+    \draw[arr, exColor] (n32) -- (e31);
+    % 通用
+    \draw[arr, exColor] (n41) -- (e36);
+    \draw[arr, exColor] (n43) -- (e37);
+    \draw[arr, exColor] (n42) -- (e38);
+
+    % 添加图例说明
+    \node[right=of center, xshift=0cm, font=\tiny, align=center, text=gray] 
+        {橙色椭圆代表本章精选习题 \\ 理论与习题通过箭头对应};
+
+\end{tikzpicture}
+
+\end{document}

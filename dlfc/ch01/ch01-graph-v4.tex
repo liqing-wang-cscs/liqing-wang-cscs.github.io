@@ -1,0 +1,130 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.4cm and 1.2cm, 
+    every node/.style = {
+        draw, 
+        rounded corners, 
+        thick, 
+        align = center, 
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = orange!80, 
+        text = white, 
+        font = \sffamily\bfseries\large, 
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle 
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries, 
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->, 
+        thick, 
+        >=stealth, 
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {世界模型 \\ World Models};
+
+    % ================= 2. 上方分支：核心架构 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (arch) {核心架构 \\ Architecture};
+    
+    \node[subNode, above left=of arch] (vae) {视觉编码器 \\ (VQ-VAE / CNN)};
+    \node[subNode, above=of arch] (rnn) {记忆模型 \\ (MDN-RNN / Transformer)};
+    \node[subNode, above right=of arch] (ctrl) {控制器 \\ (Controller / Policy)};
+    \node[subNode, right=of arch, yshift=0cm] (latent) {潜在空间 \\ Latent Space (z)};
+
+    % ================= 3. 右侧分支：工作机制 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (mech) {工作机制 \\ Mechanism};
+    
+    \node[subNode, above right=of mech] (dream) {"做梦"训练 \\ Dream Training};
+    \node[subNode, right=of mech] (pred) {未来预测 \\ Future Prediction};
+    \node[subNode, below right=of mech] (plan) {潜在空间规划 \\ Latent Planning};
+    \node[subNode, below=of mech, yshift=0cm] (rollout) {轨迹推演 \\ Trajectory Rollout};
+
+    % ================= 4. 下方分支：关键能力 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (cap) {关键能力 \\ Capabilities};
+    
+    \node[subNode, below left=of cap] (sim) {环境模拟 \\ Simulation};
+    \node[subNode, below=of cap] (gen) {生成能力 \\ Generation};
+    \node[subNode, below right=of cap] (general) {零样本泛化 \\ Zero-shot Generalization};
+    \node[subNode, left=of cap, yshift=0cm] (causal) {因果推理 \\ Causal Reasoning};
+
+    % ================= 5. 左侧分支：应用场景 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (app) {应用场景 \\ Applications};
+    
+    \node[subNode, above left=of app] (robot) {具身机器人 \\ Embodied AI};
+    \node[subNode, left=of app] (auto) {自动驾驶 \\ Autonomous Driving};
+    \node[subNode, below left=of app] (game) {游戏AI \\ Game Agents};
+    \node[subNode, above=of app, yshift=0cm] (video) {视频生成 \\ Video Gen};
+
+    % ================= 连线逻辑 =================
+    
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (arch);
+    \draw[arrowStyle, blue] (center) -- (mech);
+    \draw[arrowStyle, green!60!black] (center) -- (cap);
+    \draw[arrowStyle, purple] (center) -- (app);
+
+    % 分支标题 -> 子节点 (上方 - 架构)
+    \draw[arrowStyle, red!60] (arch) -- (vae);
+    \draw[arrowStyle, red!60] (arch) -- (rnn);
+    \draw[arrowStyle, red!60] (arch) -- (ctrl);
+    \draw[arrowStyle, red!60] (arch) -- (latent);
+
+    % 分支标题 -> 子节点 (右侧 - 机制)
+    \draw[arrowStyle, blue!60] (mech) -- (dream);
+    \draw[arrowStyle, blue!60] (mech) -- (pred);
+    \draw[arrowStyle, blue!60] (mech) -- (plan);
+    \draw[arrowStyle, blue!60] (mech) -- (rollout);
+
+    % 分支标题 -> 子节点 (下方 - 能力)
+    \draw[arrowStyle, green!60!black] (cap) -- (sim);
+    \draw[arrowStyle, green!60!black] (cap) -- (gen);
+    \draw[arrowStyle, green!60!black] (cap) -- (general);
+    \draw[arrowStyle, green!60!black] (cap) -- (causal);
+
+    % 分支标题 -> 子节点 (左侧 - 应用)
+    \draw[arrowStyle, purple!60] (app) -- (robot);
+    \draw[arrowStyle, purple!60] (app) -- (auto);
+    \draw[arrowStyle, purple!60] (app) -- (game);
+    \draw[arrowStyle, purple!60] (app) -- (video);
+
+    % % --- 特殊关联连线 (体现技术深度) ---
+    % % VAE 和 RNN 共同支撑 "做梦" 机制
+    % \draw[arrowStyle, dashed, gray] (vae) to[bend right=20] (dream);
+    % \draw[arrowStyle, dashed, gray] (rnn) to[bend left=20] (dream);
+    
+    % % 记忆模型支撑 预测
+    % \draw[arrowStyle, dashed, gray] (rnn) -- (pred);
+
+    % % 控制器利用 规划
+    % \draw[arrowStyle, dashed, gray] (ctrl) -- (plan);
+
+    % % 模拟能力直接赋能 机器人和自动驾驶
+    % \draw[arrowStyle, dotted, gray] (sim) to[bend right=30] (robot);
+    % \draw[arrowStyle, dotted, gray] (sim) to[bend left=30] (auto);
+
+\end{tikzpicture}
+
+\end{document}

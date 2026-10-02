@@ -1,0 +1,562 @@
+\documentclass[12pt, aspectratio=169]{beamer}
+
+% 中文支持
+\usepackage{ctex}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{multicol}
+
+% 主题设置
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% 标题信息
+\title{第五章：单层神经网络 - 分类模型关键术语解析}
+% \subtitle{基于模式识别与机器学习 (PRML) 视角}
+% \institute{}
+\author{《深度学习基础》课程小组}
+\date{\today}
+
+% 自定义命令以简化公式输入
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+% 封面页
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 目录页
+\begin{frame}{目录}
+    \tableofcontents
+\end{frame}
+
+\section{基础概念与决策理论}
+
+% 1. Discriminative function
+\begin{frame}{判别函数 (Discriminant Function)}
+    \begin{itemize}
+        \item \textbf{定义}：一个函数 $y(\vect{x})$，它将输入向量 $\vect{x}$ 映射到一个输出值，该值用于决定 $\vect{x}$ 所属的类别。
+        \item \textbf{作用}：在分类问题中，我们不需要知道具体的概率分布，只需要知道哪个类别的得分最高。
+        \item \textbf{形式}：
+        \begin{itemize}
+            \item 对于二类分类：若 $y(\vect{x}) > 0$ 则属于 $\mathcal{C}_1$，否则 $\mathcal{C}_2$。
+            \item 对于多类分类：选择 $y_k(\vect{x})$ 最大的类别 $k$。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 2. Decision regions & boundaries
+\begin{frame}{决策区域与决策边界 (Decision Regions \& Boundaries)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{决策区域 (Decision Regions)}:
+        \begin{itemize}
+            \item 输入空间中被分配给特定类别 $\mathcal{C}_k$ 的区域 $\mathcal{R}_k$。
+            \item 所有 $\vect{x} \in \mathcal{R}_k$ 都被分类为 $\mathcal{C}_k$。
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{决策边界 (Decision Boundaries)}:
+        \begin{itemize}
+            \item 分隔不同决策区域的表面（在二维中是线，三维中是面）。
+            \item 由方程 $y_i(\vect{x}) = y_j(\vect{x})$ 定义。
+            \item 也称为 \textbf{决策面 (Decision Surfaces)}。
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5cm}
+    \begin{center}
+        \small 在线性模型中，如果判别函数是线性的，决策边界就是超平面。
+    \end{center}
+\end{frame}
+
+% 3. Loss function & matrix
+\begin{frame}{损失函数与损失矩阵 (Loss Function \& Matrix)}
+    \begin{itemize}
+        \item \textbf{损失函数 $L(t, y)$}：衡量预测值 $y$ 与真实目标 $t$ 之间差异的函数。目标是期望损失最小化。
+        \item \textbf{损失矩阵 $L_{kj}$}：
+        \begin{itemize}
+            \item 用于离散类别分类。
+            \item $L_{kj}$ 表示将真实类别为 $\mathcal{C}_k$ 的样本错误分类为 $\mathcal{C}_j$ 所付出的代价。
+            \item 通常对角线元素 $L_{kk}=0$（正确分类无损失）。
+        \end{itemize}
+        \item \textbf{期望风险}：$E[L] = \sum_k \sum_j L_{kj} \int_{\mathcal{R}_j} p(\vect{x}, \mathcal{C}_k) d\vect{x}$。
+    \end{itemize}
+\end{frame}
+
+% 4. Reject option
+\begin{frame}{拒绝选项 (Reject Option)}
+    \begin{itemize}
+        \item \textbf{背景}：在某些应用中，错误分类的代价非常高（如医疗诊断）。
+        \item \textbf{机制}：
+        \begin{itemize}
+            \item 引入一个“拒绝”类别。
+            \item 如果所有类别的最大后验概率 $p(\mathcal{C}_k|\vect{x})$ 低于某个阈值 $\theta$，则 classifier 拒绝做出判断，转由人类专家处理。
+        \end{itemize}
+        \item \textbf{权衡}：通过调整阈值 $\theta$，可以在“覆盖率”（处理多少样本）和“准确率”之间进行权衡。
+    \end{itemize}
+\end{frame}
+
+% 5. Inference stage
+\begin{frame}{推断阶段 (Inference Stage)}
+    \begin{itemize}
+        \item \textbf{定义}：模型训练完成后，使用新数据 $\vect{x}_{new}$ 进行预测的过程。
+        \item \textbf{流程}：
+        \begin{enumerate}
+            \item 输入新的特征向量。
+            \item 计算判别函数值或后验概率。
+            \item 根据决策规则（如最大概率或最小损失）输出类别标签。
+        \end{enumerate}
+        \item \textbf{注意}：在生成式模型中，推断可能涉及计算复杂的积分；而在判别式模型中，通常直接计算函数值，速度较快。
+    \end{itemize}
+\end{frame}
+
+\section{生成式与判别式模型}
+
+% 6. Generative probabilistic model
+\begin{frame}{生成式概率模型 (Generative Probabilistic Model)}
+    \begin{itemize}
+        \item \textbf{核心思想}：对联合概率分布 $p(\vect{x}, \mathcal{C}_k)$ 进行建模。
+        \item \textbf{分解}：$p(\vect{x}, \mathcal{C}_k) = p(\vect{x}|\mathcal{C}_k)p(\mathcal{C}_k)$。
+        \begin{itemize}
+            \item $p(\mathcal{C}_k)$：类先验概率。
+            \item $p(\vect{x}|\mathcal{C}_k)$：类条件概率密度（似然）。
+        \end{itemize}
+        \item \textbf{推断}：利用贝叶斯定理计算后验概率：
+        $$ p(\mathcal{C}_k|\vect{x}) = \frac{p(\vect{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{\sum_j p(\vect{x}|\mathcal{C}_j)p(\mathcal{C}_j)} $$
+        \item \textbf{优点}：可以检测异常值，能处理缺失数据，可生成新样本。
+    \end{itemize}
+\end{frame}
+
+% 7. Discriminative probabilistic model
+\begin{frame}{判别式概率模型 (Discriminative Probabilistic Model)}
+    \begin{itemize}
+        \item \textbf{核心思想}：直接对后验概率 $p(\mathcal{C}_k|\vect{x})$ 进行建模，或者学习一个直接将 $\vect{x}$ 映射到类别标签的函数。
+        \item \textbf{特点}：
+        \begin{itemize}
+            \item 不关心数据 $\vect{x}$ 是如何生成的（不建模 $p(\vect{x})$）。
+            \item 专注于寻找类别之间的决策边界。
+        \end{itemize}
+        \item \textbf{例子}：逻辑回归 (Logistic Regression)，神经网络。
+        \item \textbf{优点}：通常在分类任务上表现更好，计算更直接，不需要对输入数据的分布做强烈假设。
+    \end{itemize}
+\end{frame}
+
+% 8. Generative vs Discriminative Classifiers
+\begin{frame}{生成式分类器 vs 判别式分类器}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{生成式分类器 (Generative Classifiers)}
+        \begin{itemize}
+            \item 建模 $p(\vect{x}, \mathcal{C}_k)$。
+            \item 需要更多数据来准确估计密度。
+            \item 对异常值敏感（如果密度估计不准）。
+            \item 例：朴素贝叶斯，高斯判别分析。
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{判别式分类器 (Discriminative Classifiers)}
+        \begin{itemize}
+            \item 建模 $p(\mathcal{C}_k|\vect{x})$ 或直接决策边界。
+            \item 直接优化分类性能。
+            \item 通常在大数据集上精度更高。
+            \item 例：逻辑回归，SVM，感知机。
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% 9. Naive Bayes
+\begin{frame}{朴素贝叶斯 (Naive Bayes)}
+    \begin{itemize}
+        \item \textbf{定义}：一种特殊的生成式模型。
+        \item \textbf{核心假设}：给定类别 $\mathcal{C}_k$，输入特征的各个分量 $x_i$ 之间是\textbf{条件独立}的。
+        $$ p(\vect{x}|\mathcal{C}_k) = \prod_{i=1}^D p(x_i|\mathcal{C}_k) $$
+        \item \textbf{优势}：
+        \begin{itemize}
+            \item 极大地减少了参数数量（从指数级降为线性级）。
+            \item 训练速度快，对小数据集表现良好。
+        \end{itemize}
+        \item \textbf{劣势}：独立性假设在现实中往往不成立，可能影响概率估计的准确性，但分类效果通常依然不错。
+    \end{itemize}
+\end{frame}
+
+% 10. Outliers & Robustness
+\begin{frame}{异常值与鲁棒性 (Outliers \& Robustness)}
+    \begin{itemize}
+        \item \textbf{异常值 (Outliers)}：与数据集中其他观测值显著不同的数据点。
+        \item \textbf{影响}：
+        \begin{itemize}
+            \item 在生成式模型中，异常值会严重扭曲均值和协方差的估计，从而移动决策边界。
+            \item 在基于平方误差损失的模型中，异常值会被赋予极大的权重。
+        \end{itemize}
+        \item \textbf{鲁棒性 (Robustness)}：模型对异常值不敏感的特性。
+        \item \textbf{提高鲁棒性的方法}：
+        \begin{itemize}
+            \item 使用重尾分布（如 Student-t 分布）代替高斯分布。
+            \item 使用对异常值不敏感的损失函数（如绝对值损失）。
+            \item 数据预处理（剔除或截断）。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 11. Outlier detection
+\begin{frame}{异常检测 (Outlier Detection)}
+    \begin{itemize}
+        \item \textbf{原理}：利用生成式模型计算新数据点的概率密度 $p(\vect{x})$。
+        $$ p(\vect{x}) = \sum_k p(\vect{x}|\mathcal{C}_k)p(\mathcal{C}_k) $$
+        \item \textbf{判定}：如果 $p(\vect{x})$ 低于某个阈值，则认为该点是异常值（即该点不太可能由已知的数据分布生成）。
+        \item \textbf{应用}：欺诈检测、故障诊断、数据清洗。
+        \item \textbf{注意}：判别式模型通常难以直接进行异常检测，因为它们不建模 $p(\vect{x})$。
+    \end{itemize}
+\end{frame}
+
+\section{线性模型与激活函数}
+
+% 12. Linear discriminants function
+\begin{frame}{线性判别函数 (Linear Discriminant Function)}
+    \begin{itemize}
+        \item \textbf{定义}：输入变量 $\vect{x}$ 的线性函数。
+        $$ y(\vect{x}) = \vect{w}^T \vect{x} + w_0 $$
+        \item \textbf{几何意义}：
+        \begin{itemize}
+            \item $\vect{w}$ 决定了决策边界的法线方向。
+            \item $w_0$ (偏置) 决定了决策边界距离原点的距离。
+        \end{itemize}
+        \item \textbf{决策规则}：$y(\vect{x}) > 0 \implies \mathcal{C}_1$, 否则 $\mathcal{C}_2$。
+        \item \textbf{局限性}：只能解决线性可分问题。
+    \end{itemize}
+\end{frame}
+
+% 13. Logistic sigmoid function
+\begin{frame}{Logistic Sigmoid 函数}
+    \begin{itemize}
+        \item \textbf{公式}：
+        $$ \sigma(a) = \frac{1}{1 + e^{-a}} $$
+        \item \textbf{性质}：
+        \begin{itemize}
+            \item 将实数域 $(-\infty, \infty)$ 映射到 $(0, 1)$ 区间。
+            \item 单调递增，关于点 $(0, 0.5)$ 中心对称。
+            \item 导数简单：$\sigma'(a) = \sigma(a)(1-\sigma(a))$。
+        \end{itemize}
+        \item \textbf{用途}：在二分类问题中，将线性判别函数的输出转化为概率 $p(\mathcal{C}_1|\vect{x}) = \sigma(\vect{w}^T\vect{x})$。
+    \end{itemize}
+\end{frame}
+
+% 14. Logistic regression
+\begin{frame}{逻辑回归 (Logistic Regression)}
+    \begin{itemize}
+        \item \textbf{本质}：一种广义线性模型，用于二分类问题的\textbf{判别式}模型。
+        \item \textbf{模型形式}：
+        $$ p(\mathcal{C}_1|\vect{x}) = \sigma(\vect{w}^T \vect{x}) $$
+        $$ p(\mathcal{C}_2|\vect{x}) = 1 - p(\mathcal{C}_1|\vect{x}) $$
+        \item \textbf{参数估计}：
+        \begin{itemize}
+            \item 不使用最小二乘法（因为假设不是高斯噪声）。
+            \item 使用\textbf{最大似然估计 (MLE)}。
+            \item 损失函数通常是交叉熵误差 (Cross-Entropy Error)。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 15. Iterative reweighted least squares
+\begin{frame}{迭代重加权最小二乘法 (IRLS)}
+    \begin{itemize}
+        \item \textbf{背景}：逻辑回归的最大似然解没有解析解（闭式解），因为方程是非线性的。
+        \item \textbf{方法}：一种数值优化算法。
+        \begin{itemize}
+            \item 将最大化似然函数的问题转化为一系列加权最小二乘问题。
+            \item 每次迭代更新权重 $\vect{w}$ 和数据点的权重系数。
+        \end{itemize}
+        \item \textbf{收敛性}：对于逻辑回归这种凸优化问题，IRLS 能保证收敛到全局最优解。
+        \item \textbf{地位}：是求解广义线性模型（GLM）的标准算法之一。
+    \end{itemize}
+\end{frame}
+
+% 16. Softmax function
+\begin{frame}{Softmax 函数}
+    \begin{itemize}
+        \item \textbf{定义}：Sigmoid 函数在多分类问题中的推广。
+        \item \textbf{公式}：对于 $K$ 个类别，
+        $$ y_k = \frac{e^{a_k}}{\sum_{j=1}^K e^{a_j}} $$
+        其中 $a_k$ 通常是线性判别函数的输出。
+        \item \textbf{性质}：
+        \begin{itemize}
+            \item 输出值在 $(0, 1)$ 之间。
+            \item 所有输出之和为 1 ($\sum y_k = 1$)。
+        \end{itemize}
+        \item \textbf{用途}：将一组任意实数转化为概率分布，常用于多类逻辑回归和神经网络的输出层。
+    \end{itemize}
+\end{frame}
+
+% 17. Multi-class logistic regression
+\begin{frame}{多类逻辑回归 (Multi-class Logistic Regression)}
+    \begin{itemize}
+        \item \textbf{模型}：结合线性判别函数和 Softmax 函数。
+        $$ p(\mathcal{C}_k|\vect{x}) = \frac{\exp(\vect{w}_k^T \vect{x})}{\sum_{j=1}^K \exp(\vect{w}_j^T \vect{x})} $$
+        \item \textbf{参数}：需要学习 $K$ 组权重向量 $\{\vect{w}_1, \dots, \vect{w}_K\}$。
+        \item \textbf{训练}：同样使用最大似然估计，通过梯度下降或 IRLS 求解。
+        \item \textbf{决策}：选择 $p(\mathcal{C}_k|\vect{x})$ 最大的类别。
+    \end{itemize}
+\end{frame}
+
+% 18. One-versus-the-rest classifier
+\begin{frame}{一对多分类器 (One-versus-the-Rest Classifier)}
+    \begin{itemize}
+        \item \textbf{策略}：将多分类问题分解为多个二分类问题。
+        \item \textbf{方法}：
+        \begin{itemize}
+            \item 对于 $K$ 个类别，训练 $K$ 个独立的二分类器。
+            \item 第 $k$ 个分类器区分“类别 $k$”与“非类别 $k$”（其余所有类）。
+        \end{itemize}
+        \item \textbf{预测}：输入 $\vect{x}$，看哪个分类器的输出置信度最高。
+        \item \textbf{缺点}：
+        \begin{itemize}
+            \item 可能出现多个分类器都判定为正例或都为负例的情况（模糊区域）。
+            \item 类别不平衡问题（“Rest”部分通常远大于正例部分）。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 19. Probit regression & erf function
+\begin{frame}{Probit 回归与 Erf 函数}
+    \begin{itemize}
+        \item \textbf{Probit 函数}：标准正态分布的累积分布函数 (CDF)。
+        $$ \Phi(a) = \int_{-\infty}^a \mathcal{N}(z|0, 1) dz $$
+        \item \textbf{Erf 函数 (误差函数)}：
+        $$ \text{erf}(a) = \frac{2}{\sqrt{\pi}} \int_0^a e^{-t^2} dt $$
+        两者关系密切：$\Phi(a) = \frac{1}{2} [1 + \text{erf}(a/\sqrt{2})]$。
+        \item \textbf{Probit 回归}：
+        \begin{itemize}
+            \item 类似于逻辑回归，但使用 Probit 链接函数代替 Sigmoid。
+            \item 假设潜在变量服从高斯分布。
+            \item 在贝叶斯推断中有时比 Logit 模型更方便处理。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 20. Activation function
+\begin{frame}{激活函数 (Activation Function)}
+    \begin{itemize}
+        \item \textbf{定义}：神经元中引入非线性因素的函数。在单层网络分类中，它通常位于线性组合之后。
+        \item \textbf{作用}：
+        \begin{itemize}
+            \item 将线性输出映射到特定范围（如概率 $(0,1)$）。
+            \item 引入非线性（虽然在单层线性分类器中，激活函数本身不增加模型的表达复杂度，但它改变了输出的解释方式，即从距离变为概率）。
+        \end{itemize}
+        \item \textbf{常见类型}：
+        \begin{itemize}
+            \item Sigmoid (逻辑回归)
+            \item Softmax (多分类)
+            \item ReLU (主要用于隐藏层，但在输出层不常用)
+            \item Probit
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 21. Generalized linear models
+\begin{frame}{广义线性模型 (Generalized Linear Models, GLM)}
+    \begin{itemize}
+        \item \textbf{概念}：线性回归的推广，允许响应变量具有非正态分布。
+        \item \textbf{三个组成部分}：
+        \begin{enumerate}
+            \item \textbf{随机成分}：响应变量 $Y$ 服从指数族分布（如伯努利、泊松、高斯）。
+            \item \textbf{系统成分}：线性预测子 $\eta = \vect{w}^T \vect{x}$。
+            \item \textbf{链接函数 (Link Function)}：连接期望值 $E[Y]$ 和线性预测子的单调可微函数 $g(\cdot)$，使得 $g(E[Y]) = \eta$。
+        \end{enumerate}
+        \item \textbf{例子}：
+        \begin{itemize}
+            \item 线性回归 (恒等链接 + 高斯分布)
+            \item 逻辑回归 (Logit 链接 + 伯努利分布)
+            \item Probit 回归 (Probit 链接 + 伯努利分布)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 22. Canonical link functions
+\begin{frame}{典则链接函数 (Canonical Link Functions)}
+    \begin{itemize}
+        \item \textbf{定义}：当链接函数 $g(\mu)$ 等于自然参数 $\theta$ 时，称为典则链接。
+        \item \textbf{指数族分布形式}：$p(y|\theta) = h(y)\exp(\theta T(y) - A(\theta))$。
+        \item \textbf{常见典则链接}：
+        \begin{itemize}
+            \item 高斯分布 $\to$ 恒等函数 (Identity)。
+            \item 伯努利分布 $\to$ Logit 函数 ($\ln(\frac{\mu}{1-\mu})$)，对应逻辑回归。
+            \item 泊松分布 $\to$ 对数函数 (Log)。
+        \end{itemize}
+        \item \textbf{重要性}：使用典则链接时，似然函数是凹的（Concave），保证了优化算法（如牛顿法/IRLS）能收敛到全局最优解，且计算形式最简洁。
+    \end{itemize}
+\end{frame}
+
+% 23. Exponential family
+\begin{frame}{指数族分布 (Exponential Family)}
+    \begin{itemize}
+        \item \textbf{定义}：一类概率分布的集合，其概率密度/质量函数可以写成以下形式：
+        $$ p(x|\boldsymbol{\eta}) = h(x) \exp\left( \boldsymbol{\eta}^T T(x) - A(\boldsymbol{\eta}) \right) $$
+        \item \textbf{组件}：
+        \begin{itemize}
+            \item $\boldsymbol{\eta}$：自然参数 (Natural parameters)。
+            \item $T(x)$：充分统计量 (Sufficient statistics)。
+            \item $A(\boldsymbol{\eta})$：对数配分函数 (Log partition function)，保证归一化。
+        \end{itemize}
+        \item \textbf{成员}：高斯分布、伯努利分布、多项式分布、泊松分布、Gamma 分布等。
+        \item \textbf{意义}：广义线性模型的基础，许多优良的统计性质（如充分统计量的存在）都源于此。
+    \end{itemize}
+\end{frame}
+
+% 24. Quadratic discriminant
+\begin{frame}{二次判别函数 (Quadratic Discriminant)}
+    \begin{itemize}
+        \item \textbf{来源}：在生成式模型中，如果假设各类别的类条件概率 $p(\vect{x}|\mathcal{C}_k)$ 服从高斯分布，且\textbf{协方差矩阵 $\Sigma_k$ 各不相同}。
+        \item \textbf{结果}：对数后验概率 $\ln p(\mathcal{C}_k|\vect{x})$ 中包含 $\vect{x}^T \Sigma_k^{-1} \vect{x}$ 项。
+        \item \textbf{决策边界}：由于不同类别的二次项系数不同，相减后无法抵消，导致决策边界是\textbf{二次曲面}（椭圆、抛物线、双曲线等）。
+        \item \textbf{对比}：如果假设所有类别共享同一个协方差矩阵 $\Sigma_k = \Sigma$，二次项抵消，退化为\textbf{线性判别分析 (LDA)}。
+    \end{itemize}
+\end{frame}
+
+\section{模型评估}
+
+% 25. Classifier accuracy
+\begin{frame}{分类器准确率 (Classifier Accuracy)}
+    \begin{itemize}
+        \item \textbf{定义}：分类正确的样本数占总样本数的比例。
+        $$ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}} $$
+        \item \textbf{局限性}：
+        \begin{itemize}
+            \item 在类别不平衡（Class Imbalance）的数据集中具有误导性。
+            \item 例如：99\% 负样本，1\% 正样本。全预测为负，准确率 99\%，但模型毫无用处。
+        \end{itemize}
+        \item \textbf{替代指标}：精确率 (Precision)、召回率 (Recall)、F1-score、AUC。
+    \end{itemize}
+\end{frame}
+
+% 26. Confusion matrix
+\begin{frame}{混淆矩阵 (Confusion Matrix)}
+    \begin{itemize}
+        \item \textbf{定义}：一个 $K \times K$ 的表格，用于总结分类模型的性能。
+        \item \textbf{结构}（以二分类为例）：
+        \begin{center}
+        \begin{tabular}{c|cc}
+         & 预测正 & 预测负 \\ \hline
+        实际正 & TP (真阳性) & FN (假阴性) \\
+        实际负 & FP (假阳性) & TN (真阴性)
+        \end{tabular}
+        \end{center}
+        \item \textbf{用途}：
+        \begin{itemize}
+            \item 直观展示错误类型（是把正类错判为负类，还是反之？）。
+            \item 计算 Precision, Recall, Specificity 等指标的基础。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 27. ROC curve
+\begin{frame}{ROC 曲线 (ROC Curve)}
+    \begin{itemize}
+        \item \textbf{全称}：Receiver Operating Characteristic Curve。
+        \item \textbf{坐标轴}：
+        \begin{itemize}
+            \item X轴：假正率 (FPR) = $FP / (FP + TN)$。
+            \item Y轴：真正率 (TPR / Recall) = $TP / (TP + FN)$。
+        \end{itemize}
+        \item \textbf{绘制}：通过改变分类阈值，得到一系列的 (FPR, TPR) 点连成的曲线。
+        \item \textbf{AUC (Area Under Curve)}：
+        \begin{itemize}
+            \item 曲线下面积，衡量分类器整体性能。
+            \item AUC = 0.5 表示随机猜测；AUC = 1.0 表示完美分类。
+            \item 对类别不平衡不敏感，是评价二分类器的重要指标。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 结束页
+\begin{frame}{总结}
+    \begin{itemize}
+        \item 单层网络分类模型构成了现代深度学习的基础构件。
+        \item 理解\textbf{生成式}与\textbf{判别式}的区别是选择模型的关键。
+        \item \textbf{逻辑回归}和\textbf{Softmax}是处理概率输出的核心工具。
+        \item 正确的\textbf{评估指标}（如混淆矩阵、ROC）比单纯的准确率更能反映模型真实性能。
+        \item 深入理解这些概念有助于更好地设计、训练和调试复杂的神经网络。
+    \end{itemize}
+
+\end{frame}
+
+\end{document}
+
+% 做一个latex beamer, 解释单层网络-分类模型里的关键名词，每个名词一页slide（必要时可多页）， 请输出中文 latex 代码。以下是部分术语，请参考：
+
+% discriminative probabilistic model
+
+% generative probabilistic model 
+
+% linear discriminants function
+
+% one-versus-the-rest classifier
+
+% outliers
+
+% robustness
+
+% logistic regression
+
+% inference
+
+% decision regions
+
+% decision boundaries or decision surfaces
+
+% loss function
+
+% loss matrix
+
+% reject option
+
+% inference stage
+
+% discriminant function
+
+% generative models
+
+% discriminative models
+
+% outlier detection
+
+% Classifier accuracy
+
+% confusion matrix
+
+% ROC curve
+
+% Generative Classifiers
+
+% logistic sigmoid function 
+
+% softmax function
+
+% quadratic discriminant
+
+% naive Bayes
+
+% Exponential family
+
+% Discriminative Classifiers
+
+% generalized linear models
+
+% activation function
+
+% Logistic regression
+
+% iterative reweighted least squares
+
+% Multi-class logistic regression
+
+% Probit regression
+
+% erf function
+
+% Canonical link functions

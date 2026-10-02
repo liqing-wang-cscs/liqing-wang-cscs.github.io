@@ -1,0 +1,203 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第4章-单层网络-回归-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{4.1} $(\star)$ Consider the sum-of-squares error function given by (1.2) in which the function $y(x, \mathbf{w})$ is given by the polynomial (1.1). Show that the coefficients $\mathbf{w} = \{w_i\}$ that minimize this error function are given by the solution to the following set of linear equations:
+\begin{equation}
+\sum_{j=0}^{M} A_{ij} w_j = T_i \tag{4.53}
+\end{equation}
+where
+\begin{equation}
+A_{ij} = \sum_{n=1}^{N} (x_n)^{i+j}, \qquad T_i = \sum_{n=1}^{N} (x_n)^i t_n. \tag{4.54}
+\end{equation}
+Here a suffix $i$ or $j$ denotes the index of a component, whereas $(x)^i$ denotes $x$ raised to the power of $i$.
+
+\textbf{4.1} $(\star)$ 考虑由(1.2)给出的平方和误差函数，其中函数 $y(x, \mathbf{w})$ 由多项式(1.1)给出。证明最小化该误差函数的系数 $\mathbf{w} = \{w_i\}$ 由以下线性方程组的解给出：
+\begin{equation}
+\sum_{j=0}^{M} A_{ij} w_j = T_i \tag{4.53}
+\end{equation}
+其中
+\begin{equation}
+A_{ij} = \sum_{n=1}^{N} (x_n)^{i+j}, \qquad T_i = \sum_{n=1}^{N} (x_n)^i t_n. \tag{4.54}
+\end{equation}
+这里下标 $i$ 或 $j$ 表示分量的索引，而 $(x)^i$ 表示 $x$ 的 $i$ 次幂。
+
+
+\textbf{4.2} $(\star)$ Write down the set of coupled linear equations, analogous to (4.53), satisfied by the coefficients $w_i$ that minimize the regularized sum-of-squares error function given by (1.4).
+
+\textbf{4.2} $(\star)$ 写出类似于(4.53)的一组耦合线性方程，这些方程由最小化(1.4)中给出的正则化平方和误差函数的系数 $w_i$ 所满足。
+
+
+\textbf{4.3} $(\star)$ Show that the tanh function defined by
+\begin{equation}
+\tanh(a) = \frac{e^a - e^{-a}}{e^a + e^{-a}} \tag{4.55}
+\end{equation}
+and the logistic sigmoid function defined by (4.6) are related by
+\begin{equation}
+\tanh(a) = 2\sigma(2a) - 1. \tag{4.56}
+\end{equation}
+Hence, show that a general linear combination of logistic sigmoid functions of the form
+\begin{equation}
+y(x, \mathbf{w}) = w_0 + \sum_{j=1}^{M} w_j \sigma \left( \frac{x - \mu_j}{s} \right) \tag{4.57}
+\end{equation}
+is equivalent to a linear combination of tanh functions of the form
+\begin{equation}
+y(x, \mathbf{u}) = u_0 + \sum_{j=1}^{M} u_j \tanh \left( \frac{x - \mu_j}{2s} \right) \tag{4.58}
+\end{equation}
+and find expressions to relate the new parameters $\{u_1, \dots, u_M\}$ to the original parameters $\{w_1, \dots, w_M\}$.
+
+\textbf{4.3} $(\star)$ 证明由下式定义的双曲正切函数
+\begin{equation}
+\tanh(a) = \frac{e^a - e^{-a}}{e^a + e^{-a}} \tag{4.55}
+\end{equation}
+与由(4.6)定义的逻辑Sigmoid函数之间的关系为
+\begin{equation}
+\tanh(a) = 2\sigma(2a) - 1. \tag{4.56}
+\end{equation}
+因此，证明形如
+\begin{equation}
+y(x, \mathbf{w}) = w_0 + \sum_{j=1}^{M} w_j \sigma \left( \frac{x - \mu_j}{s} \right) \tag{4.57}
+\end{equation}
+的逻辑Sigmoid函数的一般线性组合等价于形如
+\begin{equation}
+y(x, \mathbf{u}) = u_0 + \sum_{j=1}^{M} u_j \tanh \left( \frac{x - \mu_j}{2s} \right) \tag{4.58}
+\end{equation}
+的双曲正切函数的线性组合，并找出将新参数 $\{u_1, \dots, u_M\}$ 与原始参数 $\{w_1, \dots, w_M\}$ 联系起来的表达式。
+
+
+\textbf{4.4} $(\star\star\star)$ Show that the matrix
+\begin{equation}
+\boldsymbol{\Phi}(\boldsymbol{\Phi}^{\mathrm{T}}\boldsymbol{\Phi})^{-1}\boldsymbol{\Phi}^{\mathrm{T}} \tag{4.59}
+\end{equation}
+takes any vector $\mathbf{v}$ and projects it onto the space spanned by the columns of $\boldsymbol{\Phi}$. Use this result to show that the least-squares solution (4.14) corresponds to an orthogonal projection of the vector $\mathbf{t}$ onto the manifold $\mathcal{S}$, as shown in Figure 4.3.
+
+\textbf{4.4} $(\star\star\star)$ 证明矩阵
+\begin{equation}
+\boldsymbol{\Phi}(\boldsymbol{\Phi}^{\mathrm{T}}\boldsymbol{\Phi})^{-1}\boldsymbol{\Phi}^{\mathrm{T}} \tag{4.59}
+\end{equation}
+将任意向量 $\mathbf{v}$ 投影到由 $\boldsymbol{\Phi}$ 的列张成的空间上。利用此结果证明，最小二乘解(4.14)对应于向量 $\mathbf{t}$ 到流形 $\mathcal{S}$ 上的正交投影，如图4.3所示。
+
+
+\textbf{4.5} $(\star)$ Consider a data set in which each data point $t_n$ is associated with a weighting factor $r_n > 0$, so that the sum-of-squares error function becomes
+\begin{equation}
+E_D(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^{N} r_n \left\{ t_n - \mathbf{w}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right\}^2. \tag{4.60}
+\end{equation}
+Find an expression for the solution $\mathbf{w}^*$ that minimizes this error function. Give two alternative interpretations of the weighted sum-of-squares error function in terms of (i) data-dependent noise variance and (ii) replicated data points.
+
+\textbf{4.5} $(\star)$ 考虑一个数据集，其中每个数据点 $t_n$ 都与一个权重因子 $r_n > 0$ 相关联，使得平方和误差函数变为
+\begin{equation}
+E_D(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^{N} r_n \left\{ t_n - \mathbf{w}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right\}^2. \tag{4.60}
+\end{equation}
+找到使该误差函数最小化的解 $\mathbf{w}^*$ 的表达式。从(i)依赖于数据的噪声方差和(ii)重复的数据点两个角度，给出加权平方和误差函数的两种替代解释。
+
+
+\textbf{4.6} $(\star)$ By setting the gradient of (4.26) with respect to $\mathbf{w}$ to zero, show that the exact minimum of the regularized sum-of-squares error function for linear regression is given by (4.27).
+
+\textbf{4.6} $(\star)$ 通过将(4.26)关于 $\mathbf{w}$ 的梯度设为零，证明线性回归的正则化平方和误差函数的精确最小值由(4.27)给出。
+
+
+\textbf{4.7} $(\star\star)$ Consider a linear basis function regression model for a multivariate target variable $\mathbf{t}$ having a Gaussian distribution of the form
+\begin{equation}
+p(\mathbf{t}|\mathbf{W}, \boldsymbol{\Sigma}) = \mathcal{N}(\mathbf{t}|\mathbf{y}(\mathbf{x}, \mathbf{W}), \boldsymbol{\Sigma}) \tag{4.61}
+\end{equation}
+where
+\begin{equation}
+\mathbf{y}(\mathbf{x}, \mathbf{W}) = \mathbf{W}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}) \tag{4.62}
+\end{equation}
+together with a training data set comprising input basis vectors $\boldsymbol{\phi}(\mathbf{x}_n)$ and corresponding target vectors $\mathbf{t}_n$, with $n = 1, \dots, N$. Show that the maximum likelihood solution $\mathbf{W}_{\text{ML}}$ for the parameter matrix $\mathbf{W}$ has the property that each column is given by an expression of the form (4.14), which was the solution for an isotropic noise distribution. Note that this is independent of the covariance matrix $\boldsymbol{\Sigma}$. Show that the maximum likelihood solution for $\boldsymbol{\Sigma}$ is given by
+\begin{equation}
+\boldsymbol{\Sigma} = \frac{1}{N} \sum_{n=1}^{N} \left( \mathbf{t}_n - \mathbf{W}_{\text{ML}}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right) \left( \mathbf{t}_n - \mathbf{W}_{\text{ML}}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right)^{\mathrm{T}}. \tag{4.63}
+\end{equation}
+
+\textbf{4.7} $(\star\star)$ 考虑一个用于多变量目标变量 $\mathbf{t}$ 的线性基函数回归模型，其具有如下形式的高斯分布
+\begin{equation}
+p(\mathbf{t}|\mathbf{W}, \boldsymbol{\Sigma}) = \mathcal{N}(\mathbf{t}|\mathbf{y}(\mathbf{x}, \mathbf{W}), \boldsymbol{\Sigma}) \tag{4.61}
+\end{equation}
+其中
+\begin{equation}
+\mathbf{y}(\mathbf{x}, \mathbf{W}) = \mathbf{W}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}) \tag{4.62}
+\end{equation}
+以及一个包含输入基向量 $\boldsymbol{\phi}(\mathbf{x}_n)$ 和相应目标向量 $\mathbf{t}_n$ 的训练数据集，其中 $n = 1, \dots, N$。证明参数矩阵 $\mathbf{W}$ 的最大似然解 $\mathbf{W}_{\text{ML}}$ 具有这样的性质：每一列都由形如(4.14)的表达式给出，这是各向同性噪声分布的解。请注意，这与协方差矩阵 $\boldsymbol{\Sigma}$ 无关。证明 $\boldsymbol{\Sigma}$ 的最大似然解由下式给出
+\begin{equation}
+\boldsymbol{\Sigma} = \frac{1}{N} \sum_{n=1}^{N} \left( \mathbf{t}_n - \mathbf{W}_{\text{ML}}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right) \left( \mathbf{t}_n - \mathbf{W}_{\text{ML}}^{\mathrm{T}} \boldsymbol{\phi}(\mathbf{x}_n) \right)^{\mathrm{T}}. \tag{4.63}
+\end{equation}
+
+
+\textbf{4.8} $(\star)$ Consider the generalization of the squared-loss function (4.35) for a single target variable $t$ to multiple target variables described by the vector $\mathbf{t}$ given by
+\begin{equation}
+\mathbb{E}[L(\mathbf{t}, \mathbf{f}(\mathbf{x}))] = \iint ||\mathbf{f}(\mathbf{x}) - \mathbf{t}||^2 p(\mathbf{x}, \mathbf{t}) \,\mathrm{d}\mathbf{x}\,\mathrm{d}\mathbf{t}. \tag{4.64}
+\end{equation}
+Using the calculus of variations, show that the function $\mathbf{f}(\mathbf{x})$ for which this expected loss is minimized is given by
+\begin{equation}
+\mathbf{f}(\mathbf{x}) = \mathbb{E}_{\mathbf{t}}[\mathbf{t}|\mathbf{x}]. \tag{4.65}
+\end{equation}
+
+\textbf{4.8} $(\star)$ 考虑将单个目标变量 $t$ 的平方损失函数(4.35)推广到由向量 $\mathbf{t}$ 描述的多个目标变量，其形式为
+\begin{equation}
+\mathbb{E}[L(\mathbf{t}, \mathbf{f}(\mathbf{x}))] = \iint ||\mathbf{f}(\mathbf{x}) - \mathbf{t}||^2 p(\mathbf{x}, \mathbf{t}) \,\mathrm{d}\mathbf{x}\,\mathrm{d}\mathbf{t}. \tag{4.64}
+\end{equation}
+使用变分法，证明使该期望损失最小化的函数 $\mathbf{f}(\mathbf{x})$ 由下式给出
+\begin{equation}
+\mathbf{f}(\mathbf{x}) = \mathbb{E}_{\mathbf{t}}[\mathbf{t}|\mathbf{x}]. \tag{4.65}
+\end{equation}
+
+
+\textbf{4.9} $(\star)$ By expansion of the square in (4.64), derive a result analogous to (4.39) and, hence, show that the function $\mathbf{f}(\mathbf{x})$ that minimizes the expected squared loss for a vector $\mathbf{t}$ of target variables is again given by the conditional expectation of $\mathbf{t}$ in the form (4.65).
+
+\textbf{4.9} $(\star)$ 通过展开(4.64)中的平方项，推导出一个类似于(4.39)的结果，并由此证明，对于目标变量向量 $\mathbf{t}$，使期望平方损失最小化的函数 $\mathbf{f}(\mathbf{x})$ 再次由(4.65)形式的 $\mathbf{t}$ 的条件期望给出。
+
+
+\textbf{4.10} $(\star\star)$ Rederive the result (4.65) by first expanding (4.64) analogous to (4.39).
+
+\textbf{4.10} $(\star\star)$ 首先通过与(4.39)类似的方式展开(4.64)，重新推导结果(4.65)。
+
+
+\textbf{4.11} $(\star\star)$ The following distribution
+\begin{equation}
+p(x|\sigma^2, q) = \frac{q}{2(2\sigma^2)^{1/q}\Gamma(1/q)} \exp\left(-\frac{|x|^q}{2\sigma^2}\right) \tag{4.66}
+\end{equation}
+is a generalization of the univariate Gaussian distribution. Here $\Gamma(x)$ is the gamma function defined by
+\begin{equation}
+\Gamma(x) = \int_{-\infty}^{\infty} u^{x-1} e^{-u} \,\mathrm{d}u. \tag{4.67}
+\end{equation}
+Show that this distribution is normalized so that
+\begin{equation}
+\int_{-\infty}^{\infty} p(x|\sigma^2, q) \,\mathrm{d}x = 1 \tag{4.68}
+\end{equation}
+and that it reduces to the Gaussian when $q = 2$. Consider a regression model in which the target variable is given by $t = y(\mathbf{x}, \mathbf{w}) + \epsilon$ and $\epsilon$ is a random noise variable drawn from the distribution (4.66). Show that the log likelihood function over $\mathbf{w}$ and $\sigma^2$, for an observed data set of input vectors $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$ and corresponding target variables $\mathbf{t} = (t_1, \dots, t_N)^{\mathrm{T}}$, is given by
+\begin{equation}
+\ln p(\mathbf{t}|\mathbf{X}, \mathbf{w}, \sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^{N} |y(\mathbf{x}_n, \mathbf{w}) - t_n|^q - \frac{N}{q} \ln(2\sigma^2) + \text{const} \tag{4.69}
+\end{equation}
+where 'const' denotes terms independent of both $\mathbf{w}$ and $\sigma^2$. Note that, as a function of $\mathbf{w}$, this is the $L_q$ error function considered in Section 4.2.
+
+\textbf{4.11} $(\star\star)$ 以下分布
+\begin{equation}
+p(x|\sigma^2, q) = \frac{q}{2(2\sigma^2)^{1/q}\Gamma(1/q)} \exp\left(-\frac{|x|^q}{2\sigma^2}\right) \tag{4.66}
+\end{equation}
+是单变量高斯分布的推广。这里 $\Gamma(x)$ 是由下式定义的伽马函数
+\begin{equation}
+\Gamma(x) = \int_{-\infty}^{\infty} u^{x-1} e^{-u} \,\mathrm{d}u. \tag{4.67}
+\end{equation}
+证明该分布是归一化的，即
+\begin{equation}
+\int_{-\infty}^{\infty} p(x|\sigma^2, q) \,\mathrm{d}x = 1 \tag{4.68}
+\end{equation}
+并且当 $q = 2$ 时它简化为高斯分布。考虑一个回归模型，其中目标变量由 $t = y(\mathbf{x}, \mathbf{w}) + \epsilon$ 给出，且 $\epsilon$ 是从分布(4.66)中抽取的随机噪声变量。证明对于观测到的输入向量数据集 $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$ 和相应的目标变量 $\mathbf{t} = (t_1, \dots, t_N)^{\mathrm{T}}$，关于 $\mathbf{w}$ 和 $\sigma^2$ 的对数似然函数由下式给出
+\begin{equation}
+\ln p(\mathbf{t}|\mathbf{X}, \mathbf{w}, \sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^{N} |y(\mathbf{x}_n, \mathbf{w}) - t_n|^q - \frac{N}{q} \ln(2\sigma^2) + \text{const} \tag{4.69}
+\end{equation}
+其中 'const' 表示与 $\mathbf{w}$ 和 $\sigma^2$ 均无关的项。注意，作为 $\mathbf{w}$ 的函数，这就是4.2节中考虑的 $L_q$ 误差函数。
+
+
+\textbf{4.12} $(\star\star)$ Consider the expected loss for regression problems under the $L_q$ loss function given by (4.40). Write down the condition that $y(\mathbf{x})$ must satisfy to minimize $\mathbb{E}[L_q]$. Show that, for $q = 1$, this solution represents the conditional median, i.e., the function $y(\mathbf{x})$ such that the probability mass for $t < y(\mathbf{x})$ is the same as for $t \ge y(\mathbf{x})$. Also show that the minimum expected $L_q$ loss for $q \to 0$ is given by the conditional mode, i.e., by the function $y(\mathbf{x})$ being equal to the value of $t$ that maximizes $p(t|\mathbf{x})$ for each $\mathbf{x}$.
+
+\textbf{4.12} $(\star\star)$ 考虑在(4.40)给出的 $L_q$ 损失函数下回归问题的期望损失。写出 $y(\mathbf{x})$ 必须满足以最小化 $\mathbb{E}[L_q]$ 的条件。证明，对于 $q = 1$，该解代表条件中位数，即函数 $y(\mathbf{x})$ 使得 $t < y(\mathbf{x})$ 的概率质量与 $t \ge y(\mathbf{x})$ 的概率质量相同。还证明，当 $q \to 0$ 时，最小期望 $L_q$ 损失由条件众数给出，即由函数 $y(\mathbf{x})$ 等于使每个 $\mathbf{x}$ 的 $p(t|\mathbf{x})$ 最大化的 $t$ 值给出。
+
+\end{document}
+

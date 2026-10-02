@@ -1,0 +1,536 @@
+\documentclass[12pt, t, aspectratio=169]{beamer}
+\usepackage{ctex}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{etoolbox} % 用于条件判断
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+% 设置主题与配色
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{} % 去除导航符号
+
+% 标题页信息
+\title{第二章：概率论与机器学习核心概念}
+\subtitle{从贝叶斯定理到信息论}
+% \institute{}
+\author{《深度学习基础》课程小组}
+\date{\today}
+
+% 数学命令简写
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\KL}{D_{\text{KL}}}
+
+% 自定义命令：仅显示特定范围的 section 在目录中
+% 用法: \tableofcontents[sections={1-10}]
+\makeatletter
+\newcommand{\tableofcontentsrange}[2]{%
+  \begingroup
+    \def\beamer@checksection##1{%
+      \ifnum##1<#1\relax
+        \let\beamer@next=\relax
+      \else
+        \ifnum##1>#2\relax
+          \let\beamer@next=\relax
+        \else
+          \let\beamer@next=\beamer@showsection
+        \fi
+      \fi
+      \beamer@next
+    }%
+    \tableofcontents
+  \endgroup
+}
+\makeatother
+
+\begin{document}
+
+% 封面页
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 目录页 1 (第 1-10 个名词)
+\begin{frame}{目录}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \tableofcontents[sections={1-10}]
+        \column{0.5\textwidth}
+        \tableofcontents[sections={11-20}]
+    \end{columns}
+%    \vspace{0.5cm}
+%    \centering \small (续见下一页)
+\end{frame}
+
+% 目录页 2 (第 11-20 个名词)
+%\begin{frame}{目录 (2/2)}
+%    \begin{columns}
+%        \column{0.5\textwidth}
+%        \tableofcontents[sections={11-15}]
+%        \column{0.5\textwidth}
+%        \tableofcontents[sections={16-20}]
+%    \end{columns}
+%\end{frame}
+
+% --- 以下内容保持不变 ---
+
+% 1. Bayes' theorem
+\section{Bayes' theorem}
+\begin{frame}{贝叶斯定理 (Bayes' Theorem)}
+    \begin{block}{定义}
+        贝叶斯定理描述了在已知相关证据 $B$ 的情况下，事件 $A$ 发生的概率如何更新。它是贝叶斯统计推断的核心。
+        它提供了一种根据新数据更新信念（概率）的数学框架。
+    \end{block}
+    
+    \begin{equation*}
+        P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+    \end{equation*}
+    
+    % \vspace{0.5cm}
+    \begin{itemize}
+        \item $P(A|B)$: 后验概率 (Posterior)
+        \item $P(B|A)$: 似然函数 (Likelihood)
+        \item $P(A)$: 先验概率 (Prior)
+        \item $P(B)$: 证据或边际概率 (Evidence)
+        % \item 意义：
+    \end{itemize}
+    
+\end{frame}
+
+% 2. prior probability
+\section{prior probability}
+\begin{frame}{先验概率 (Prior Probability)}
+    \begin{block}{定义}
+        在观察到任何新数据或证据之前，基于现有知识、历史数据或主观信念对事件发生概率的估计。
+    \end{block}
+    
+    %\vspace{0.5cm}
+    \begin{itemize}
+        \item 记作 $P(\theta)$ 或 $P(A)$。
+        \item 代表“事前”的信念。
+        \item 在贝叶斯推断中，先验可以是无信息的（Uniform），也可以是有信息的（Informative）。
+    \end{itemize}
+    
+    % \vspace{0.5cm}
+    \begin{exampleblock}{示例}
+        在抛硬币实验中，如果我们认为硬币是公平的，那么正面朝上的先验概率 $P(H) = 0.5$。
+    \end{exampleblock}
+\end{frame}
+
+% 3. posterior probability
+\section{posterior probability}
+\begin{frame}{后验概率 (Posterior Probability)}
+    \begin{block}{定义}
+        在考虑了新的证据或数据之后，对事件发生概率的修正估计。
+    \end{block}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item 记作 $P(\theta|D)$ 或 $P(A|B)$。
+        \item 是贝叶斯推断的最终目标。
+        \item 计算公式：$\text{后验} \propto \text{似然} \times \text{先验}$。
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{直观理解}
+        后验概率结合了我们的初始信念（先验）和新观察到的数据（似然），反映了更新后的认知状态。
+    \end{alertblock}
+\end{frame}
+
+% 4. Independent variables
+\section{Independent variables}
+\begin{frame}{独立变量 (Independent Variables)}
+    \begin{block}{定义}
+        如果两个随机变量 $X$ 和 $Y$ 的联合概率分布等于它们边缘概率分布的乘积，则称它们是统计独立的。
+    \end{block}
+    
+    \begin{equation*}
+        P(X, Y) = P(X)P(Y)
+    \end{equation*}
+    或者条件概率形式：
+    \begin{equation*}
+        P(X|Y) = P(X) \quad (\text{当 } P(Y) > 0)
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item 独立性意味着知道 $Y$ 的值不会提供关于 $X$ 的任何信息。
+        \item 注意：独立一定不相关，但不相关不一定独立（除非是高斯分布）。
+    \end{itemize}
+\end{frame}
+
+% 5. probability density function
+\section{probability density function}
+\begin{frame}{概率密度函数 (PDF)}
+    \begin{block}{定义}
+        对于连续型随机变量 $X$，概率密度函数 $f(x)$ 描述了变量在某个特定值附近的相对可能性。
+    \end{block}
+    
+    \begin{itemize}
+        \item $f(x) \geq 0$
+        \item $\int_{-\infty}^{\infty} f(x) dx = 1$
+        \item 变量落在区间 $[a, b]$ 的概率为：
+        %\begin{equation*}
+         $\displaystyle   P(a \leq X \leq b) = \int_{a}^{b} f(x) dx$
+        %\end{equation*}
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{注意}
+        $f(x)$ 本身不是概率（可以大于1），只有积分面积才是概率。
+    \end{alertblock}
+\end{frame}
+
+% 6. cumulative distribution function
+\section{cumulative distribution function}
+\begin{frame}{累积分布函数 (CDF)}
+    \begin{block}{定义}
+        累积分布函数 $F(x)$ 表示随机变量 $X$ 取值小于或等于 $x$ 的概率。
+    \end{block}
+    
+    \begin{equation*}
+        F(x) = P(X \leq x)
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item 对于连续变量：$F(x) = \int_{-\infty}^{x} f(t) dt$。
+        \item 性质：单调不减，$F(-\infty)=0$, $F(\infty)=1$。
+        \item PDF 是 CDF 的导数：$f(x) = \frac{d}{dx}F(x)$。
+    \end{itemize}
+\end{frame}
+
+% 7. expectation
+\section{expectation}
+\begin{frame}{期望 (Expectation)}
+    \begin{block}{定义}
+        期望（或均值）是随机变量取值的加权平均，权重为对应的概率。它描述了分布的中心位置。
+    \end{block}
+    
+    \begin{itemize}
+        \item 离散型：$\E[X] = \sum_{x} x P(X=x)$
+        \item 连续型：$\E[X] = \int_{-\infty}^{\infty} x f(x) dx$
+        \item 线性性质：$\E[aX + bY] = a\E[X] + b\E[Y]$
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{exampleblock}{意义}
+        如果在大量重复实验中观测随机变量，其算术平均值将收敛于期望值（大数定律）。
+    \end{exampleblock}
+\end{frame}
+
+% 8. covariance
+\section{covariance}
+\begin{frame}{协方差 (Covariance)}
+    \begin{block}{定义}
+        协方差衡量两个随机变量 $X$ 和 $Y$ 之间的线性相关程度及其方向。
+    \end{block}
+    
+    \begin{equation*}
+        \Cov(X, Y) = \E[(X - \E[X])(Y - \E[Y])] = \E[XY] - \E[X]\E[Y]
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item $\Cov(X, Y) > 0$: 正相关（同向变化）。
+        \item $\Cov(X, Y) < 0$: 负相关（反向变化）。
+        \item $\Cov(X, Y) = 0$: 不相关（但不一定独立）。
+        \item $\Var(X) = \Cov(X, X)$。
+    \end{itemize}
+\end{frame}
+
+% 9. conditional expectation
+\section{conditional expectation}
+\begin{frame}{条件期望 (Conditional Expectation)}
+    \begin{block}{定义}
+        在已知另一个随机变量 $Y$ 取特定值 $y$ 的条件下，随机变量 $X$ 的期望值。
+    \end{block}
+    
+    \begin{equation*}
+        \E[X|Y=y] = \begin{cases} 
+        \sum_{x} x P(X=x|Y=y) & \text{(离散)} \\
+        \int_{-\infty}^{\infty} x f_{X|Y}(x|y) dx & \text{(连续)}
+        \end{cases}
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{alertblock}{全期望公式}
+        $\E[X] = \E[\E[X|Y]]$。即：无条件期望等于条件期望的期望。
+    \end{alertblock}
+\end{frame}
+
+% 10. Gaussian distribution
+\section{Gaussian distribution}
+\begin{frame}{高斯分布 (Gaussian Distribution)}
+    \begin{block}{定义}
+        又称正态分布，是最常见的连续概率分布，由均值 $\mu$ 和方差 $\sigma^2$ 完全确定。
+    \end{block}
+    
+    \begin{equation*}
+        \mathcal{N}(x|\mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item 钟形曲线，关于 $\mu$ 对称。
+        \item 中心极限定理：大量独立随机变量之和趋向于高斯分布。
+        \item 在机器学习中广泛用于噪声建模和先验假设。
+    \end{itemize}
+\end{frame}
+
+% 11. likelihood function
+\section{likelihood function}
+\begin{frame}{似然函数 (Likelihood Function)}
+    \begin{block}{定义}
+        给定观测数据 $D$ 时，关于模型参数 $\theta$ 的函数。它衡量参数 $\theta$ 产生该数据的可能性。
+    \end{block}
+    
+    \begin{equation*}
+        L(\theta|D) = P(D|\theta)
+    \end{equation*}
+    
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item 注意：虽然形式上等于条件概率，但视为 $\theta$ 的函数时，它不是概率分布（对 $\theta$ 积分不一定为1）。
+        \item \textbf{最大似然估计 (MLE)}: 寻找使 $L(\theta|D)$ 最大的 $\theta$。
+    \end{itemize}
+    
+    \begin{alertblock}{区别}
+        概率是固定参数预测数据；似然是固定数据评估参数。
+    \end{alertblock}
+\end{frame}
+
+% 12. problem of over-fitting
+\section{problem of over-fitting}
+\begin{frame}{过拟合问题 (Problem of Over-fitting)}
+    \begin{block}{定义}
+        模型在训练数据上表现极好（误差很低），但在未见过的测试数据上表现很差的现象。
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{原因}: 模型过于复杂，记住了训练数据中的噪声而非潜在规律。
+        \item \textbf{特征}: 高方差 (High Variance)，低偏差 (Low Bias)。
+        \item \textbf{解决方法}:
+        \begin{itemize}
+            \item 正则化 (Regularization, e.g., L1, L2)
+            \item 增加训练数据
+            \item 降低模型复杂度
+            \item Dropout (神经网络)
+            \item 交叉验证
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 13. sum-of-squares error function
+\section{sum-of-squares error function}
+\begin{frame}{平方和误差函数 (Sum-of-Squares Error)}
+    \begin{block}{定义}
+        常用于回归问题的损失函数，衡量模型预测值 $y(x, w)$ 与真实目标值 $t$ 之间的差异。
+    \end{block}
+    
+    \begin{equation*}
+        E(w) = \frac{1}{2} \sum_{n=1}^{N} \{ y(x_n, w) - t_n \}^2
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item 假设噪声服从高斯分布时，最小化 SSE 等价于最大似然估计。
+        \item 系数 $\frac{1}{2}$ 是为了求导方便。
+        \item 对异常值（Outliers）敏感。
+    \end{itemize}
+\end{frame}
+
+% 14. entropy of the random variable
+\section{entropy of the random variable}
+\begin{frame}{随机变量的熵 (Entropy)}
+    \begin{block}{定义}
+        熵 $H(X)$ 衡量离散随机变量 $X$ 的不确定性或信息含量。
+    \end{block}
+    
+    \begin{equation*}
+        H(X) = - \sum_{x} P(x) \log_2 P(x)
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item 单位通常为比特 (bits)。
+        \item $H(X) \geq 0$。
+        \item 当分布均匀时熵最大（最不确定）；当某事件概率为1时熵为0（确定）。
+        \item 表示编码该变量所需的最小平均比特数。
+    \end{itemize}
+\end{frame}
+
+% 15. differential entropy
+\section{differential entropy}
+\begin{frame}{微分熵 (Differential Entropy)}
+    \begin{block}{定义}
+        连续随机变量 $X$ 的熵的推广，称为微分熵 $h(X)$。
+    \end{block}
+    
+    \begin{equation*}
+        h(X) = - \int_{-\infty}^{\infty} f(x) \log f(x) dx
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{注意}
+        \begin{itemize}
+            \item 微分熵可以是负数（不同于离散熵）。
+            \item 它不是绝对信息量的度量，而是相对于均匀分布的相对度量。
+            \item 坐标变换下不具有不变性。
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+% 16. relative entropy or Kullback–Leibler divergence
+\section{relative entropy or Kullback–Leibler divergence}
+\begin{frame}{相对熵 / KL 散度 (KL Divergence)}
+    \begin{block}{定义}
+        衡量两个概率分布 $P$ (真实分布) 和 $Q$ (近似分布) 之间差异的非对称度量。
+    \end{block}
+    
+    \begin{equation*}
+        \KL(P||Q) = \sum_{x} P(x) \log \frac{P(x)}{Q(x)} = \E_{P} \left[ \log \frac{P(x)}{Q(x)} \right]
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item $\KL(P||Q) \geq 0$，当且仅当 $P=Q$ 时取等号。
+        \item 非对称：$\KL(P||Q) \neq \KL(Q||P)$。
+        \item 广泛应用于变分推断、生成模型（如 VAE）和强化学习。
+    \end{itemize}
+\end{frame}
+
+% 17. conditional entropy
+\section{conditional entropy}
+\begin{frame}{条件熵 (Conditional Entropy)}
+    \begin{block}{定义}
+        在已知随机变量 $Y$ 的条件下，随机变量 $X$ 剩余的不确定性。
+    \end{block}
+    
+    \begin{equation*}
+        H(X|Y) = \sum_{y} P(y) H(X|Y=y) = - \sum_{x,y} P(x,y) \log P(x|y)
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item 链式法则：$H(X, Y) = H(Y) + H(X|Y)$。
+        \item $H(X|Y) \leq H(X)$：知道 $Y$ 的信息永远不会增加 $X$ 的不确定性。
+        \item 若 $X, Y$ 独立，则 $H(X|Y) = H(X)$。
+    \end{itemize}
+\end{frame}
+
+% 18. mutual information
+\section{mutual information}
+\begin{frame}{互信息 (Mutual Information)}
+    \begin{block}{定义}
+        衡量两个随机变量 $X$ 和 $Y$ 之间相互依赖程度的量。表示知道其中一个变量能减少另一个变量多少不确定性。
+    \end{block}
+    
+    \begin{equation*}
+        I(X; Y) = H(X) - H(X|Y) = H(Y) - H(Y|X)
+    \end{equation*}
+    或者用 KL 散度表示：
+    \begin{equation*}
+        I(X; Y) = \KL(P(X,Y) || P(X)P(Y))
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item $I(X; Y) \geq 0$。
+        \item 若 $X, Y$ 独立，则 $I(X; Y) = 0$。
+        \item 对称性：$I(X; Y) = I(Y; X)$。
+    \end{itemize}
+\end{frame}
+
+% 19. maximum a posteriori estimate
+\section{maximum a posteriori estimate}
+\begin{frame}{最大后验估计 (MAP Estimate)}
+    \begin{block}{定义}
+        一种参数估计方法，通过最大化后验概率来寻找最优参数 $\theta$。
+    \end{block}
+    
+    \begin{equation*}
+        \hat{\theta}_{\text{MAP}} = \arg\max_{\theta} P(\theta|D) = \arg\max_{\theta} P(D|\theta)P(\theta)
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item 结合了似然 $P(D|\theta)$ 和先验 $P(\theta)$。
+        \item 是贝叶斯学派的一种点估计方法。
+        \item 当先验为均匀分布时，MAP 退化为最大似然估计 (MLE)。
+        \item 正则化项通常对应于先验分布（例如 L2 正则化对应高斯先验）。
+    \end{itemize}
+\end{frame}
+
+% 20. Bayesian machine learning
+\section{Bayesian machine learning}
+\begin{frame}{贝叶斯机器学习 (Bayesian Machine Learning)}
+    \begin{block}{定义}
+        一种机器学习方法论，将模型参数视为随机变量，利用贝叶斯定理结合先验知识和观测数据来推断参数的后验分布，而非单一的点估计。
+    \end{block}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{核心优势}:
+        \begin{itemize}
+            \item 自然地处理不确定性（Uncertainty Quantification）。
+            \item 有效防止过拟合（通过积分边缘化参数）。
+            \item 可以融入领域知识（通过先验）。
+        \end{itemize}
+        \item \textbf{挑战}: 后验分布的计算通常难以解析求解，需借助近似推断（如 MCMC, 变分推断 VI）。
+    \end{itemize}
+\end{frame}
+
+\end{document}
+
+做一个latex beamer, 解释深度学习基础与概念里的有关概率理论的关键名词，每个名词一页slide（必要时可多页）， 请输出中文 latex 代码。以下是部分术语，请参考：
+
+Bayes’ theorem
+
+prior probability
+
+posterior probability
+
+Independent variables
+
+probability density function
+
+cumulative distribution function
+
+expectation
+
+covariance
+
+conditional expectation
+
+Gaussian distribution
+
+likelihood function
+
+problem of over-fitting
+
+sum-of-squares error function
+
+entropy of the random variable
+
+differential entropy
+
+relative entropy or Kullback–Leibler divergence
+
+conditional entropy
+
+mutual information
+
+maximum a posteriori estimate
+
+Bayesian machine learning
+
+
