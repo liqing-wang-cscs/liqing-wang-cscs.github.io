@@ -618,18 +618,45 @@
                     { id: 'ch9s3', title: '9.3 ', file: 'ch9/ch9-3/ch9-3.md', type: 'md' }
                 ]
             },
-            {
-                id: 'ch10',
-                title: '第十章 · 卷积网络',
-                sections: [
-                    { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
-                    { id: 'ch10s2', title: '10.2 卷积滤波器', file: 'ch10/ch10-2/ch10-2.md', type: 'md' },
-                    { id: 'ch10s3', title: '10.3 可视化训练好的CNN', file: 'ch10/ch10-3/ch10-3.md', type: 'md' },
-                    { id: 'ch10s4', title: '10.4 目标检测', file: 'ch10/ch10-4/ch10-4.md', type: 'md' },
-                    { id: 'ch10s5', title: '10.5 图像分割', file: 'ch10/ch10-5/ch10-5.md', type: 'md' },
-                    { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
-                ]
-            }
+
+            // {
+            //     id: 'ch10',
+            //     title: '第十章 · 卷积网络',
+            //     sections: [
+            //         { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
+            //         { id: 'ch10s2', title: '10.2 卷积滤波器', file: 'ch10/ch10-2/ch10-2.md', type: 'md' },
+            //         { id: 'ch10s3', title: '10.3 可视化训练好的CNN', file: 'ch10/ch10-3/ch10-3.md', type: 'md' },
+            //         { id: 'ch10s4', title: '10.4 目标检测', file: 'ch10/ch10-4/ch10-4.md', type: 'md' },
+            //         { id: 'ch10s5', title: '10.5 图像分割', file: 'ch10/ch10-5/ch10-5.md', type: 'md' },
+            //         { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
+            //     ]
+            // }
+
+{
+    id: 'ch10',
+    title: '第十章 · 卷积网络',
+    sections: [
+        { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
+        { id: 'ch10s2', title: '10.2 卷积滤波器', type: 'group', // 关键：表示这是一个可展开的父节点
+            file: 'ch10/ch10-2/ch10-2.md', // 可选：点击父节点时中间栏打开这个总览 md
+            children: [
+                { id: 'ch10s2-0', title: '10.2.0 动机与方法', file: 'ch10/ch10-2/ch10-2-0/ch10-2-0.md', type: 'md' },
+                { id: 'ch10s2-1', title: '10.2.1 特征检测器', file: 'ch10/ch10-2/ch10-2-1/ch10-2-1.md', type: 'md' },
+                { id: 'ch10s2-2', title: '10.2.2 平移不变性', file: 'ch10/ch10-2/ch10-2-2/ch10-2-2.md', type: 'md' },
+                { id: 'ch10s2-3', title: '10.2.3 填充', file: 'ch10/ch10-2/ch10-2-3/ch10-2-3.md', type: 'md' },
+                { id: 'ch10s2-4', title: '10.2.4 跨步卷积', file: 'ch10/ch10-2/ch10-2-4/ch10-2-4.md', type: 'md' },
+                { id: 'ch10s2-5', title: '10.2.5 多维卷积', file: 'ch10/ch10-2/ch10-2-5/ch10-2-5.md', type: 'md' },
+                { id: 'ch10s2-6', title: '10.2.6 池化', file: 'ch10/ch10-2/ch10-2-6/ch10-2-6.md', type: 'md' },
+                { id: 'ch10s2-7', title: '10.2.7 多层卷积', file: 'ch10/ch10-2/ch10-2-7/ch10-2-7.md', type: 'md' },
+                { id: 'ch10s2-8', title: '10.2.8 网络架构示例', file: 'ch10/ch10-2/ch10-2-8/ch10-2-8.md', type: 'md' }
+            ]
+        },
+        { id: 'ch10s3', title: '10.3 可视化训练好的CNN', file: 'ch10/ch10-3/ch10-3.md', type: 'md' },
+        { id: 'ch10s4', title: '10.4 目标检测', file: 'ch10/ch10-4/ch10-4.md', type: 'md' },
+        { id: 'ch10s5', title: '10.5 图像分割', file: 'ch10/ch10-5/ch10-5.md', type: 'md' },
+        { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
+    ]
+}
         ];
 
         // 扁平映射
