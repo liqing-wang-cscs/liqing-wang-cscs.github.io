@@ -1,103 +1,83 @@
-<!-- 第6章：深度神经网络、第4节：误差函数 - 自测题 -->
-<div class="practice-container">
-    <h1 class="practice-title">第6章：深度神经网络、第4节：误差函数 - 自测题</h1>
-    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>第6章：深度神经网络、第4节：误差函数 - 自测题</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .option.correct {
+            background-color: #e8f5e8 !important; /* 淡绿色 */
+            border-color: #4CAF50 !important;
+        }
+        .option.incorrect {
+            background-color: #fdeeee !important; /* 淡红色 */
+            border-color: #f44336 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>第6章：深度神经网络、第4节：误差函数 - 自测题</h1>
+    <p class="instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+    
     <div id="questions-container">
         <!-- 问题将通过JavaScript动态生成 -->
     </div>
-</div>
 
-<style>
-    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
-    .practice-container {
-        font-family: Arial, sans-serif;
-        padding: 0;
-        margin: 0;
-    }
-
-    .practice-container .practice-title {
-        text-align: center;
-        color: #1e3a8a;
-        font-size: 1.5rem;
-        margin-top: 0;
-        margin-bottom: 1rem;
-    }
-
-    .practice-container .practice-instructions {
-        text-align: center;
-        margin-bottom: 30px;
-        font-style: italic;
-        color: #555;
-    }
-
-    .practice-container .question-container {
-        margin-bottom: 30px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background: #fff;
-    }
-
-    .practice-container .options {
-        margin-top: 10px;
-    }
-
-    .practice-container .option {
-        display: block;
-        margin: 8px 0;
-        padding: 10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .practice-container .option:hover {
-        background-color: #eef7ff;
-    }
-
-    .practice-container .option.correct {
-        background-color: #e8f5e8 !important;
-        border-color: #4CAF50 !important;
-    }
-
-    .practice-container .option.incorrect {
-        background-color: #fdeeee !important;
-        border-color: #f44336 !important;
-    }
-
-    .practice-container .explanation {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #f0f8e0;
-        border-left: 4px solid #4CAF50;
-        display: none;
-    }
-
-    .practice-container h3 {
-        font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 0.5rem;
-    }
-</style>
-
-<!-- 引入MathJax -->
-<script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']]
-        },
-        svg: { fontCache: 'global' }
-    };
-</script>
-<script id="MathJax-script" async 
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
-
-<script>
-    (function() {
+    <script>
         // 转换后的题目数据 - 按照指定格式
         const questions = [
             {
@@ -169,7 +149,12 @@
 
         // 将选项对象转换为数组
         function convertOptionsToArray(optionsObj) {
-            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
         }
 
         // 获取答案索引
@@ -180,19 +165,14 @@
         // 渲染问题
         function renderQuestions() {
             const container = document.getElementById('questions-container');
-            if (!container) return;
-
-            // 避免重复渲染
-            if (container.dataset.rendered === 'true') return;
-            container.dataset.rendered = 'true';
-
+            
             questions.forEach((q, index) => {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'question-container';
-
+                
                 const optionsArray = convertOptionsToArray(q.options);
                 let optionsHtml = '';
-
+                
                 optionsArray.forEach((opt, optIndex) => {
                     optionsHtml += `
                         <label class="option" id="option-${index}-${optIndex}">
@@ -201,7 +181,7 @@
                         </label>
                     `;
                 });
-
+                
                 qDiv.innerHTML = `
                     <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
                     <div class="options">
@@ -209,11 +189,11 @@
                     </div>
                     <div id="explanation-${index}" class="explanation"></div>
                 `;
-
+                
                 container.appendChild(qDiv);
             });
-
-            // 渲染 MathJax（如果父页面引入了 MathJax）
+            
+            // 渲染MathJax公式
             setTimeout(() => {
                 if (typeof MathJax !== 'undefined') {
                     MathJax.typeset();
@@ -221,43 +201,48 @@
             }, 100);
         }
 
-        // 选择选项的处理函数（挂到 window，因为 onclick 需要全局访问）
-        window.selectOption = function(questionIndex, selectedOption) {
+        // 选择选项的处理函数
+        function selectOption(questionIndex, selectedOption) {
             const question = questions[questionIndex];
             const answerIndex = getAnswerIndex(question.answer);
             const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
-
+            
             // 移除之前的选择样式
             optionLabels.forEach(label => {
                 label.classList.remove('correct', 'incorrect');
             });
-
+            
             // 应用新选择的样式
-            if (selectedOption == answerIndex) {
+            if(selectedOption == answerIndex) {
+                // 点击正确选项：显示为淡绿色
                 document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
-
+                
+                // 显示解释
                 const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
                 explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
                 explanationDiv.style.borderLeftColor = '#4CAF50';
                 explanationDiv.style.display = 'block';
             } else {
+                // 点击错误选项：显示为淡红色
                 document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
-
+                
+                // 显示解释
                 const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
                 explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
                 explanationDiv.style.borderLeftColor = '#f44336';
                 explanationDiv.style.display = 'block';
             }
-
-            // 重新渲染 MathJax
+            
+            // 重新渲染MathJax公式
             setTimeout(() => {
                 if (typeof MathJax !== 'undefined') {
                     MathJax.typeset();
                 }
             }, 50);
-        };
+        }
 
-        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
-        renderQuestions();
-    })();
-</script>
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

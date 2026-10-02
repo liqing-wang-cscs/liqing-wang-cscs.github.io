@@ -90,6 +90,20 @@
     }
 </style>
 
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
 <script>
     // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
     // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发

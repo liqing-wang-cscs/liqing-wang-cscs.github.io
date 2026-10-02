@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第7章-梯度下降-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{7.1} (\textbf{*}) By substituting (7.10) into (7.7) and using (7.8) and (7.9), show that the error function {7.7} can be written in the form {7.11}.
+
+\textbf{7.1} (\textbf{*}) 通过代入公式 (7.10) 到公式 (7.7)，并使用公式 (7.8) 和 (7.9)，证明误差函数 {7.7} 可以写成公式 {7.11} 的形式。
+
+\textbf{7.2} (\textbf{*}) Consider a Hessian matrix $\mathbf{H}$ with eigenvector equation {7.8}. By setting the vector $\mathbf{v}$ in {7.14} equal to each of the eigenvectors $\mathbf{u}_i$ in turn, show that $\mathbf{H}$ is positive definite if, and only if, all its eigenvalues are positive.
+
+\textbf{7.2} (\textbf{*}) 考虑一个具有特征向量方程 {7.8} 的赫森矩阵 $\mathbf{H}$。通过将公式 {7.14} 中的向量 $\mathbf{v}$ 依次设置为每个特征向量 $\mathbf{u}_i$，证明当且仅当其所有特征值均为正时，$\mathbf{H}$ 是正定的。
+
+\textbf{7.3} (\textbf{* *}) By considering the local Taylor expansion {7.7} of an error function about a stationary point $\mathbf{w}^*$, show that the necessary and sufficient condition for the stationary point to be a local minimum of the error function is that the Hessian matrix $\mathbf{H}$, defined by {7.5} with $\widehat{\mathbf{w}} = \mathbf{w}^*$, is positive definite.
+
+\textbf{7.3} (\textbf{* *}) 通过考虑误差函数在驻点 $\mathbf{w}^*$ 附近的局部泰勒展开式 {7.7}，证明驻点是误差函数的局部最小值的必要充分条件是赫森矩阵 $\mathbf{H}$（由公式 {7.5} 定义，其中 $\widehat{\mathbf{w}} = \mathbf{w}^*$）是正定的。
+
+\textbf{7.4} (\textbf{* *}) Consider a linear regression model with a single input variable $x$ and a single output variable $y$ of the form
+\[
+y(x, w, b) = wx + b
+\]
+together with a sum-of-squares error function given by
+\[
+E(w, b) = \frac{1}{2} \sum_{n=1}^{N} \left\{ y(x_n, w, b) - t_n \right\}^2.
+\]
+Derive expressions for the elements of the $2 \times 2$ Hessian matrix given by the second derivatives of the error function with respect to the weight parameter $w$ and bias parameter $b$. Show that the trace and the determinant of this Hessian are both positive. Since the trace represents the sum of the eigenvalue and the determinant corresponds to the product of the eigenvalues, then both eigenvalues are positive and hence the stationary point of the error function is a minimum.
+
+\textbf{7.4} (\textbf{* *}) 考虑一个线性回归模型，该模型有一个输入变量 $x$ 和一个输出变量 $y$，形式为
+\[
+y(x, w, b) = wx + b
+\]
+以及平方和误差函数
+\[
+E(w, b) = \frac{1}{2} \sum_{n=1}^{N} \left\{ y(x_n, w, b) - t_n \right\}^2.
+\]
+推导误差函数对权重参数 $w$ 和偏置参数 $b$ 的二阶导数所给出的 $2 \times 2$ 赫森矩阵元素的表达式。证明该赫森矩阵的迹和行列式均为正。由于迹表示特征值的和，而对应于特征值的乘积，则两个特征值均为正，因此误差函数的驻点是最小值。
+
+\textbf{7.5} (\textbf{* *}) Consider a single-layer classification model with a single input variable $x$ and a single output variable $y$ of the form
+\[
+y(x, w, b) = \sigma(wx + b)
+\]
+where $\sigma(\cdot)$ is the logistic sigmoid function defined by {5.42} together with a cross-entropy error function given by
+\[
+E(w, b) = \sum_{n=1}^{N} \left\{ t_n \ln y(x_n, w, b) + (1 - t_n) \ln(1 - y(x_n, w, b)) \right\}.
+\]
+Derive expressions for the elements of the $2 \times 2$ Hessian matrix given by the second derivatives of the error function with respect to the weight parameter $w$ and bias parameter $b$. Show that the trace and the determinant of this Hessian are both positive. Since the trace represents the sum of the eigenvalue and the determinant corresponds to the product of the eigenvalues, then both eigenvalues are positive and hence the stationary point of the error function is a minimum.
+
+\textbf{7.5} (\textbf{* *}) 考虑一个单层分类模型，该模型有一个输入变量 $x$ 和一个输出变量 $y$，形式为
+\[
+y(x, w, b) = \sigma(wx + b)
+\]
+其中 $\sigma(\cdot)$ 是由公式 {5.42} 定义的逻辑 Sigmoid 函数，并且有交叉熵误差函数
+\[
+E(w, b) = \sum_{n=1}^{N} \left\{ t_n \ln y(x_n, w, b) + (1 - t_n) \ln(1 - y(x_n, w, b)) \right\}.
+\]
+推导误差函数对权重参数 $w$ 和偏置参数 $b$ 的二阶导数所给出的 $2 \times 2$ 赫森矩阵元素的表达式。证明该赫森矩阵的迹和行列式均为正。由于迹表示特征值的和，而对应于特征值的乘积，则两个特征值均为正，因此误差函数的驻点是最小值。
+
+\textbf{7.6} (\textbf{* *}) Consider a quadratic error function defined by {7.7} in which the Hessian matrix $\mathbf{H}$ has an eigenvalue equation given by {7.8}. Show that the contours of constant error are ellipses whose axes are aligned with the eigenvectors $\mathbf{u}_i$ with lengths that are inversely proportional to the square roots of the corresponding eigenvalues $\lambda_i$.
+
+\textbf{7.6} (\textbf{* *}) 考虑一个由公式 {7.7} 定义的二次误差函数，其中赫森矩阵 $\mathbf{H}$ 具有由公式 {7.8} 给出的特征值方程。证明恒定误差的等高线是椭圆，其轴与特征向量 $\mathbf{u}_i$ 对齐，长度与相应特征值 $\lambda_i$ 的平方根成反比。
+
+\textbf{7.7} (\textbf{*}) Show that, as a consequence of the symmetry of the Hessian matrix $\mathbf{H}$, the number of independent elements in the quadratic error function {7.3} is given by $W(W+3)/2$.
+
+\textbf{7.7} (\textbf{*}) 证明由于赫森矩阵 $\mathbf{H}$ 的对称性，二次误差函数 {7.3} 中独立元素的数量为 $W(W+3)/2$。
+
+\textbf{7.8} (\textbf{*}) Consider a set of values $x_1, \ldots, x_N$ drawn from a distribution with mean $\mu$ and variance $\sigma^2$, and define the sample mean to be
+\[
+\overline{x} = \frac{1}{N} \sum_{n=1}^{N} x_n.
+\]
+Show that the expectation of the squared error $(\overline{x} - \mu)^2$ with respect to the distribution from which the data is drawn is given by $\sigma^2/N$. This shows that the RMS error in the sample mean is given by $\sigma/\sqrt{N}$, which decreases relatively slowly as the sample size $N$ increases.
+
+\textbf{7.8} (\textbf{*}) 考虑一组从均值为 $\mu$、方差为 $\sigma^2$ 的分布中抽取的值 $x_1, \ldots, x_N$，并定义样本均值为
+\[
+\overline{x} = \frac{1}{N} \sum_{n=1}^{N} x_n.
+\]
+证明关于数据抽取分布的平方误差 $(\overline{x} - \mu)^2$ 的期望值为 $\sigma^2/N$。这表明样本均值的均方根误差为 $\sigma/\sqrt{N}$，随着样本大小 $N$ 的增加，该误差相对缓慢地减小。
+
+\textbf{7.9} (\textbf{* *}) Consider a layered network that computes the functions {7.19} and {7.20} in layer $l$. Suppose we initialize the weights using a Gaussian $\mathcal{N}(0, \epsilon^2)$, and suppose that the outputs $z_j^{(l-1)}$ of the units in layer $l-1$ have variance $\lambda^2$. By using the form of the ReLU activation function, show that the mean and variance of the outputs in layer $l$ are given by {7.21} and {7.22}, respectively. Hence, show that if we want the units in layer $l$ also to have pre-activations with variance $\lambda^2$ then the value of $\epsilon$ should be given by {7.23}.
+
+\textbf{7.9} (\textbf{* *}) 考虑一个在第 $l$ 层计算函数 {7.19} 和 {7.20} 的分层网络。假设我们使用高斯分布 $\mathcal{N}(0, \epsilon^2)$ 初始化权重，并假设第 $l-1$ 层单元的输出 $z_j^{(l-1)}$ 的方差为 $\lambda^2$。通过使用 ReLU 激活函数的形式，证明第 $l$ 层输出的均值和方差分别为公式 {7.21} 和 {7.22}。因此，证明如果我们希望第 $l$ 层的单元也具有方差为 $\lambda^2$ 的预激活值，则 $\epsilon$ 的值应由公式 {7.23} 给出。
+
+\textbf{7.10} (\textbf{* *}) By making use of {7.7}, {7.8}, and {7.10}, derive the results {7.24} and {7.25}, which express the gradient vector and a general weight update, as expansions in the eigenvectors of the Hessian matrix. Use these results, together with the eigenvector orthonormality relation {7.9} and the batch gradient descent formula {7.16}, to derive the result {7.26} for the batch gradient descent update expressed in terms of the coefficients $\{\alpha_i\}$.
+
+\textbf{7.10} (\textbf{* *}) 通过使用公式 {7.7}、{7.8} 和 {7.10}，推导结果 {7.24} 和 {7.25}，这些结果将梯度向量和一般权重更新表示为赫森矩阵特征向量的展开式。使用这些结果，结合特征向量正交归一关系 {7.9} 和批量梯度下降公式 {7.16}，推导出用系数 $\{\alpha_i\}$ 表示的批量梯度下降更新的结果 {7.26}。
+
+\textbf{7.11} (\textbf{*}) Consider a smoothly varying error surface with low curvature such that the gradient varies only slowly with position. Show that, for small values of the learning rate and momentum parameters, the Nesterov momentum gradient update defined by {7.34} is equivalent to the standard gradient descent with momentum defined by {7.31}.
+
+\textbf{7.11} (\textbf{*}) 考虑一个平滑变化的低曲率误差表面，使得梯度随位置的变化非常缓慢。证明对于较小的学习率和动量参数值，由公式 {7.34} 定义的 Nesterov 动量梯度更新等价于由公式 {7.31} 定义的标准带动力量的梯度下降。
+
+\textbf{7.12} (\textbf{* *}) Consider a sequence of values $\{x_1, \ldots, x_N\}$ of some variable $x$, and suppose we compute an exponentially weighted moving average using the formula
+\[
+\mu_n = \beta \mu_{n-1} + (1-\beta)x_n
+\]
+where $0 \leqslant \beta \leqslant 1$. By making use of the following result for the sum of a finite geometric series
+\[
+\sum_{k=1}^{n} \beta^{k-1} = \frac{1-\beta^n}{1-\beta}
+\]
+show that if the sequence of averages is initialized using $\mu_0 = 0$, then the estimators are biased and that the bias can be corrected using
+\[
+\widehat{\mu}_n = \frac{\mu_n}{1-\beta^n}.
+\]
+
+\textbf{7.12} (\textbf{* *}) 考虑某个变量 $x$ 的一系列值 $\{x_1, \ldots, x_N\}$，并假设我们使用以下公式计算指数加权移动平均
+\[
+\mu_n = \beta \mu_{n-1} + (1-\beta)x_n
+\]
+其中 $0 \leqslant \beta \leqslant 1$。通过使用有限几何级数的求和结果
+\[
+\sum_{k=1}^{n} \beta^{k-1} = \frac{1-\beta^n}{1-\beta}
+\]
+证明如果平均值序列使用 $\mu_0 = 0$ 进行初始化，则估计器是有偏的，并且可以通过以下方式校正偏差
+\[
+\widehat{\mu}_n = \frac{\mu_n}{1-\beta^n}.
+\]
+
+\textbf{7.13} (\textbf{*}) In gradient descent, the weight vector $\mathbf{w}$ is updated by taking a step in weight space in the direction of the negative gradient governed by a learning rate parameter $\eta$. Suppose instead that we choose a direction $\mathbf{d}$ in weight space along which we minimize the error function, given the current weight vector $\mathbf{w}^{(\tau)}$. This involves minimizing the quantity
+\[
+E(\mathbf{w}^{(\tau)} + \lambda \mathbf{d})
+\]
+as a function of $\lambda$ to give a value $\lambda^*$ corresponding to a new weight vector $\mathbf{w}^{(\tau+1)}$. Show that the gradient of $E(\mathbf{w})$ at $\mathbf{w}^{(\tau+1)}$ is orthogonal to the vector $\mathbf{d}$. This is known as a `line search' method and it forms the basis for a variety of numerical optimization algorithms (Bishop, 1995b).
+
+\textbf{7.13} (\textbf{*}) 在梯度下降中，权重向量 $\mathbf{w}$ 通过在权重空间中沿负梯度方向迈出一步来更新，这一步由学习率参数 $\eta$ 控制。假设我们选择权重空间中的一个方向 $\mathbf{d}$，沿着这个方向我们在给定当前权重向量 $\mathbf{w}^{(\tau)}$ 的情况下最小化误差函数。这涉及最小化数量
+\[
+E(\mathbf{w}^{(\tau)} + \lambda \mathbf{d})
+\]
+作为 $\lambda$ 的函数，以得到对应于新权重向量 $\mathbf{w}^{(\tau+1)}$ 的值 $\lambda^*$。证明在 $\mathbf{w}^{(\tau+1)}$ 处 $E(\mathbf{w})$ 的梯度与向量 $\mathbf{d}$ 正交。这种方法被称为“线搜索”方法，它是各种数值优化算法的基础（Bishop, 1995b）。
+
+\textbf{7.14} (\textbf{*}) Show that the renormalized input variables defined by {7.50}, where $\mu_i$ is defined by {7.48} and $\sigma_i^2$ is defined by {7.49}, have zero mean and unit variance.
+
+\textbf{7.14} (\textbf{*}) 证明由公式 {7.50} 定义的重新标准化的输入变量（其中 $\mu_i$ 由公式 {7.48} 定义，$\sigma_i^2$ 由公式 {7.49} 定义）具有零均值和单位方差。
+
+\end{document}

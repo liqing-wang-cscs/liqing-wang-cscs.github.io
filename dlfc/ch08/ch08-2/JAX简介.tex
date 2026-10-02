@@ -1,0 +1,362 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+% 代码样式
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    backgroundcolor=\color{gray!5},
+    rulecolor=\color{gray!30}
+}
+\lstset{style=pythonstyle}
+
+\title{\textbf{JAX 框架入门介绍}}
+\author{面向机器学习研究者与工程师}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+JAX 是由 Google Research 开发的高性能数值计算框架，它将 NumPy 的简洁接口、自动微分的能力和硬件加速的性能融为一体。本文简要介绍 JAX 的核心设计理念、四大函数变换原语及其典型应用场景，帮助读者快速上手这一在机器学习研究领域日益流行的工具。
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% =============================================
+\section{什么是 JAX？}
+% =============================================
+
+JAX 的全称可以理解为 \textbf{NumPy on Accelerators}。它的核心定位可以用一句话概括：
+
+\begin{quote}
+\emph{JAX = NumPy + 自动微分 + GPU/TPU 加速编译}
+\end{quote}
+
+与 PyTorch、TensorFlow 等主流深度学习框架相比，JAX 的设计哲学有显著不同：它不是一个"大而全"的训练框架，而是一组\textbf{可组合的函数变换工具}。用户以纯函数的形式定义计算逻辑，JAX 则提供一套高阶函数来对这些计算进行变换——求导、向量化、编译加速、并行化——就像搭积木一样自由组合。
+
+\subsection{核心优势}
+
+\begin{itemize}
+    \item \textbf{NumPy 兼容}：\texttt{jax.numpy} 提供了与 NumPy 几乎一致的 API，迁移成本极低。
+    \item \textbf{自动微分}：原生支持前向模式（JVP）和反向模式（VJP），可轻松计算高阶导数。
+    \item \textbf{即时编译（JIT）}：通过 XLA 编译器将 Python 代码编译为高效的 GPU/TPU 内核。
+    \item \textbf{向量化}：\texttt{vmap} 自动将单样本函数提升为批处理函数，无需手动编写循环。
+    \item \textbf{纯函数式设计}：无副作用、不可变数据，使程序变换在语义上安全且可预测。
+\end{itemize}
+
+% =============================================
+\section{安装与快速上手}
+% =============================================
+
+\subsection{安装}
+
+JAX 的安装非常简单，可通过 pip 完成。以 CPU 版本为例：
+
+\begin{lstlisting}
+pip install jax jaxlib
+\end{lstlisting}
+
+若需 GPU 支持，请参考官方文档安装对应的 CUDA 版本。
+
+\subsection{第一个例子}
+
+下面是一个最简单的 JAX 程序——计算函数 $f(x) = x^2$ 在 $x=3.0$ 处的导数：
+
+\begin{lstlisting}
+import jax
+import jax.numpy as jnp
+
+# 定义函数
+def f(x):
+    return x ** 2
+
+# 使用 jax.grad 自动求导
+df = jax.grad(f)
+
+# 计算 f'(3.0) = 2 * 3.0 = 6.0
+print(df(3.0))  # 输出: 6.0
+\end{lstlisting}
+
+\texttt{jax.grad} 接受一个标量值函数，返回其梯度函数。这一设计体现了 JAX 的核心理念：\textbf{函数变换}——输入一个函数，输出另一个函数。
+
+% =============================================
+\section{四大核心变换}
+% =============================================
+
+JAX 的能力建立在四个核心变换之上，它们可以\textbf{任意组合}使用。
+
+\subsection{grad --- 自动微分}
+
+\texttt{grad} 用于计算标量函数关于其参数的梯度，底层基于反向模式自动微分（即反向传播）。
+
+\begin{lstlisting}
+def loss(w, b, x, y):
+    pred = w * x + b
+    return (pred - y) ** 2
+
+# 分别对 w 和 b 求偏导
+grad_w = jax.grad(loss, argnums=0)  # 第0个参数
+grad_b = jax.grad(loss, argnums=1)  # 第1个参数
+
+print(grad_w(2.0, 1.0, 3.0, 4.0))  # d(loss)/dw
+print(grad_b(2.0, 1.0, 3.0, 4.0))  # d(loss)/db
+\end{lstlisting}
+
+\textbf{高阶导数}同样轻而易举——只需对 \texttt{grad} 反复应用：
+
+\begin{lstlisting}
+f = lambda x: x ** 3
+df = jax.grad(f)           # 一阶导: 3x^2
+d2f = jax.grad(df)         # 二阶导: 6x
+d3f = jax.grad(d2f)        # 三阶导: 6
+
+print(d2f(2.0))  # 输出: 12.0
+\end{lstlisting}
+
+\subsection{jit --- 即时编译加速}
+
+\texttt{jit}（Just-In-Time compilation）通过 XLA 编译器将函数编译为优化的机器码，消除 Python 解释器的开销：
+
+\begin{lstlisting}
+@jax.jit
+def heavy_computation(x):
+    for _ in range(1000):
+        x = x * 2
+    return x
+
+# 首次调用时编译，后续调用直接执行编译后的代码
+result = heavy_computation(jnp.array(1.0))
+\end{lstlisting}
+
+在实际的深度学习训练中，\texttt{jit} 可以将训练步骤的执行速度提升数倍至数十倍。
+
+\subsection{vmap --- 自动向量化}
+
+\texttt{vmap} 将一个处理单个样本的函数自动提升为处理一批样本的函数，无需手动编写批处理逻辑：
+
+\begin{lstlisting}
+# 单个样本的预测
+def predict(params, x):
+    w, b = params
+    return jnp.dot(w, x) + b
+
+# 自动向量化为批处理
+batched_predict = jax.vmap(predict, in_axes=(None, 0))
+
+# 对一批输入进行预测
+batch_x = jnp.ones((32, 784))  # 32 个样本
+results = batched_predict(params, batch_x)  # 形状: (32,)
+\end{lstlisting}
+
+\texttt{in\_axes} 参数指定每个输入沿哪个轴进行映射：\texttt{None} 表示不映射（广播），\texttt{0} 表示沿第 0 轴映射。
+
+\subsection{pmap --- 并行映射}
+
+\texttt{pmap} 与 \texttt{vmap} 类似，但将计算分配到多个 GPU/TPU 设备上并行执行：
+
+\begin{lstlisting}
+# 假设有 8 个 GPU
+parallel_train = jax.pmap(train_step)
+
+# 数据自动分配到 8 个设备上并行训练
+results = parallel_train(batched_data)
+\end{lstlisting}
+
+\subsection{变换的组合}
+
+JAX 最强大的特性在于这些变换可以\textbf{自由嵌套}。例如：
+
+\begin{lstlisting}
+# 编译加速 + 向量化 + 求导
+fast_batch_grad = jax.jit(jax.vmap(jax.grad(loss)))
+\end{lstlisting}
+
+这一行代码的含义是：对损失函数求梯度，然后向量化到一批数据上，最后编译加速。整个过程无需手动处理任何底层细节。
+
+% =============================================
+\section{JAX 的纯函数式约束}
+% =============================================
+
+JAX 的变换（\texttt{jit}, \texttt{grad}, \texttt{vmap} 等）要求被变换的函数是\textbf{纯函数}（pure function），即：
+
+\begin{itemize}
+    \item 输出仅依赖于输入参数，不依赖外部全局状态。
+    \item 不产生副作用（如修改全局变量、打印输出等）。
+\end{itemize}
+
+\subsection{常见的"坑"与解决方案}
+
+\subsubsection{不可变数组}
+
+JAX 数组（\texttt{jnp.ndarray}）是\textbf{不可变的}：
+
+\begin{lstlisting}
+x = jnp.array([1, 2, 3])
+# x[0] = 10  # 错误！JAX 数组不支持原地修改
+
+# 正确做法：使用 .at 语法
+x = x.at[0].set(10)
+print(x)  # [10, 2, 3]
+\end{lstlisting}
+
+\subsubsection{显式随机数管理}
+
+JAX 不使用全局随机状态，而是要求显式传递 PRNG key：
+
+\begin{lstlisting}
+key = jax.random.PRNGKey(42)
+
+# 每次使用需要拆分 key
+key, subkey = jax.random.split(key)
+sample = jax.random.normal(subkey, shape=(3,))
+
+key, subkey = jax.random.split(key)
+another_sample = jax.random.normal(subkey, shape=(3,))
+\end{lstlisting}
+
+这种设计虽然略显繁琐，但确保了随机数的\textbf{可复现性}和\textbf{并行安全性}。
+
+% =============================================
+\section{JAX 生态与上层库}
+% =============================================
+
+JAX 本身是一个底层计算框架，社区在此基础上构建了丰富的上层库：
+
+\begin{table}[htbp]
+\centering
+\caption{JAX 生态系统中的主要上层库}
+\label{tab:ecosystem}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{库名} & \textbf{用途} & \textbf{类比} \\
+\midrule
+Flax        & 神经网络模块化       & PyTorch nn.Module \\
+Haiku       & 神经网络模块化（DeepMind） & PyTorch nn.Module \\
+Optax       & 优化器与梯度变换     & torch.optim       \\
+Optax       & 优化器与梯度变换     & torch.optim       \\
+Equinox     & 基于 PyTree 的模块化 & nn.Module + JAX   \\
+Diffrax     & 可微分 ODE/SDE 求解器 & torchdiffech      \\
+Orbax       & 检查点与模型序列化   & torch.save/load   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================
+\section{JAX 与 PyTorch 的对比}
+% =============================================
+
+\begin{table}[htbp]
+\centering
+\caption{JAX 与 PyTorch 的核心差异}
+\label{tab:comparison}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{维度}       & \textbf{JAX}              & \textbf{PyTorch}           \\
+\midrule
+编程范式       & 纯函数式                 & 面向对象 + 命令式           \\
+数组可变性     & 不可变                   & 可变（原地操作）             \\
+编译加速       & 内置 JIT（XLA）           & torch.compile（较新）       \\
+向量化         & vmap（自动）              & 手动编写批处理逻辑            \\
+自动微分       & 前向 + 反向 + 高阶       & 主要为反向模式               \\
+随机数管理     & 显式 PRNG key            & 隐式全局状态                 \\
+学习曲线       & 较陡（函数式思维）        & 较平缓（命令式直觉）          \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================
+\section{完整示例：用 JAX 训练线性回归}
+% =============================================
+
+下面是一个完整的线性回归训练示例，展示了 JAX 四大变换的综合运用：
+
+\begin{lstlisting}
+import jax
+import jax.numpy as jnp
+
+# 1. 生成合成数据
+key = jax.random.PRNGKey(0)
+key, subkey = jax.random.split(key)
+X = jax.random.normal(subkey, (100, 3))
+w_true = jnp.array([1.0, 2.0, -3.0])
+y = X @ w_true + 0.1 * jax.random.normal(
+    jax.random.split(key)[1], (100,))
+
+# 2. 定义模型与损失函数
+def predict(params, x):
+    return jnp.dot(x, params)
+
+def loss(params, x, y):
+    pred = predict(params, x)
+    return jnp.mean((pred - y) ** 2)
+
+# 3. 定义训练步骤（jit 编译加速）
+@jax.jit
+def train_step(params, x, y, lr=0.01):
+    grads = jax.grad(loss)(params, x, y)
+    return params - lr * grads
+
+# 4. 训练循环
+params = jnp.zeros(3)
+for epoch in range(100):
+    params = train_step(params, X, y)
+    if epoch % 20 == 0:
+        print(f"Epoch {epoch}: loss = {loss(params, X, y):.4f}")
+
+print(f"Learned weights: {params}")
+# 期望输出接近 [1.0, 2.0, -3.0]
+\end{lstlisting}
+
+% =============================================
+\section{学习资源}
+% =============================================
+
+\begin{itemize}
+    \item \textbf{官方文档}：\url{https://jax.readthedocs.io}
+    \item \textbf{JAX 101 教程}：官方提供的从零开始的系列教程
+    \item \textbf{JAX in Action}： Manning 出版社的实战书籍
+    \item \textbf{DeepMind 的 JAX 生态}：\\ \url{https://www.deepmind.com/blog/using-jax-to-accelerate-our-research}
+\end{itemize}
+
+% =============================================
+\section{总结}
+% =============================================
+
+JAX 以\textbf{函数变换}为核心抽象，将自动微分、编译加速和并行计算统一在一个简洁而强大的框架中。虽然其纯函数式设计范式需要一定的学习成本，但一旦掌握，便能以极高的表达力和组合性来构建复杂的机器学习研究流水线。
+
+对于追求计算效率、需要高阶微分或希望探索新型模型架构的研究者而言，JAX 是一个值得深入学习的工具。
+
+\end{document}
+
+这是一篇完整的 JAX 框架入门介绍，主要内容包括：
+
+1. **什么是 JAX**：核心定位与优势概述
+2. **安装与快速上手**：最小可运行示例
+3. **四大核心变换**：`grad`、`jit`、`vmap`、`pmap` 的详细介绍与代码示例
+4. **纯函数式约束**：不可变数组、显式随机数管理等常见"坑"
+5. **生态系统**：Flax、Optax 等上层库的介绍
+6. **与 PyTorch 对比**：帮助有 PyTorch 背景的读者快速理解差异
+7. **完整示例**：线性回归训练的端到端代码
+
+你可以直接用 `xelatex` 编译生成 PDF。如需调整章节深度、增减内容或修改排版样式，随时告诉我。

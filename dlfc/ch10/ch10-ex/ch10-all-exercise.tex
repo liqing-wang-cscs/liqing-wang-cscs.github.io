@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第10章-卷积网络-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{10.1} (\textbf{*}) Consider a fixed weight vector $\mathbf{w}$ and show that the input vector $\mathbf{x}$ that maximizes the scalar product $\mathbf{w}^\mathrm{T}\mathbf{x}$, subject to the constraint that $\|\mathbf{x}\|^2$ is constant, is given by $\mathbf{x} = \alpha \mathbf{w}$ for some scalar $\alpha$. This can most easily be done using a Lagrange multiplier.
+
+\textbf{10.1} (\textbf{*}) 考虑一个固定的权重向量 $\mathbf{w}$，并证明在约束条件 $\|\mathbf{x}\|^2$ 为常数的情况下，使标量积 $\mathbf{w}^\mathrm{T}\mathbf{x}$ 最大化的输入向量 $\mathbf{x}$ 由 $\mathbf{x} = \alpha \mathbf{w}$ 给出，其中 $\alpha$ 是某个标量。这可以通过使用拉格朗日乘数法最容易地完成。
+
+\textbf{10.2} (\textbf{* *}) Consider a convolutional network layer with a one-dimensional input array and a one-dimensional feature map as shown in Figure 10.2, in which the input array has dimensionality 5 and the filters have width 3 with a stride of 1. Show that this can be expressed as a special case of a fully connected layer by writing down the weight matrix in which missing connections are replaced by zeros and where shared parameters are indicated by using replicated entries. Ignore any bias parameters.
+
+\textbf{10.2} (\textbf{* *}) 考虑一个具有一维输入数组和一维特征图的卷积网络层，如图 10.2 所示，其中输入数组的维度为 5，滤波器的宽度为 3，步幅为 1。通过写出权重矩阵（其中缺失的连接被替换为零，共享参数通过使用重复条目来表示），证明这可以表示为全连接层的一个特例。忽略任何偏置参数。
+
+\textbf{10.3} (\textbf{*}) Explicitly calculate the output of the following convolution of a $4 \times 4$ input matrix with a $2 \times 2$ filter:
+\[
+\begin{bmatrix}
+2 & 5 & -3 & 0 \\
+0 & 6 & 0 & -4 \\
+-1 & -3 & 0 & 2 \\
+5 & 0 & 0 & 3
+\end{bmatrix}
+*
+\begin{bmatrix}
+-2 & 0 \\
+4 & 6
+\end{bmatrix}
+=
+\begin{bmatrix}
+? & ? & ? \\
+? & ? & ? \\
+? & ? & ?
+\end{bmatrix}
+\]
+
+\textbf{10.3} (\textbf{*}) 显式计算以下 $4 \times 4$ 输入矩阵与 $2 \times 2$ 滤波器的卷积输出：
+\[
+\begin{bmatrix}
+2 & 5 & -3 & 0 \\
+0 & 6 & 0 & -4 \\
+-1 & -3 & 0 & 2 \\
+5 & 0 & 0 & 3
+\end{bmatrix}
+*
+\begin{bmatrix}
+-2 & 0 \\
+4 & 6
+\end{bmatrix}
+=
+\begin{bmatrix}
+? & ? & ? \\
+? & ? & ? \\
+? & ? & ?
+\end{bmatrix}
+\]
+
+\textbf{10.4} (\textbf{* *}) If an image $\mathbf{I}$ has $J \times K$ pixels and a filter $\mathbf{K}$ has $L \times M$ elements, write down the limits for the two summations in {eq:10.2}. In the mathematics literature, the operation {eq:10.2} would be called a \emph{cross-correlation}, whereas a \emph{convolution} would be defined by
+\[
+C(j,k) = \sum_l \sum_m I(j-l, k-m)K(l,m).
+\]
+Write down the limits for the summations in {eq:10.19}. Show that {eq:10.19} can be written in the equivalent `flipped' form
+\[
+C(j,k) = \sum_l \sum_m I(j+l, k+m)K(l,m)
+\]
+and again write down the limits for the summations.
+
+\textbf{10.4} (\textbf{* *}) 如果图像 $\mathbf{I}$ 有 $J \times K$ 个像素，滤波器 $\mathbf{K}$ 有 $L \times M$ 个元素，写出公式 {eq:10.2} 中两个求和的极限。在数学文献中，操作 {eq:10.2} 被称为\emph{互相关}，而\emph{卷积}则定义为
+\[
+C(j,k) = \sum_l \sum_m I(j-l, k-m)K(l,m).
+\]
+写出公式 {eq:10.19} 中求和的极限。证明公式 {eq:10.19} 可以写成等价的“翻转”形式
+\[
+C(j,k) = \sum_l \sum_m I(j+l, k+m)K(l,m)
+\]
+并再次写出求和的极限。
+
+\textbf{10.5} (\textbf{*}) In mathematics, a convolution for a continuous variable $x$ is defined by
+\[
+F(x) = \int_{-\infty}^{\infty} G(y)k(x-y) \, \mathrm{d}y
+\]
+where $k(x-y)$ is the kernel function. By considering a discrete approximation to the integral, explain the relationship to a convolutional layer, defined by {eq:10.19}, in a CNN.
+
+\textbf{10.5} (\textbf{*}) 在数学中，连续变量 $x$ 的卷积定义为
+\[
+F(x) = \int_{-\infty}^{\infty} G(y)k(x-y) \, \mathrm{d}y
+\]
+其中 $k(x-y)$ 是核函数。通过考虑积分的离散近似，解释其与 CNN 中由公式 {eq:10.19} 定义的卷积层的关系。
+
+\textbf{10.6} (\textbf{*}) Consider an image of size $J \times K$ that is padded with an additional $P$ pixels on all sides and which is then convolved using a kernel of size $M \times M$ where $M$ is an odd number. Show that if we choose $P = (M-1)/2$, then the resulting feature map will have size $J \times K$ and hence will be the same size as the original image.
+
+\textbf{10.6} (\textbf{*}) 考虑一个大小为 $J \times K$ 的图像，其在所有边上额外填充了 $P$ 个像素，然后使用大小为 $M \times M$ 的内核进行卷积，其中 $M$ 是奇数。证明如果我们选择 $P = (M-1)/2$，那么得到的特征图将具有大小 $J \times K$，因此将与原始图像大小相同。
+
+\textbf{10.7} (\textbf{*}) Show that if a kernel of size $M \times M$ is convolved with an image of size $J \times K$ with padding of depth $P$ and strides of length $S$ then the dimensionality of the resulting feature map is given by {eq:10.5}.
+
+\textbf{10.7} (\textbf{*}) 证明如果大小为 $M \times M$ 的内核与大小为 $J \times K$ 的图像进行卷积，填充深度为 $P$，步长为 $S$，那么得到的特征图的维度由公式 {eq:10.5} 给出。
+
+\textbf{10.8} (\textbf{* *}) For each of the 16 layers in the VGG-16 CNN shown in Figure 10.10, evaluate (i) the number of weights (i.e., connections) including biases and (ii) the number of independently learnable parameters. Confirm that the total number of learnable parameters in the network is approximately 138 million.
+
+\textbf{10.8} (\textbf{* *}) 对于图 10.10 中所示的 VGG-16 CNN 的每一层（共 16 层），评估 (i) 权重的数量（即连接数），包括偏置；(ii) 独立可学习参数的数量。确认网络中可学习参数的总数约为 1.38 亿。
+
+\textbf{10.9} (\textbf{* *}) Consider a convolution of the form {eq:10.2} and suppose that the kernel is separable so that
+\[
+K(l,m) = F(l)G(m)
+\]
+for some functions $F(\cdot)$ and $G(\cdot)$. Show that instead of performing a single two-dimensional convolution it is now possible to compute the same answer using two one-dimensional convolutions thereby resulting in a significant improvement in efficiency.
+
+\textbf{10.9} (\textbf{* *}) 考虑形式为 {eq:10.2} 的卷积，并假设内核是可分离的，使得
+\[
+K(l,m) = F(l)G(m)
+\]
+对于某些函数 $F(\cdot)$ 和 $G(\cdot)$。证明与其执行单个二维卷积，现在可以使用两个一维卷积来计算相同的答案，从而显著提高计算效率。
+
+\textbf{10.10} (\textbf{*}) The DeepDream update procedure involves setting the $\delta$ variables for backpropagation equal to the pre-activations of the nodes in the chosen layer and then running backpropagation to the input layer to get a gradient vector over the pixels of the image. Show that this can be derived as a gradient optimization with respect to the pixels of an image $\mathbf{I}$ applied to the function {eq:10.12}.
+
+\textbf{10.10} (\textbf{*}) DeepDream 更新过程涉及将反向传播的 $\delta$ 变量设置为所选层中节点的预激活值，然后运行反向传播到输入层以获得图像像素上的梯度向量。证明这可以作为对应用于函数 {eq:10.12} 的图像 $\mathbf{I}$ 的像素的梯度优化来推导。
+
+\textbf{10.11} (\textbf{* *}) When designing a neural network to detect objects from $C$ different classes in an image, we can use a 1-of-$(C+1)$ class label with one variable for each object class and one additional variable representing a `background' class, i.e., an input image region that does not contain an object belonging to any of the defined classes. The network will then output a vector of probabilities of length $(C + 1)$. Alternatively, we can use a single binary variable to denote the presence or absence of an object and then use a separate 1-of-$C$ vector to denote the specific object class. In this case, the network outputs a single probability representing the presence of an object and a separate set of probabilities over the class label. Write down the relationship between these two sets of probabilities.
+
+\textbf{10.11} (\textbf{* *}) 在设计用于检测图像中来自 $C$ 个不同类别的物体的神经网络时，我们可以使用一个 1-of-$(C+1)$ 类标签，每个物体类别有一个变量，还有一个额外的变量代表“背景”类别，即不包含属于任何定义类别的物体的输入图像区域。网络将输出一个长度为 $(C + 1)$ 的概率向量。或者，我们可以使用一个单一的二元变量来表示物体的存在或不存在，然后使用一个单独的 1-of-$C$ 向量来表示特定的物体类别。在这种情况下，网络输出一个表示物体存在的概率和一个关于类别标签的单独概率集。写出这两组概率之间的关系。
+
+\textbf{10.12} (\textbf{* *}) Calculate the number of computational steps required to make one forward pass through the convolutional network shown in Figure 10.22, ignoring biases and ignoring the evaluation of activation functions. Similarly, calculate the total number of computational steps for a single forward pass through the expanded network shown in Figure 10.23. Finally, evaluate ratio of nine repeated naive applications of the network in Figure 10.22 to an $8 \times 8$ image compared to a single application of the network in Figure 10.23. This ratio indicates the improvement in efficiency from using a convolutional implementation of the sliding window technique.
+
+\textbf{10.12} (\textbf{* *}) 计算通过图 10.22 中所示的卷积网络进行一次前向传递所需的计算步骤数，忽略偏置并忽略激活函数的评估。同样，计算通过图 10.23 中所示的扩展网络进行一次前向传递的总计算步骤数。最后，评估将图 10.22 中的网络对 $8 \times 8$ 图像进行九次重复朴素应用与图 10.23 中的网络进行一次应用的比率。该比率表明了使用滑动窗口技术的卷积实现所带来的效率提升。
+
+\textbf{10.13} (\textbf{* *}) In this exercise we use one-dimensional vectors to demonstrate why a convolutional up-sampling is sometimes called a transpose convolution. Consider a one-dimensional strided convolutional layer with an input having four units with activations $(x_1, x_2, x_3, x_4)$, which is padded with zeros to give $(0, x_1, x_2, x_3, x_4, 0)$, and a filter with parameters $(w_1, w_2, w_3)$. Write down the one-dimensional activation vector of the output layer assuming a stride of 2. Express this output in the form of a matrix $\mathbf{A}$ multiplied by the vector $(0, x_1, x_2, x_3, x_4, 0)$. Now consider an up-sampling convolution in which the input layer has activations $(z_1, z_2)$ with a filter having values $(w_1, w_2, w_3)$ and an output stride of 2. Write down the six-dimensional output vector assuming that overlapping filter values are summed and that the activation function is just the identity. Show that this can be expressed as a matrix multiplication using the transpose matrix $\mathbf{A}^\mathrm{T}$.
+
+\textbf{10.13} (\textbf{* *}) 在这个练习中，我们使用一维向量来演示为什么卷积上采样有时被称为转置卷积。考虑一个一维步幅卷积层，其输入有四个单元，激活值为 $(x_1, x_2, x_3, x_4)$，用零填充后变为 $(0, x_1, x_2, x_3, x_4, 0)$，并且有一个参数为 $(w_1, w_2, w_3)$ 的滤波器。假设步幅为 2，写出输出层的一维激活向量。将此输出表示为矩阵 $\mathbf{A}$ 乘以向量 $(0, x_1, x_2, x_3, x_4, 0)$ 的形式。现在考虑一个上采样卷积，其中输入层的激活值为 $(z_1, z_2)$，滤波器的值为 $(w_1, w_2, w_3)$，输出步幅为 2。假设重叠的滤波器值相加且激活函数仅为恒等函数，写出六维输出向量。证明这可以表示为使用转置矩阵 $\mathbf{A}^\mathrm{T}$ 的矩阵乘法。
+
+\end{document}

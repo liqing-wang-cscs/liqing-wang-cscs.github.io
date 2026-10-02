@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>第6章：深度神经网络、第5节：混合密度网络 - 自测题</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #eef7ff;
+        }
+        .option.correct {
+            background-color: #e8f5e8 !important; /* 淡绿色 */
+            border-color: #4CAF50 !important;
+        }
+        .option.incorrect {
+            background-color: #fdeeee !important; /* 淡红色 */
+            border-color: #f44336 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f8e0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <!-- 引入MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <h1>第6章：深度神经网络、第5节：混合密度网络 - 自测题</h1>
+    <p class="instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+    
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+
+    <script>
+        // 转换后的题目数据 - 按照指定格式
+const questions = [
+    {
+        id: 1,
+        topic: "混合密度网络基础",
+        question: "混合密度网络 (MDN) 主要用于解决什么类型的问题？",
+        options: {
+            A: "简单的线性回归问题",
+            B: "输出分布为单峰高斯的分类问题",
+            C: "输出分布可能为多峰的条件概率建模问题",
+            D: "无监督聚类问题"
+        },
+        answer: "C",
+        explanation: "根据教材6.5节引言，MDN的核心目的是解决标准神经网络难以处理的、输出为非高斯（尤其是多峰）分布的条件概率 \\( p(\\mathbf{t}|\\mathbf{x}) \\) 建模问题。例如在机器人逆运动学中，一个末端位置可能对应多个关节角度，导致输出分布多峰。因此C是正确的。A和B描述的是可以用标准网络较好解决的简单问题。D描述的是无监督学习，而MDN通常是监督学习。"
+    },
+        {
+        id: 2,
+        topic: "MDN参数估计",
+        question: "在MDN中，神经网络的输出通常被用来表示高斯混合模型的哪些参数？",
+        options: {
+            A: "仅均值 \\(\\boldsymbol{\\mu}_k(\\mathbf{x})\\)",
+            B: "仅方差 \\(\\sigma_k^2(\\mathbf{x})\\)",
+            C: "仅混合系数 \\(\\pi_k(\\mathbf{x})\\)",
+            D: "混合系数 \\(\\pi_k(\\mathbf{x})\\)、均值 \\(\\boldsymbol{\\mu}_k(\\mathbf{x})\\) 和方差 \\(\\sigma_k^2(\\mathbf{x})\\)"
+        },
+        answer: "D",
+        explanation: "根据教材6.5.2节，MDN的神经网络输出被设计来决定高斯混合模型的所有关键参数。具体来说，网络输出一部分用于计算混合系数 \\(\\pi_k\\)（通过Softmax），一部分用于计算均值 \\(\\boldsymbol{\\mu}_k\\)（通常通过线性激活），还有一部分用于计算方差 \\(\\sigma_k^2\\)（通常通过指数激活保证正值）。因此，D选项完整且正确地描述了这一点。"
+    },
+        {
+        id: 3,
+        topic: "MDN参数估计",
+        question: "为什么在MDN中，混合系数 \\(\\pi_k(\\mathbf{x})\\) 通常使用Softmax激活函数？",
+        options: {
+            A: "因为它计算速度快",
+            B: "因为它能确保 \\(\\sum_{k=1}^{K} \\pi_k(\\mathbf{x}) = 1\\) 且 \\(0 \\leq \\pi_k(\\mathbf{x}) \\leq 1\\)",
+            C: "因为它能防止过拟合",
+            D: "因为它是非线性的"
+        },
+        answer: "B",
+        explanation: "根据教材6.5.2节公式(6.39)和(6.40)，混合系数 \\(\\pi_k\\) 在概率论中有严格的约束条件：它们必须是非负的，并且总和为1。Softmax函数的性质恰好能满足这些约束。对于输入向量 \\(\\mathbf{z} = [a_1^\\pi, ..., a_K^\\pi]\\)，Softmax输出 \\(\\pi_k = \\frac{\\exp(a_k^\\pi)}{\\sum_l \\exp(a_l^\\pi)}\\)，这个值总是正的，且所有 \\(\\pi_k\\) 的和为1。因此B是正确答案。其他选项不是使用Softmax的主要原因。"
+    },
+        {
+        id: 4,
+        topic: "逆问题",
+        question: "对于机器人逆运动学这类逆问题，为什么传统的最小二乘法（假设高斯噪声）效果可能很差？",
+        options: {
+            A: "因为计算量太大",
+            B: "因为输出分布往往是多峰的，而最小二乘法预测的是条件均值，无法代表多峰分布",
+            C: "因为最小二乘法不能处理连续变量",
+            D: "因为它只适用于线性系统"
+        },
+        answer: "B",
+        explanation: "根据教材6.5.1节中的机器人学例子，逆问题的一个关键特征是存在一对多的映射关系（一个末端位置对应多个关节角度）。这意味着真实的条件分布 \\(p(\\mathbf{t}|\\mathbf{x})\\) 是多峰的。最小二乘法本质上是在寻找条件均值 \\(\\mathbb{E}[\\mathbf{t}|\\mathbf{x}]\\)，这在多峰分布中可能是一个没有实际意义的值（例如，位于两个峰值之间的低概率区域）。MDN能够建模整个分布，从而更好地处理这种情况。因此B是正确的。A、C、D都不是主要原因。"
+    },
+    {
+        id: 5,
+        topic: "MDN训练",
+        question: "MDN的训练目标（损失函数）是什么？",
+        options: {
+            A: "最小化预测值与真实值的平方误差",
+            B: "最大化预测分布对真实样本的似然",
+            C: "最小化预测分布对真实样本的负对数似然",
+            D: "B和C都是正确的"
+        },
+        answer: "D",
+        explanation: "根据教材6.5.2节公式(6.43)，MDN的训练目标是最小化负对数似然函数 \\(E(\\mathbf{w}) = -\\sum_{n=1}^{N} \\ln \\left\\{ \\sum_{k=1}^{K} \\pi_k(\\mathbf{x}_n,\\mathbf{w}) \\,\\mathcal{N}\\left(\\mathbf{t}_n \\big| \\boldsymbol{\\mu}_k(\\mathbf{x}_n,\\mathbf{w}), \\sigma_k^2(\\mathbf{x}_n,\\mathbf{w}) \\right) \\right\\}\\)。最小化负对数似然等价于最大化对数似然，也等价于最大化似然。因此，选项B（最大化似然）和C（最小化负对数似然）都正确地描述了训练目标。D选项包含了B和C，所以D是最终的正确答案。A是传统最小二乘法的目标，不适用于MDN。"
+    }
+];
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [
+                optionsObj.A,
+                optionsObj.B, 
+                optionsObj.C,
+                optionsObj.D
+            ];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+                
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+                
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+                
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+                
+                container.appendChild(qDiv);
+            });
+            
+            // 渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 1000);
+        }
+
+        // 选择选项的处理函数
+        function selectOption(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+            
+            // 移除之前的选择样式
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+            
+            // 应用新选择的样式
+            if(selectedOption == answerIndex) {
+                // 点击正确选项：显示为淡绿色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                // 点击错误选项：显示为淡红色
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                
+                // 显示解释
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+            
+            // 重新渲染MathJax公式
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 1000);
+        }
+
+        // 页面加载完成后渲染问题
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>

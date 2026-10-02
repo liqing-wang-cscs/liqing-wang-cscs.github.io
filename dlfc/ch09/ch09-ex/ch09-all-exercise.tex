@@ -1,0 +1,248 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第9章-正则化-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{9.1} (\textbf{*}) By considering each of the four group axioms in turn, show that the set of all possible rotations of a square through (positive or negative) multiples of $90^\circ$, together with the binary operation of composing rotations, forms a group. Similarly, show that the set of all continuous translations of an object in a two-dimensional plane also forms a group.
+
+\textbf{9.1} (\textbf{*}) 通过依次考虑四个群公理，证明所有可能的正方形旋转（正或负的 $90^\circ$ 倍数）的集合，连同旋转组合的二元运算，构成一个群。同样地，证明二维平面上物体的所有连续平移的集合也构成一个群。
+
+\textbf{9.2} (\textbf{* *}) Consider a linear model of the form
+\[
+y(\mathbf{x}, \mathbf{w}) = w_0 + \sum_{i=1}^{D} w_i x_i
+\]
+together with a sum-of-squares error function of the form
+\[
+E_D(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^{N} \left\{ y(\mathbf{x}_n, \mathbf{w}) - t_n \right\}^2.
+\]
+Now suppose that Gaussian noise $\epsilon_i$ with zero mean and variance $\sigma^2$ is added independently to each of the input variables $x_i$. By making use of $\mathbb{E}[\epsilon_i] = 0$ and $\mathbb{E}[\epsilon_i \epsilon_j] = \delta_{ij} \sigma^2$, show that minimizing $E_D$ averaged over the noise distribution is equivalent to minimizing the sum-of-squares error for noise-free input variables with the addition of a weight-decay regularization term, in which the bias parameter $w_0$ is omitted from the regularizer.
+
+\textbf{9.2} (\textbf{* *}) 考虑一个形式为
+\[
+y(\mathbf{x}, \mathbf{w}) = w_0 + \sum_{i=1}^{D} w_i x_i
+\]
+的线性模型，以及一个形式为
+\[
+E_D(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^{N} \left\{ y(\mathbf{x}_n, \mathbf{w}) - t_n \right\}^2
+\]
+的平方和误差函数。现在假设将均值为零、方差为 $\sigma^2$ 的高斯噪声 $\epsilon_i$ 独立地添加到每个输入变量 $x_i$ 中。通过使用 $\mathbb{E}[\epsilon_i] = 0$ 和 $\mathbb{E}[\epsilon_i \epsilon_j] = \delta_{ij} \sigma^2$，证明最小化在噪声分布上平均的 $E_D$ 等价于最小化无噪声输入变量的平方和误差，并添加一个权重衰减正则化项，其中偏置参数 $w_0$ 被排除在正则化器之外。
+
+\textbf{9.3} (\textbf{* *}) Consider an error function that consists simply of the quadratic regularizer
+\[
+\Omega(\mathbf{w}) = -\frac{1}{2} \mathbf{w}^\mathrm{T} \mathbf{w}
+\]
+together with the gradient descent update formula
+\[
+\mathbf{w}^{(\tau+1)} = \mathbf{w}^{(\tau+1)} - \eta \nabla \Omega(\mathbf{w}).
+\]
+By considering the limit of infinitesimal updates, write down a corresponding differential equation for the evolution of $\mathbf{w}$. Write down the solution of this equation starting from an initial value $\mathbf{w}_0$, and show that the elements of $\mathbf{w}$ decay exponentially to zero.
+
+\textbf{9.3} (\textbf{* *}) 考虑一个仅由二次正则化器组成的误差函数
+\[
+\Omega(\mathbf{w}) = -\frac{1}{2} \mathbf{w}^\mathrm{T} \mathbf{w}
+\]
+以及梯度下降更新公式
+\[
+\mathbf{w}^{(\tau+1)} = \mathbf{w}^{(\tau+1)} - \eta \nabla \Omega(\mathbf{w}).
+\]
+通过考虑无穷小更新的极限，写出相应的微分方程来描述 $\mathbf{w}$ 的演化。写出从初始值 $\mathbf{w}_0$ 开始的该方程的解，并证明 $\mathbf{w}$ 的元素呈指数级衰减至零。
+
+\textbf{9.4} (\textbf{*}) Verify that the network function defined by {eq:9.6} and {eq:9.7} is invariant under the transformation {eq:9.8} applied to the inputs, provided the weights and biases are simultaneously transformed using {eq:9.9} and {eq:9.10}. Similarly, show that the network outputs can be transformed according to {eq:9.11} by applying the transformation {eq:9.12} and {eq:9.13} to the second-layer weights and biases.
+
+\textbf{9.4} (\textbf{*}) 验证由公式 {eq:9.6} 和 {eq:9.7} 定义的网络函数在应用于输入的变换 {eq:9.8} 下是不变的，前提是权重和偏置同时使用 {eq:9.9} 和 {eq:9.10} 进行变换。同样地，证明可以通过对第二层权重和偏置应用变换 {eq:9.12} 和 {eq:9.13} 来根据 {eq:9.11} 变换网络输出。
+
+\textbf{9.5} (\textbf{* *}) By using Lagrange multipliers, show that minimizing the regularized error function given by {eq:9.19} is equivalent to minimizing the unregularized error function $E(\mathbf{w})$ subject to the constraint {eq:9.20}. Discuss the relationship between the parameters $\eta$ and $\lambda$.
+
+\textbf{9.5} (\textbf{* *}) 通过使用拉格朗日乘数法，证明最小化由公式 {eq:9.19} 给出的正则化误差函数等价于在约束 {eq:9.20} 下最小化未正则化的误差函数 $E(\mathbf{w})$。讨论参数 $\eta$ 和 $\lambda$ 之间的关系。
+
+\textbf{9.6} (\textbf{* * *}) Consider a quadratic error function of the form
+\[
+E = E_0 + \frac{1}{2} (\mathbf{w} - \mathbf{w}^*)^\mathrm{T} \mathbf{H} (\mathbf{w} - \mathbf{w}^*)
+\]
+where $\mathbf{w}^*$ represents the minimum, and the Hessian matrix $\mathbf{H}$ is positive definite and constant. Suppose the initial weight vector $\mathbf{w}^{(0)}$ is chosen to be at the origin and is updated using simple gradient descent:
+\[
+\mathbf{w}^{(\tau)} = \mathbf{w}^{(\tau-1)} - \rho \nabla E
+\]
+where $\tau$ denotes the step number, and $\rho$ is the learning rate (which is assumed to be small). Show that, after $\tau$ steps, the components of the weight vector parallel to the eigenvectors of $\mathbf{H}$ can be written
+\[
+w_j^{(\tau)} = \left\{ 1 - (1 - \rho \eta_j)^\tau \right\} w_j^*
+\]
+where $w_j = \mathbf{w}^\mathrm{T} \mathbf{u}_j$, and $\mathbf{u}_j$ and $\eta_j$ are the eigenvectors and eigenvalues of $\mathbf{H}$, respectively, defined by
+\[
+\mathbf{H} \mathbf{u}_j = \eta_j \mathbf{u}_j.
+\]
+Show that as $\tau \to \infty$, this gives $\mathbf{w}^{(\tau)} \to \mathbf{w}^*$ as expected, provided $|1 - \rho \eta_j| < 1$. Now suppose that training is halted after a finite number $\tau$ of steps. Show that the components of the weight vector parallel to the eigenvectors of the Hessian satisfy
+\[
+w_j^{(\tau)} \simeq w_j^* \quad \text{when} \quad \eta_j \gg (\rho \tau)^{-1}
+\]
+\[
+|w_j^{(\tau)}| \ll |w_j^*| \quad \text{when} \quad \eta_j \ll (\rho \tau)^{-1}.
+\]
+This result shows that $(\rho \tau)^{-1}$ plays an analogous role to the regularization parameter $\lambda$ in weight decay.
+
+\textbf{9.6} (\textbf{* * *}) 考虑一个形式为
+\[
+E = E_0 + \frac{1}{2} (\mathbf{w} - \mathbf{w}^*)^\mathrm{T} \mathbf{H} (\mathbf{w} - \mathbf{w}^*)
+\]
+的二次误差函数，其中 $\mathbf{w}^*$ 表示最小值，赫森矩阵 $\mathbf{H}$ 是正定且恒定的。假设初始权重向量 $\mathbf{w}^{(0)}$ 选择在原点，并使用简单的梯度下降进行更新：
+\[
+\mathbf{w}^{(\tau)} = \mathbf{w}^{(\tau-1)} - \rho \nabla E
+\]
+其中 $\tau$ 表示步数，$\rho$ 是学习率（假设为较小值）。证明在经过 $\tau$ 步后，权重向量平行于 $\mathbf{H}$ 的特征向量的分量可以写成
+\[
+w_j^{(\tau)} = \left\{ 1 - (1 - \rho \eta_j)^\tau \right\} w_j^*
+\]
+其中 $w_j = \mathbf{w}^\mathrm{T} \mathbf{u}_j$，而 $\mathbf{u}_j$ 和 $\eta_j$ 分别是 $\mathbf{H}$ 的特征向量和特征值，定义为
+\[
+\mathbf{H} \mathbf{u}_j = \eta_j \mathbf{u}_j.
+\]
+证明当 $\tau \to \infty$ 时，只要 $|1 - \rho \eta_j| < 1$，这会给出预期的结果 $\mathbf{w}^{(\tau)} \to \mathbf{w}^*$。现在假设训练在有限步数 $\tau$ 后停止。证明权重向量平行于赫森矩阵特征向量的分量满足
+\[
+w_j^{(\tau)} \simeq w_j^* \quad \text{当} \quad \eta_j \gg (\rho \tau)^{-1}
+\]
+\[
+|w_j^{(\tau)}| \ll |w_j^*| \quad \text{当} \quad \eta_j \ll (\rho \tau)^{-1}.
+\]
+这一结果表明 $(\rho \tau)^{-1}$ 在权重衰减中起着类似于正则化参数 $\lambda$ 的作用。
+
+\textbf{9.7} (\textbf{* *}) Consider a neural network in which multiple weights are constrained to have the same value. Discuss how the standard backpropagation algorithm must be modified to ensure that such constraints are satisfied when evaluating the derivatives of an error function with respect to the adjustable parameters in the network.
+
+\textbf{9.7} (\textbf{* *}) 考虑一个神经网络，其中多个权重被约束为具有相同的值。讨论如何修改标准的反向传播算法，以确保在评估误差函数关于网络中可调参数的导数时满足这些约束。
+
+\textbf{9.8} (\textbf{*}) Consider a mixture distribution defined by
+\[
+p(w) = \sum_{j=1}^{M} \pi_j \mathcal{N}(w|\mu_j, \sigma_j^2)
+\]
+in which $\{\pi_j\}$ can be viewed as prior probabilities $p(j)$ for the corresponding Gaussian components. Using Bayes' theorem, show that the corresponding posterior probabilities $p(j|w)$ are given by {eq:9.24}.
+
+\textbf{9.8} (\textbf{*}) 考虑一个由
+\[
+p(w) = \sum_{j=1}^{M} \pi_j \mathcal{N}(w|\mu_j, \sigma_j^2)
+\]
+定义的混合分布，其中 $\{\pi_j\}$ 可以被视为相应高斯分量的先验概率 $p(j)$。使用贝叶斯定理，证明相应的后验概率 $p(j|w)$ 由公式 {eq:9.24} 给出。
+
+\textbf{9.9} (\textbf{* *}) Using {eq:9.21}, {eq:9.22}, {eq:9.23}, and {eq:9.24} verify the result {eq:9.25}.
+
+\textbf{9.9} (\textbf{* *}) 使用公式 {eq:9.21}、{eq:9.22}、{eq:9.23} 和 {eq:9.24} 验证结果 {eq:9.25}。
+
+\textbf{9.10} (\textbf{* *}) Using {eq:9.21}, {eq:9.22}, {eq:9.23}, and {eq:9.24} verify the result {eq:9.26}.
+
+\textbf{9.10} (\textbf{* *}) 使用公式 {eq:9.21}、{eq:9.22}、{eq:9.23} 和 {eq:9.24} 验证结果 {eq:9.26}。
+
+\textbf{9.11} (\textbf{* *}) Using {eq:9.21}, {eq:9.22}, {eq:9.23}, and {eq:9.24} verify the result {eq:9.28}.
+
+\textbf{9.11} (\textbf{* *}) 使用公式 {eq:9.21}、{eq:9.22}、{eq:9.23} 和 {eq:9.24} 验证结果 {eq:9.28}。
+
+\textbf{9.12} (\textbf{* *}) Show that the derivatives of the mixing coefficients $\{\pi_k\}$ defined by {eq:9.30} with respect to the auxiliary parameters $\{\eta_j\}$ are given by
+\[
+\frac{\partial \pi_k}{\partial \eta_j} = \delta_{jk} \pi_j - \pi_j \pi_k.
+\]
+Hence, by making use of the constraint $\sum_k \gamma_k(w_i) = 1$ for all $i$, derive the result {eq:9.31}.
+
+\textbf{9.12} (\textbf{* *}) 证明由公式 {eq:9.30} 定义的混合系数 $\{\pi_k\}$ 关于辅助参数 $\{\eta_j\}$ 的导数为
+\[
+\frac{\partial \pi_k}{\partial \eta_j} = \delta_{jk} \pi_j - \pi_j \pi_k.
+\]
+因此，通过利用对所有 $i$ 的约束 $\sum_k \gamma_k(w_i) = 1$，推导出结果 {eq:9.31}。
+
+\textbf{9.13} (\textbf{*}) Verify that combining {eq:9.35}, {eq:9.36}, and {eq:9.37} gives a single overall equation for the whole network in the form {eq:9.40}.
+
+\textbf{9.13} (\textbf{*}) 验证结合公式 {eq:9.35}、{eq:9.36} 和 {eq:9.37} 可以得到整个网络的单一总体方程，形式为 {eq:9.40}。
+
+\textbf{9.14} (\textbf{* *}) The expected sum-of-squares error $E_\text{AV}$ for a simple committee model can be defined by {eq:9.46}, and the expected error of the committee itself is given by {eq:9.47}. Assuming that the individual errors satisfy {eq:9.48} and {eq:9.49}, derive the result {eq:9.50}.
+
+\textbf{9.14} (\textbf{* *}) 简单委员会模型的期望平方和误差 $E_\text{AV}$ 可以由公式 {eq:9.46} 定义，而委员会本身的期望误差由公式 {eq:9.47} 给出。假设个体误差满足 {eq:9.48} 和 {eq:9.49}，推导出结果 {eq:9.50}。
+
+\textbf{9.15} (\textbf{* *}) By making use of Jensen's inequality {eq:2.102} for the special case of the convex function $f(x) = x^2$, show that the average expected sum-of-squares error $E_\text{AV}$ of the members of a simple committee model, given by {eq:9.46}, and the expected error $E_\text{COM}$ of the committee itself, given by {eq:9.47}, satisfy
+\[
+E_\text{COM} \leqslant E_\text{AV}.
+\]
+
+\textbf{9.15} (\textbf{* *}) 通过使用凸函数 $f(x) = x^2$ 的特殊情况下的詹森不等式 {eq:2.102}，证明简单委员会模型成员的平均期望平方和误差 $E_\text{AV}$（由公式 {eq:9.46} 给出）和委员会本身的期望误差 $E_\text{COM}$（由公式 {eq:9.47} 给出）满足
+\[
+E_\text{COM} \leqslant E_\text{AV}.
+\]
+
+\textbf{9.16} (\textbf{* *}) By making use of Jensen's inequality {eq:2.102}, show that the result {eq:9.64} derived in the previous exercise holds for any error function $E(y)$, not just sum-of-squares, provided it is a convex function of $y$.
+
+\textbf{9.16} (\textbf{* *}) 通过使用詹森不等式 {eq:2.102}，证明前一练习中推导出的结果 {eq:9.64} 对于任何误差函数 $E(y)$ 都成立，而不仅仅是平方和，只要它是 $y$ 的凸函数。
+
+\textbf{9.17} (\textbf{* *}) Consider a committee in which we allow unequal weighting of the constituent models, so that
+\[
+y_\text{COM}(\mathbf{x}) = \sum_{m=1}^{M} \alpha_m y_m(\mathbf{x}).
+\]
+To ensure that the predictions $y_\text{COM}(\mathbf{x})$ remain within sensible limits, suppose that we require that they be bounded at each value of $\mathbf{x}$ by the minimum and maximum values given by any of the members of the committee, so that
+\[
+y_{\min}(\mathbf{x}) \le y_{\text{COM}}(\mathbf{x}) \le y_{\max}(\mathbf{x}).\]
+Show that a necessary and sufficient condition for this constraint is that the coefficients $\alpha_m$ satisfy
+\[
+\alpha_m \geqslant 0, \qquad \sum_{m=1}^{M} \alpha_m = 1.
+\]
+
+\textbf{9.17} (\textbf{* *}) 考虑一个允许组成模型权重不相等的委员会，使得
+\[
+y_\text{COM}(\mathbf{x}) = \sum_{m=1}^{M} \alpha_m y_m(\mathbf{x}).
+\]
+为了确保预测 $y_\text{COM}(\mathbf{x})$ 保持在合理范围内，假设我们要求它们在 $\mathbf{x}$ 的每个值处都被委员会任何成员给出的最小值和最大值所限制，即
+\[
+y_{\min}(\mathbf{x}) \leqslant y_\text{COM}(\mathbf{x}) \leqslant y_{\max}(\mathbf{x}).
+\]
+证明这一约束的必要充分条件是系数 $\alpha_m$ 满足
+\[
+\alpha_m \geqslant 0, \qquad \sum_{m=1}^{M} \alpha_m = 1.
+\]
+
+\textbf{9.18} (\textbf{* * *}) Here we explore the effect of dropout regularization on a simple linear regression model trained using least squares. Consider a model of the form
+\[
+y_k = \sum_{i=1}^{D} w_{ki} x_i
+\]
+along with a sum-of-squares error function given by
+\[
+E(\mathbf{W}) = \sum_{n=1}^{N} \sum_{k=1}^{K} \left\{ t_{nk} - \sum_{i=1}^{D} w_{ki} R_{ni} x_{ni} \right\}^2
+\]
+where the elements $R_{ni} \in \{0, 1\}$ of the dropout matrix are chosen randomly from a Bernoulli distribution with parameter $\rho$. We now take an expectation over the distribution of random dropout parameters. Show that
+\[
+\mathbb{E}[R_{ni}] = \rho
+\]
+\[
+\mathbb{E}[R_{ni} R_{nj}] = \delta_{ij} \rho + (1 - \delta_{ij}) \rho^2.
+\]
+Hence, show that the expected error function for this dropout model is given by
+\[
+\mathbb{E}\left[E(\mathbf{W})\right] = \sum_{n=1}^{N} \sum_{k=1}^{K} \left\{ y_{nk} - \rho \sum_{i=1}^{D} w_{ki} x_{ni} \right\}^2
+\]
+\[
++ \rho(1-\rho) \sum_{n=1}^{N} \sum_{k=1}^{K} \sum_{i=1}^{D} w_{ki}^2 x_{ni}^2.
+\]
+Thus, we see that the expected error function corresponds to a sum-of-squares error with a quadratic regularizer in which the regularization coefficient is scaled separately for each input variable according to the data values seen by that input. Finally, write down a closed-form solution for the weight matrix that minimizes this regularized error function.
+
+\textbf{9.18} (\textbf{* * *}) 在这里，我们探讨 Dropout 正则化对使用最小二乘法训练的简单线性回归模型的影响。考虑一个形式为
+\[
+y_k = \sum_{i=1}^{D} w_{ki} x_i
+\]
+的模型，以及一个形式为
+\[
+E(\mathbf{W}) = \sum_{n=1}^{N} \sum_{k=1}^{K} \left\{ t_{nk} - \sum_{i=1}^{D} w_{ki} R_{ni} x_{ni} \right\}^2
+\]
+的平方和误差函数，其中 Dropout 矩阵的元素 $R_{ni} \in \{0, 1\}$ 是从参数为 $\rho$ 的伯努利分布中随机选择的。我们现在对随机 Dropout 参数的分布取期望。证明
+\[
+\mathbb{E}[R_{ni}] = \rho
+\]
+\[
+\mathbb{E}[R_{ni} R_{nj}] = \delta_{ij} \rho + (1 - \delta_{ij}) \rho^2.
+\]
+因此，证明此 Dropout 模型的期望误差函数为
+\[
+\mathbb{E}\left[E(\mathbf{W})\right] = \sum_{n=1}^{N} \sum_{k=1}^{K} \left\{ y_{nk} - \rho \sum_{i=1}^{D} w_{ki} x_{ni} \right\}^2
+\]
+\[
++ \rho(1-\rho) \sum_{n=1}^{N} \sum_{k=1}^{K} \sum_{i=1}^{D} w_{ki}^2 x_{ni}^2.
+\]
+因此，我们看到期望误差函数对应于一个带有二次正则化器的平方和误差，其中正则化系数根据该输入看到的数据值分别针对每个输入变量进行缩放。最后，写出最小化此正则化误差函数的权重矩阵的闭式解。
+
+\end{document}

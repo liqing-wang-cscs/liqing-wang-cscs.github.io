@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, ctex, graphicx}
+\usepackage[margin=1in]{geometry}
+\title{第8章-反向传播-所有习题}
+\author{《深度学习基础》课程小组}
+% \date{}
+
+\begin{document}
+\maketitle
+
+\textbf{8.1} (\textbf{*}) By making use of {eq:8.5}, {eq:8.6}, {eq:8.8}, and {eq:8.12}, verify the backpropagation formula {eq:8.13} for evaluating the derivatives of an error function.
+
+\textbf{8.1} (\textbf{*}) 通过使用公式 {eq:8.5}、{eq:8.6}、{eq:8.8} 和 {eq:8.12}，验证用于评估误差函数导数的反向传播公式 {eq:8.13}。
+
+\textbf{8.2} (\textbf{* *}) Consider a network that consists of layers and rewrite the backpropagation formula {eq:8.13} in matrix notation by starting with the forward propagation equation {eq:6.19}. Note that the result involves multiplication by the transposes of the matrices.
+
+\textbf{8.2} (\textbf{* *}) 考虑一个由层组成的网络，并从正向传播方程 {eq:6.19} 开始，用矩阵表示法重写反向传播公式 {eq:8.13}。注意结果涉及与矩阵转置的乘法。
+
+\textbf{8.3} (\textbf{*}) By using a Taylor expansion, verify that the terms that are $\mathcal{O}(\epsilon)$ cancel on the right-hand side of {eq:8.25}.
+
+\textbf{8.3} (\textbf{*}) 通过使用泰勒展开，验证在公式 {eq:8.25} 的右侧，$\mathcal{O}(\epsilon)$ 项相互抵消。
+
+\textbf{8.4} (\textbf{* *}) Consider a two-layer network of the form shown in Figure 6.9 with the addition of extra parameters corresponding to skip-layer connections that go directly from the inputs to the outputs. By extending the discussion of Section 8.1.3, write down the equations for the derivatives of the error function with respect to these additional parameters.
+
+\textbf{8.4} (\textbf{* *}) 考虑如图 6.9 所示的两层网络形式，并添加对应于从输入直接到输出的跳跃层连接的额外参数。通过扩展第 8.1.3 节的讨论，写出误差函数对这些额外参数的导数方程。
+
+\textbf{8.5} (\textbf{* * *}) In Section 8.1.5, we derived a procedure for evaluating the Jacobian matrix of a neural network using a backpropagation procedure. Derive an alternative formalism for finding the Jacobian based on \emph{forward propagation} equations.
+
+\textbf{8.5} (\textbf{* * *}) 在第 8.1.5 节中，我们推导了一种使用反向传播过程评估神经网络雅可比矩阵的过程。基于\emph{前向传播}方程推导出另一种寻找雅可比矩阵的形式化方法。
+
+\textbf{8.6} (\textbf{* * *}) Consider a two-layer neural network, and define the quantities
+\[
+\delta_k = \frac{\partial E_n}{\partial a_k}, \qquad M_{kk'} \equiv \frac{\partial^2 E_n}{\partial a_k \partial a_{k'}}.
+\]
+Derive expressions for the elements of the Hessian matrix expressed in terms of $\delta_k$ and $M_{kk'}$ for elements in which (i) both weights are in the second layer, (ii) both weights are in the first layer, and (iii) one weight is in each layer.
+
+\textbf{8.6} (\textbf{* * *}) 考虑一个两层神经网络，并定义量
+\[
+\delta_k = \frac{\partial E_n}{\partial a_k}, \qquad M_{kk'} \equiv \frac{\partial^2 E_n}{\partial a_k \partial a_{k'}}.
+\]
+推导赫森矩阵元素的表达式，这些元素用 $\delta_k$ 和 $M_{kk'}$ 表示，其中 (i) 两个权重都在第二层，(ii) 两个权重都在第一层，以及 (iii) 每层各有一个权重。
+
+\textbf{8.7} (\textbf{* * *}) Extend the results of Exercise 8.6 for the exact Hessian of a two-layer network to include skip-layer connections that go directly from inputs to outputs.
+
+\textbf{8.7} (\textbf{* * *}) 将练习 8.6 的结果扩展到包括从输入直接到输出的跳跃层连接的两层网络的精确赫森矩阵。
+
+\textbf{8.8} (\textbf{* *}) The outer product approximation to the Hessian matrix for a neural network using a sum-of-squares error function is given by {eq:8.40}. Extend this result for multiple outputs.
+
+\textbf{8.8} (\textbf{* *}) 对于使用平方和误差函数的神经网络，赫森矩阵的外积近似由公式 {eq:8.40} 给出。将此结果扩展到多个输出。
+
+\textbf{8.9} (\textbf{* *}) Consider a squared-loss function of the form
+\[
+E(\mathbf{w}) = \frac{1}{2} \iint \left\{ y(\mathbf{x}, \mathbf{w}) - t \right\}^2 p(\mathbf{x}, t) \, \mathrm{d}\mathbf{x} \, \mathrm{d}t
+\]
+where $y(\mathbf{x}, \mathbf{w})$ is a parametric function such as a neural network. The result {eq:4.37} shows that the function $y(\mathbf{x}, \mathbf{w})$ that minimizes this error is given by the conditional expectation of $t$ given $\mathbf{x}$. Use this result to show that the second derivative of $E$ with respect to two elements $w_r$ and $w_s$ of the vector $\mathbf{w}$, is given by
+\[
+\frac{\partial^2 E}{\partial w_r \partial w_s} = \int \frac{\partial y}{\partial w_r} \frac{\partial y}{\partial w_s} p(\mathbf{x}) \, \mathrm{d}\mathbf{x}.
+\]
+Note that, for a finite sample from $p(\mathbf{x})$, we obtain {eq:8.40}.
+
+\textbf{8.9} (\textbf{* *}) 考虑一个形式为
+\[
+E(\mathbf{w}) = \frac{1}{2} \iint \left\{ y(\mathbf{x}, \mathbf{w}) - t \right\}^2 p(\mathbf{x}, t) \, \mathrm{d}\mathbf{x} \, \mathrm{d}t
+\]
+的平方损失函数，其中 $y(\mathbf{x}, \mathbf{w})$ 是一个参数化函数，例如神经网络。结果 {eq:4.37} 表明最小化该误差的函数 $y(\mathbf{x}, \mathbf{w})$ 由给定 $\mathbf{x}$ 的 $t$ 的条件期望给出。使用此结果表明 $E$ 关于向量 $\mathbf{w}$ 的两个元素 $w_r$ 和 $w_s$ 的二阶导数为
+\[
+\frac{\partial^2 E}{\partial w_r \partial w_s} = \int \frac{\partial y}{\partial w_r} \frac{\partial y}{\partial w_s} p(\mathbf{x}) \, \mathrm{d}\mathbf{x}.
+\]
+注意，对于来自 $p(\mathbf{x})$ 的有限样本，我们得到 {eq:8.40}。
+
+\textbf{8.10} (\textbf{* *}) Derive the expression {eq:8.41} for the outer product approximation of a Hessian matrix for a network having a single output with a logistic-sigmoid output-unit activation function and a cross-entropy error function, corresponding to the result {eq:8.40} for the sum-of-squares error function.
+
+\textbf{8.10} (\textbf{* *}) 推导具有单个输出且使用逻辑 Sigmoid 输出单元激活函数和交叉熵误差函数的网络的赫森矩阵外积近似的表达式 {eq:8.41}，这对应于平方和误差函数的结果 {eq:8.40}。
+
+\textbf{8.11} (\textbf{* *}) Derive an expression for the outer product approximation of a Hessian matrix for a network having $K$ outputs with a softmax output-unit activation function and a cross-entropy error function, corresponding to the result {eq:8.40} for the sum-of-squares error function.
+
+\textbf{8.11} (\textbf{* *}) 推导具有 $K$ 个输出且使用 Softmax 输出单元激活函数和交叉熵误差函数的网络的赫森矩阵外积近似的表达式，这对应于平方和误差函数的结果 {eq:8.40}。
+
+\textbf{8.12} (\textbf{* * *}) Consider the matrix identity
+\[
+(\mathbf{M} + \mathbf{v}\mathbf{v}^\mathrm{T})^{-1} = \mathbf{M}^{-1} - \frac{(\mathbf{M}^{-1}\mathbf{v})(\mathbf{v}^\mathrm{T}\mathbf{M}^{-1})}{1 + \mathbf{v}^\mathrm{T}\mathbf{M}^{-1}\mathbf{v}},
+\]
+which is simply a special case of the Woodbury identity (A.7). By applying {eq:8.80} to the outer product approximation {eq:8.40} for a Hessian matrix, derive a formula that allows the inverse of the Hessian matrix to be computed by making one pass through the training data and updating the inverse Hessian with each data point. Note that the algorithm can initialized using $\mathbf{H} = \alpha \mathbf{I}$ where $\alpha$ is a small constant, and that the results are not particularly sensitive to the precise value of $\alpha$.
+
+\textbf{8.12} (\textbf{* * *}) 考虑矩阵恒等式
+\[
+(\mathbf{M} + \mathbf{v}\mathbf{v}^\mathrm{T})^{-1} = \mathbf{M}^{-1} - \frac{(\mathbf{M}^{-1}\mathbf{v})(\mathbf{v}^\mathrm{T}\mathbf{M}^{-1})}{1 + \mathbf{v}^\mathrm{T}\mathbf{M}^{-1}\mathbf{v}},
+\]
+这只是伍德伯里恒等式 (A.7) 的一个特例。通过将 {eq:8.80} 应用于赫森矩阵的外积近似 {eq:8.40}，推导出一个公式，允许通过对训练数据进行一次遍历并用每个数据点更新逆赫森矩阵来计算赫森矩阵的逆。注意，算法可以使用 $\mathbf{H} = \alpha \mathbf{I}$ 初始化，其中 $\alpha$ 是一个小常数，并且结果对 $\alpha$ 的确切值并不特别敏感。
+
+\textbf{8.13} (\textbf{* *}) Verify that the derivative of {eq:8.47} is given by {eq:8.48}.
+
+\textbf{8.13} (\textbf{* *}) 验证公式 {eq:8.47} 的导数由公式 {eq:8.48} 给出。
+
+\textbf{8.14} (\textbf{* *}) The logistic map is a function defined by the iterative relation $L_{n+1}(x) = 4L_n(x)(1 - L_n(x))$ with $L_1(x) = x$. Write down the evaluation trace equations for $L_2(x)$, $L_3(x)$, and $L_4(x)$, and then write down expressions for the corresponding derivatives $L'_1(x)$, $L'_2(x)$, $L'_3(x)$, and $L'_4(x)$. Do not simplify the expressions but instead simply note how the complexity of the formulae for the derivatives grows much more rapidly than the expressions for the functions themselves.
+
+\textbf{8.14} (\textbf{* *}) 逻辑映射是一个由迭代关系 $L_{n+1}(x) = 4L_n(x)(1 - L_n(x))$ 定义的函数，其中 $L_1(x) = x$。写出 $L_2(x)$、$L_3(x)$ 和 $L_4(x)$ 的评估轨迹方程，然后写出相应导数 $L'_1(x)$、$L'_2(x)$、$L'_3(x)$ 和 $L'_4(x)$ 的表达式。不要简化表达式，而是简单地注意到导数公式的复杂性比函数本身的表达式增长得快得多。
+
+\textbf{8.15} (\textbf{* *}) Starting from the evaluation trace equations {eq:8.50} to {eq:8.56} for the example function {eq:8.49}, use {eq:8.57} to derive the forward-mode tangent variable evaluation equations {eq:8.58} to {eq:8.64}.
+
+\textbf{8.15} (\textbf{* *}) 从示例函数 {eq:8.49} 的评估轨迹方程 {eq:8.50} 到 {eq:8.56} 开始，使用 {eq:8.57} 推导前向模式切线变量评估方程 {eq:8.58} 到 {eq:8.64}。
+
+\textbf{8.16} (\textbf{* *}) Starting from the evaluation trace equations {eq:8.50} to {eq:8.56} for the example function {eq:8.49}, and referring to Figure 8.4, use {eq:8.69} to derive the reverse-mode adjoint variable evaluation equations {eq:8.70} to {eq:8.76}.
+
+\textbf{8.16} (\textbf{* *}) 从示例函数 {eq:8.49} 的评估轨迹方程 {eq:8.50} 到 {eq:8.56} 开始，并参考图 8.4，使用 {eq:8.69} 推导反向模式伴随变量评估方程 {eq:8.70} 到 {eq:8.76}。
+
+\textbf{8.17} (\textbf{* * *}) Consider the example function {eq:8.49}. Write down an expression for $\partial f / \partial x_1$ and evaluate this function for $x_1 = 1$ and $x_2 = 2$. Now use the evaluation trace equations {eq:8.50} to {eq:8.56} to evaluate the variables $v_1$ to $v_7$ and then use the evaluation trace equations of forward-mode automatic differentiation to evaluate the tangent variables $\dot{v}_1$ to $\dot{v}_7$ and to confirm that the resulting value of $\partial f / \partial x_1$ agrees with that found directly. Similarly, use the evaluation trace equations of reverse-mode automatic differentiation {eq:8.70} to {eq:8.76} to evaluate the adjoint variables $\overline{v}_7$ to $\overline{v}_1$ and again confirm that the resulting value of $\partial f / \partial x_1$ agrees with that found directly.
+
+\textbf{8.17} (\textbf{* * *}) 考虑示例函数 {eq:8.49}。写出 $\partial f / \partial x_1$ 的表达式，并在 $x_1 = 1$ 和 $x_2 = 2$ 时评估该函数。现在使用评估轨迹方程 {eq:8.50} 到 {eq:8.56} 来评估变量 $v_1$ 到 $v_7$，然后使用前向模式自动微分的评估轨迹方程来评估切线变量 $\dot{v}_1$ 到 $\dot{v}_7$，并确认由此得到的 $\partial f / \partial x_1$ 的值与直接找到的值一致。同样，使用反向模式自动微分的评估轨迹方程 {eq:8.70} 到 {eq:8.76} 来评估伴随变量 $\overline{v}_7$ 到 $\overline{v}_1$，并再次确认由此得到的 $\partial f / \partial x_1$ 的值与直接找到的值一致。
+
+\textbf{8.18} (\textbf{* *}) By expressing an arbitrary vector $\mathbf{r} = (r_1, \ldots, r_D)^\mathrm{T}$ as a linear combination of the unit vectors $\mathbf{e}_i$, where $i = 1, \ldots, D$, show that the product of the Jacobian of a function with $\mathbf{r}$ in the form {eq:8.67} can be evaluated using a single pass of forward-mode automatic differentiation by setting $\dot{\mathbf{x}} = \mathbf{r}$.
+
+\textbf{8.18} (\textbf{* *}) 通过将任意向量 $\mathbf{r} = (r_1, \ldots, r_D)^\mathrm{T}$ 表示为单位向量 $\mathbf{e}_i$（其中 $i = 1, \ldots, D$）的线性组合，证明函数与 $\mathbf{r}$ 的雅可比乘积（形式如 {eq:8.67}）可以通过设置 $\dot{\mathbf{x}} = \mathbf{r}$ 并使用一次前向模式自动微分来评估。
+
+\end{document}

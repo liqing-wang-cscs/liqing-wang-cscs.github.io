@@ -1,0 +1,328 @@
+<!-- 第6章：深度神经网络、第3节：深度网络 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第6章：深度神经网络、第3节：深度网络 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: #1e3a8a;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    (function() {
+        // 转换后的题目数据 - 按照指定格式
+        const questions = [
+            {
+                id: 1,
+                topic: "深度神经网络基础",
+                question: "关于深度神经网络（Deep Neural Networks），以下哪个说法是正确的？",
+                options: {
+                    A: "深度神经网络是指具有两个隐藏层的网络",
+                    B: "深度神经网络通常指具有多个可学习权重层的网络",
+                    C: "深度神经网络仅指卷积神经网络",
+                    D: "深度神经网络无法表示复杂的函数"
+                },
+                answer: "B",
+                explanation: "解析：根据文本，深度神经网络是指扩展了两层网络架构，拥有多个（L个）层的网络，其中每一层都包含可学习的权重参数。选项A错误，因为深度网络的定义不局限于两个隐藏层。选项C错误，因为深度网络是一个更广泛的概念，卷积网络是其一种特殊形式。选项D错误，文本明确指出深度网络可以表示给定函数所需的参数远少于两层网络。"
+            },
+            {
+                id: 2,
+                topic: "深度网络数学表示",
+                question: "在一个L层深度网络中，第 $\\ell$ 层的输出 $\\mathbf{z}^{(\\ell)}$ 通常由以下哪个公式计算？",
+                options: {
+                    A: "$\\mathbf{z}^{(\\ell)} = h^{(\\ell)}\\left(\\mathbf{W}^{(\\ell)} \\mathbf{z}^{(\\ell)}\\right)$",
+                    B: "$\\mathbf{z}^{(\\ell)} = \\mathbf{W}^{(\\ell)} \\mathbf{z}^{(\\ell-1)}$",
+                    C: "$\\mathbf{z}^{(\\ell)} = h^{(\\ell)}\\left(\\mathbf{W}^{(\\ell)} \\mathbf{z}^{(\\ell-1)}\\right)$",
+                    D: "$\\mathbf{z}^{(\\ell)} = \\mathbf{W}^{(\\ell)} \\mathbf{z}^{(\\ell+1)}$"
+                },
+                answer: "C",
+                explanation: "解析：这是文本中给出的公式(6.10)，描述了深度网络中第 $\\ell$ 层的计算方式。输入是前一层的输出$\\mathbf{z}^{(\\ell-1)}$，经过权重矩阵$\\mathbf{W}^{(\\ell)}$变换后，再通过激活函数$h^{(\\ell)}$得到本层的输出$\\mathbf{z}^{(\\ell)}$。"
+            },
+            {
+                id: 3,
+                topic: "归纳偏置",
+                question: "深度神经网络的一个关键优势是它能编码什么样的归纳偏置（inductive bias）？",
+                options: {
+                    A: "认为所有输入特征同等重要",
+                    B: "认为输出与输入之间存在层次化的表示关系",
+                    C: "认为数据是线性可分的",
+                    D: "认为网络层数越多越好"
+                },
+                answer: "B",
+                explanation: "解析：文本在 Hierarchical representations 小节中明确指出，a more compelling reason to explore deep neural networks is that the network architecture encodes a particular form of inductive bias, namely that the outputs are related to the input space through a hierarchical representation.” 即认为输出是通过一个层次化的表示与输入空间相关的。"
+            },
+            {
+                id: 4,
+                topic: "分布式表示",
+                question: "在分布式表示（Distributed Representations）中，如果某一层有M个隐藏单元，则理论上该层最多可以表示多少种不同的特征组合？",
+                options: {
+                    A: "M",
+                    B: "2M",
+                    C: "$M^2$",
+                    D: "$2^M$"
+                },
+                answer: "D",
+                explanation: "解析：文本在 Distributed representations 小节中提到，...potentially allowing a hidden layer with M units to represent $2^M$ different features, growing exponentially with the number of units.” 这是因为每个单元都可以独立地处于激活或未激活状态，M个单元就有$2^M$种可能的组合。"
+            },
+            {
+                id: 5,
+                topic: "表示学习",
+                question: "表示学习（Representation Learning）的核心思想是什么？",
+                options: {
+                    A: "学习如何压缩数据以节省存储空间",
+                    B: "学习一个非线性变换，使数据在新空间中更容易完成目标任务",
+                    C: "学习如何生成新的训练数据",
+                    D: "学习如何减少网络参数的数量"
+                },
+                answer: "B",
+                explanation: "解析：文本在 Representation learning 小节中指出，We can view the successive layers of a deep neural network as performing transformations of the data, that make it easier to solve the desired task or tasks.” 以及 “This ability to discover a nonlinear transformation of the data that makes subsequent tasks easier to solve is called <em>representation learning."
+            },
+            {
+                id: 6,
+                topic: "迁移学习",
+                question: "迁移学习（Transfer Learning）最适合用于哪种情况？",
+                options: {
+                    A: "目标任务有大量标签数据",
+                    B: "目标任务数据稀缺，但有相关任务的丰富数据",
+                    C: "目标任务和源任务完全不同",
+                    D: "只有无标签数据可用"
+                },
+                answer: "B",
+                explanation: "解析：文本在Transfer learning小节中描述：In general, transfer learning can be used to improve performance on some task A, for which training data is in short supply, by using data from a related task B, for which data is more plentiful."
+            },
+            {
+                id: 7,
+                topic: "对比学习",
+                question: "对比学习（Contrastive Learning）的目标是什么？",
+                options: {
+                    A: "最小化模型预测值与真实标签之间的差距",
+                    B: "使正样本对在嵌入空间中靠近，负样本对远离",
+                    C: "重构输入数据",
+                    D: "预测下一个词"
+                },
+                answer: "B",
+                explanation: "解析：文本在Contrastive learning小节中明确指出：The idea is to learn a representation such that certain pairs of inputs, referred to as positive pairs, are close in the embedding space, and other pairs of inputs, called negative pairs, are far apart."
+            },
+            {
+                id: 8,
+                topic: "InfoNCE损失",
+                question: "InfoNCE 损失函数在对比学习中是如何工作的？",
+                options: {
+                    A: "它直接最小化正样本对的距离",
+                    B: "它最大化锚点与正样本的相似度，同时最小化锚点与负样本的相似度，形式上类似于分类交叉熵",
+                    C: "它只惩罚负样本对",
+                    D: "它等价于均方误差损失"
+                },
+                answer: "B",
+                explanation: "解析：文本描述InfoNCE损失函数时提到：Note that the function resembles a classification cross-entropy error function in which the cosine similarity of the positive pair gives the logit for the label class and the cosine similarities for the negative pairs give the logits for the incorrect classes. 这表明它通过一个归一化的对数似然来实现区分正负样本的目的。"
+            },
+            {
+                id: 9,
+                topic: "实例判别",
+                question: "在实例判别（Instance Discrimination）的对比学习中，正样本对通常是通过什么方式创建的？",
+                options: {
+                    A: "使用不同类别的图像",
+                    B: "使用同一张图像的不同增强版本",
+                    C: "使用图像和其文本描述",
+                    D: "随机选择图像对"
+                },
+                answer: "B",
+                explanation: "解析：文本在讨论实例判别时提到：a common choice is to create positive pairs by corrupting the input images in ways that should preserve the semantic information of the image while greatly altering the image in the pixel space ... Examples include rotation, translation, and colour shifts.” 这就是指对同一张图像进行不同的数据增强操作来生成正样本对。"
+            },
+            {
+                id: 10,
+                topic: "张量",
+                question: "关于神经网络中的张量（Tensors），以下哪项描述最准确？",
+                options: {
+                    A: "张量只能用来表示三维以上的数据",
+                    B: "张量是标量、向量和矩阵的高维推广，包含了它们作为特例",
+                    C: "张量是专门用于GPU计算的数据结构",
+                    D: "张量必须是四维的"
+                },
+                answer: "B",
+                explanation: "解析：文本在Tensors小节中明确说明：These higher-dimensional arrays are called <em>tensors</em> and include scalars, vectors, and matrices as special cases.” 标量是0维张量，向量是1维张量，矩阵是2维张量，更高维度的数组是更高维的张量。"
+            }
+        ];
+
+        // 将选项对象转换为数组
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        // 获取答案索引
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        // 渲染问题
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax（如果父页面引入了 MathJax）
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 选择选项的处理函数（挂到 window，因为 onclick 需要全局访问）
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            // 移除之前的选择样式
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            // 应用新选择的样式
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            // 重新渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>
