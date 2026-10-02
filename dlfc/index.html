@@ -6,7 +6,7 @@
     <title>📚 欢迎学习 · 深度学习 - 基础与概念</title>
     <!-- 引入 marked.js 用于解析 Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <!-- 引入 KaTeX 用于渲染数学公式 -->
+    <!-- 引入 KaTeX 用于渲染数学公式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
@@ -29,7 +29,7 @@
             flex-direction: column;
         }
 
-         /* 强制 KaTeX 渲染被 <p> 标签包裹的块级公式 */
+        /* 强制 KaTeX 渲染被 <p> 标签包裹的块级公式 */
         .katex-display { display: block !important; }
 
         /* 顶栏 */
@@ -89,7 +89,6 @@
             display: flex;
             flex: 1;
             overflow: hidden;
-            /* height: calc(100vh - 60px); */
         }
 
         /* ===== 左侧栏 (章列表) ===== */
@@ -100,10 +99,19 @@
             overflow-y: auto;
             padding: 1rem 0.5rem;
             flex-shrink: 0;
+            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
         }
 
         .sidebar-left::-webkit-scrollbar { width: 5px; }
         .sidebar-left::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* 隐藏状态下的左侧目录 */
+        .sidebar-left.hidden {
+            width: 0;
+            padding: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
 
         .chapter-item {
             margin-bottom: 0.2rem;
@@ -151,7 +159,7 @@
         }
 
         .section-list.open {
-            max-height: 900px;
+            max-height: 2000px;
             opacity: 1;
         }
 
@@ -178,10 +186,69 @@
             font-weight: 500;
         }
 
+        /* ===== 左侧栏分组（章内子章节） ===== */
+        .section-group {
+            margin: 0.1rem 0;
+        }
+
+        .section-group-title {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #1e293b;
+            padding-left: 1.2rem;
+        }
+
+        .section-group-title .group-arrow {
+            display: inline-block;
+            width: 1rem;
+            font-size: 0.65rem;
+            color: #64748b;
+            transition: transform 0.15s;
+        }
+
+        .section-group-title .group-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        /* 子节点容器：默认折叠 */
+        .section-children {
+            margin-left: 1.6rem;
+            padding-left: 0.2rem;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.25s ease, opacity 0.2s ease;
+        }
+
+        .section-children.open {
+            max-height: 1200px;
+            opacity: 1;
+        }
+
+        /* 子节点样式 */
+        .section-child {
+            padding-left: 1.6rem;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .section-child:hover {
+            background: #eef2f6;
+            color: #0f172a;
+        }
+
+        .section-child.active {
+            background: #dbeafe;
+            border-left-color: #3b82f6;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
         /* ===== 中间内容区 ===== */
         .main-content {
             flex: 1;
-            min-height: 0;       /* 关键：允许 flex 子元素收缩到小于其内容的高度 */
+            min-height: 0;
             background: #ffffff;
             padding: 2rem 2.5rem;
             overflow-y: auto;
@@ -191,11 +258,10 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
 
-         #content-area {
+        #content-area {
             max-width: 900px;
             margin: 0 auto;
-            padding: 2rem 2.5rem; 
-            /* 可选：为了确保 padding 不会撑大元素，可以加上 box-sizing */
+            padding: 2rem 2.5rem;
             box-sizing: border-box;
         }
 
@@ -292,7 +358,7 @@
             background: #fafcff;
             border-left: 1px solid #e2e8f0;
             padding: 1.2rem 0.8rem;
-            min-height: 0;       /* 关键：允许收缩 */
+            min-height: 0;
             overflow-y: auto;
             flex-shrink: 0;
             transition: width 0.2s, padding 0.2s, opacity 0.2s;
@@ -399,29 +465,27 @@
 
         /* ===== 优化折叠面板 (details) 样式 ===== */
         details {
-            margin-bottom: 1.5rem; /* 增加底部外边距，拉开与下方横线(---)的距离 */
-            border: 1px solid #e2e8f0; /* 可选：加个边框让折叠区更有层次感 */
-            border-radius: 6px; /* 可选：圆角 */
-            padding: 0.5rem 1rem; /* 可选：增加一点内边距 */
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
         }
 
-        /* 标题区域 (summary) */
         details summary {
             cursor: pointer;
             font-weight: bold;
-            padding: 0.5rem 0; /* 给标题上下留点呼吸空间 */
+            padding: 0.5rem 0;
         }
 
-        /* 展开后的内容区域 */
         details > *:not(summary) {
-            margin-top: 0.8rem; /* 内容与标题之间留出间距 */
-            line-height: 1.6;   /* 关键：增加行高，让上下行距更舒适 */
-            padding-bottom: 0.5rem; /* 底部留白 */
+            margin-top: 0.8rem;
+            line-height: 1.6;
+            padding-bottom: 0.5rem;
         }
 
         /* ===== 代码块一键复制样式 ===== */
         .code-wrapper {
-            position: relative; /* 作为按钮定位的基准 */
+            position: relative;
             margin-bottom: 1.5rem;
         }
 
@@ -432,26 +496,24 @@
             padding: 4px 10px;
             font-size: 12px;
             font-weight: bold;
-            color: #fff;           /* 纯白文字 */
-            background-color: rgba(0, 0, 0, 0.6); /* 关键：默认背景改为深灰色半透明 */
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            opacity: 0;            /* 默认隐藏，鼠标悬停时显示 */
+            opacity: 0;
             transition: opacity 0.2s ease, background-color 0.2s ease;
             z-index: 10;
         }
+
         .copy-btn:hover {
-            background-color: rgba(0, 0, 0, 0.8); /* 鼠标悬停时背景变得更深 */
+            background-color: rgba(0, 0, 0, 0.8);
         }
 
         .code-wrapper:hover .copy-btn {
             opacity: 1;
         }
-        .copy-btn:hover {
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        
+
         /* ===== 侧边栏切换按钮样式 ===== */
         #toggle-sidebar-btn {
             background: none;
@@ -459,44 +521,24 @@
             color: #e2e8f0;
             font-size: 20px;
             cursor: pointer;
-            margin-right: 15px; /* 与右侧文字保持间距 */
+            margin-right: 15px;
             padding: 0 5px;
             transition: color 0.2s;
         }
         #toggle-sidebar-btn:hover {
             color: #ffffff;
         }
-
-        /* ===== 左侧目录过渡动画 ===== */
-        .sidebar-left {
-            /* 添加平滑过渡效果，让隐藏/显示更自然 */
-            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-            /* 保留你原有的其他样式... */
-        }
-
-        /* 隐藏状态下的左侧目录 */
-        .sidebar-left.hidden {
-            width: 0;
-            padding: 0;
-            opacity: 0;
-            overflow: hidden; /* 隐藏溢出的内容 */
-        }
-
     </style>
 </head>
 <body>
 
 <!-- 顶栏 -->
 <header class="navbar">
-   <!-- 新增：侧边栏切换按钮 -->
     <button id="toggle-sidebar-btn" title="隐藏/显示目录">☰</button>
     <h1>
         📖 深度学习 - 基础与概念
-        <!-- <small>· 在线教材</small> -->
-        <!-- <span class="badge">v0.4</span> -->
     </h1>
     <div style="margin-left: auto; display: flex; gap: 0.5rem; align-items: center;">
-        <!-- <span style="font-size:0.8rem; color:#94a3b8;">📂 支持 HTML / Markdown</span> -->
         <button class="toggle-toc-btn" id="toggleTocBtn" title="切换右栏目录">📑 目录</button>
     </div>
 </header>
@@ -535,15 +577,17 @@
         // ==============================================================
         // 1. 课程数据 —— 支持 HTML 和 Markdown 文件
         //    type: 'html' 或 'md'，默认 'html'
+        //    type: 'group' 表示这是一个可展开的父节点
         // ==============================================================
         const courseData = [
             {
                 id: 'ch1',
                 title: '第一章 · 深度学习革命',
                 sections: [
-                    { id: 'ch1s1', title: '1.1 ', file: 'ch1/ch1-1/ch1-1.md', type: 'md' },
-                    { id: 'ch1s2', title: '1.2 ', file: 'ch1/ch1-2/ch1-2.md', type: 'md' },
-                    { id: 'ch1s3', title: '1.3 ', file: 'ch1/ch1-3/ch1-3.md', type: 'md' }
+                    { id: 'ch1s1', title: '1.1 深度学习', file: 'ch01/ch01-graph-v2.pdf', type: 'pdf' },
+                    { id: 'ch1s2', title: '1.2 人工智能', file: 'ch01/ch01-graph-v3.pdf', type: 'pdf' },
+                    { id: 'ch1s3', title: '1.3 世界模型', file: 'ch01/ch01-graph-v4.pdf', type: 'pdf' },
+                    { id: 'ch1s4', title: '1.4 幻灯片', file: 'ch01/ch01-slides.pdf', type: 'pdf' }
                 ]
             },
             {
@@ -618,52 +662,81 @@
                     { id: 'ch9s3', title: '9.3 ', file: 'ch9/ch9-3/ch9-3.md', type: 'md' }
                 ]
             },
-
-            // {
-            //     id: 'ch10',
-            //     title: '第十章 · 卷积网络',
-            //     sections: [
-            //         { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
-            //         { id: 'ch10s2', title: '10.2 卷积滤波器', file: 'ch10/ch10-2/ch10-2.md', type: 'md' },
-            //         { id: 'ch10s3', title: '10.3 可视化训练好的CNN', file: 'ch10/ch10-3/ch10-3.md', type: 'md' },
-            //         { id: 'ch10s4', title: '10.4 目标检测', file: 'ch10/ch10-4/ch10-4.md', type: 'md' },
-            //         { id: 'ch10s5', title: '10.5 图像分割', file: 'ch10/ch10-5/ch10-5.md', type: 'md' },
-            //         { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
-            //     ]
-            // }
-
-{
-    id: 'ch10',
-    title: '第十章 · 卷积网络',
-    sections: [
-        { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
-        { id: 'ch10s2', title: '10.2 卷积滤波器', type: 'group', // 关键：表示这是一个可展开的父节点
-            file: 'ch10/ch10-2/ch10-2.md', // 可选：点击父节点时中间栏打开这个总览 md
-            children: [
-                { id: 'ch10s2-0', title: '10.2.0 动机与方法', file: 'ch10/ch10-2/ch10-2-0/ch10-2-0.md', type: 'md' },
-                { id: 'ch10s2-1', title: '10.2.1 特征检测器', file: 'ch10/ch10-2/ch10-2-1/ch10-2-1.md', type: 'md' },
-                { id: 'ch10s2-2', title: '10.2.2 平移不变性', file: 'ch10/ch10-2/ch10-2-2/ch10-2-2.md', type: 'md' },
-                { id: 'ch10s2-3', title: '10.2.3 填充', file: 'ch10/ch10-2/ch10-2-3/ch10-2-3.md', type: 'md' },
-                { id: 'ch10s2-4', title: '10.2.4 跨步卷积', file: 'ch10/ch10-2/ch10-2-4/ch10-2-4.md', type: 'md' },
-                { id: 'ch10s2-5', title: '10.2.5 多维卷积', file: 'ch10/ch10-2/ch10-2-5/ch10-2-5.md', type: 'md' },
-                { id: 'ch10s2-6', title: '10.2.6 池化', file: 'ch10/ch10-2/ch10-2-6/ch10-2-6.md', type: 'md' },
-                { id: 'ch10s2-7', title: '10.2.7 多层卷积', file: 'ch10/ch10-2/ch10-2-7/ch10-2-7.md', type: 'md' },
-                { id: 'ch10s2-8', title: '10.2.8 网络架构示例', file: 'ch10/ch10-2/ch10-2-8/ch10-2-8.md', type: 'md' }
-            ]
-        },
-        { id: 'ch10s3', title: '10.3 可视化训练好的CNN', file: 'ch10/ch10-3/ch10-3.md', type: 'md' },
-        { id: 'ch10s4', title: '10.4 目标检测', file: 'ch10/ch10-4/ch10-4.md', type: 'md' },
-        { id: 'ch10s5', title: '10.5 图像分割', file: 'ch10/ch10-5/ch10-5.md', type: 'md' },
-        { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
-    ]
-}
+            {
+                id: 'ch10',
+                title: '第十章 · 卷积网络',
+                sections: [
+                    { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
+                    {
+                        id: 'ch10s2',
+                        title: '10.2 卷积滤波器',
+                        type: 'group',
+                        file: 'ch10/ch10-2/ch10-2.md',
+                        children: [
+                            { id: 'ch10s2-0', title: '10.2.0 动机与方法', file: 'ch10/ch10-2/ch10-2-0/ch10-2-0.md', type: 'md' },
+                            { id: 'ch10s2-1', title: '10.2.1 特征检测器', file: 'ch10/ch10-2/ch10-2-1/ch10-2-1.md', type: 'md' },
+                            { id: 'ch10s2-2', title: '10.2.2 平移不变性', file: 'ch10/ch10-2/ch10-2-2/ch10-2-2.md', type: 'md' },
+                            { id: 'ch10s2-3', title: '10.2.3 填充', file: 'ch10/ch10-2/ch10-2-3/ch10-2-3.md', type: 'md' },
+                            { id: 'ch10s2-4', title: '10.2.4 跨步卷积', file: 'ch10/ch10-2/ch10-2-4/ch10-2-4.md', type: 'md' },
+                            { id: 'ch10s2-5', title: '10.2.5 多维卷积', file: 'ch10/ch10-2/ch10-2-5/ch10-2-5.md', type: 'md' },
+                            { id: 'ch10s2-6', title: '10.2.6 池化', file: 'ch10/ch10-2/ch10-2-6/ch10-2-6.md', type: 'md' },
+                            { id: 'ch10s2-7', title: '10.2.7 多层卷积', file: 'ch10/ch10-2/ch10-2-7/ch10-2-7.md', type: 'md' },
+                            { id: 'ch10s2-8', title: '10.2.8 网络架构示例', file: 'ch10/ch10-2/ch10-2-8/ch10-2-8.md', type: 'md' }
+                        ]
+                    },
+                    {
+                        id: 'ch10s3',
+                        title: '10.3 可视化训练好的CNN',
+                        type: 'group',
+                        file: 'ch10/ch10-3/ch10-3.md',
+                        children: [
+                            { id: 'ch10s3-1', title: '10.3.1 视觉皮层', file: 'ch10/ch10-3/ch10-3-1/ch10-3-1.md', type: 'md' },
+                            { id: 'ch10s3-2', title: '10.3.2 可视化训练好的滤波器', file: 'ch10/ch10-3/ch10-3-2/ch10-3-2.md', type: 'md' },
+                            { id: 'ch10s3-3', title: '10.3.3 显著性图', file: 'ch10/ch10-3/ch10-3-3/ch10-3-3.md', type: 'md' },
+                            { id: 'ch10s3-4', title: '10.3.4 对抗攻击', file: 'ch10/ch10-3/ch10-3-4/ch10-3-4.md', type: 'md' },
+                            { id: 'ch10s3-5', title: '10.3.5 合成图像', file: 'ch10/ch10-3/ch10-3-5/ch10-3-5.md', type: 'md' }
+                        ]
+                    },
+                    {
+                        id: 'ch10s4',
+                        title: '10.4 目标检测',
+                        type: 'group',
+                        file: 'ch10/ch10-4/ch10-4.md',
+                        children: [
+                            { id: 'ch10s4-1', title: '10.4.1 边界框', file: 'ch10/ch10-4/ch10-4-1/ch10-4-1.md', type: 'md' },
+                            { id: 'ch10s4-2', title: '10.4.2 交并比', file: 'ch10/ch10-4/ch10-4-2/ch10-4-2.md', type: 'md' },
+                            { id: 'ch10s4-3', title: '10.4.3 滑动窗口', file: 'ch10/ch10-4/ch10-4-3/ch10-4-3.md', type: 'md' },
+                            { id: 'ch10s4-4', title: '10.4.4 跨尺度检测', file: 'ch10/ch10-4/ch10-4-4/ch10-4-4.md', type: 'md' },
+                            { id: 'ch10s4-5', title: '10.4.5 非最大抑制', file: 'ch10/ch10-4/ch10-4-5/ch10-4-5.md', type: 'md' }
+                        ]
+                    },
+                    {
+                        id: 'ch10s5',
+                        title: '10.5 图像分割',
+                        type: 'group',
+                        file: 'ch10/ch10-5/ch10-5.md',
+                        children: [
+                            { id: 'ch10s5-1', title: '10.5.1 卷积分割', file: 'ch10/ch10-5/ch10-5-1/ch10-5-1.md', type: 'md' },
+                            { id: 'ch10s5-2', title: '10.5.2 上采样', file: 'ch10/ch10-5/ch10-5-2/ch10-5-2.md', type: 'md' },
+                            { id: 'ch10s5-3', title: '10.5.3 全卷积网络', file: 'ch10/ch10-5/ch10-5-3/ch10-5-3.md', type: 'md' },
+                            { id: 'ch10s5-4', title: '10.5.4 U-Net架构', file: 'ch10/ch10-5/ch10-5-4/ch10-5-4.md', type: 'md' }
+                        ]
+                    },
+                    { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
+                ]
+            }
         ];
 
-        // 扁平映射
+        // 扁平映射（支持父节点 + 子节点）
         const sectionMap = {};
         courseData.forEach(chapter => {
             chapter.sections.forEach(section => {
                 sectionMap[section.id] = section;
+                if (section.children && section.children.length) {
+                    section.children.forEach(child => {
+                        sectionMap[child.id] = child;
+                    });
+                }
             });
         });
 
@@ -679,7 +752,7 @@
         let tocVisible = true;
 
         // ==============================================================
-        // 2. 渲染左侧章列表
+        // 2. 渲染左侧章列表（支持章节 + 子章节嵌套）
         // ==============================================================
         function renderChapters() {
             let html = '';
@@ -695,20 +768,52 @@
                 html += `</div>`;
 
                 html += `<div class="section-list ${isOpen}" data-chapter-id="${chapId}">`;
+
                 chapter.sections.forEach(section => {
-                    const activeClass = (currentSectionId === section.id) ? 'active' : '';
-                    // 显示文件类型标签
-                    const typeLabel = section.type === 'md' ? ' 📝' : ' 📄';
-                    html += `<div class="section-item ${activeClass}" data-section-id="${section.id}" data-chapter-id="${chapId}">`;
-                    html += `${section.title}${typeLabel}`;
-                    html += `</div>`;
+                    if (section.type === 'group') {
+                        // ===== 父节点（分组）=====
+                        const groupActive = (currentSectionId === section.id) ? 'active' : '';
+                        html += `<div class="section-group" data-group-id="${section.id}">`;
+
+                        // 分组标题（可点击展开/折叠 + 打开总览）
+                        html += `<div class="section-item section-group-title ${groupActive}" 
+                                      data-section-id="${section.id}" 
+                                      data-group-toggle="true">`;
+                        html += `<span class="group-arrow">▶</span>`;
+                        html += `<span>${section.title}</span>`;
+                        html += `</div>`;
+
+                        // 子节点容器（默认折叠）
+                        html += `<div class="section-children" data-group-id="${section.id}">`;
+                        (section.children || []).forEach(child => {
+                            const childActive = (currentSectionId === child.id) ? 'active' : '';
+                            const typeLabel = child.type === 'md' ? ' 📝' : ' 📄';
+                            html += `<div class="section-item section-child ${childActive}" 
+                                          data-section-id="${child.id}" 
+                                          data-chapter-id="${chapId}">`;
+                            html += `${child.title}${typeLabel}`;
+                            html += `</div>`;
+                        });
+                        html += `</div>`; // end children
+                        html += `</div>`; // end group
+                    } else {
+                        // ===== 普通节 =====
+                        const activeClass = (currentSectionId === section.id) ? 'active' : '';
+                        const typeLabel = section.type === 'md' ? ' 📝' : ' 📄';
+                        html += `<div class="section-item ${activeClass}" 
+                                      data-section-id="${section.id}" 
+                                      data-chapter-id="${chapId}">`;
+                        html += `${section.title}${typeLabel}`;
+                        html += `</div>`;
+                    }
                 });
-                html += `</div>`;
-                html += `</div>`;
+
+                html += `</div>`; // end section-list
+                html += `</div>`; // end chapter-item
             });
             chapterListEl.innerHTML = html;
 
-            // 章点击展开/折叠
+            // ===== 章点击展开/折叠 =====
             document.querySelectorAll('.chapter-title').forEach(titleEl => {
                 titleEl.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -722,11 +827,26 @@
                 });
             });
 
-            // 节点击 -> 加载文件
+            // ===== 节 / 分组点击 =====
             document.querySelectorAll('.section-item').forEach(sectionEl => {
-                sectionEl.addEventListener('click', function() {
+                sectionEl.addEventListener('click', function(e) {
                     const sectionId = this.dataset.sectionId;
-                    if (sectionId) {
+                    if (!sectionId) return;
+
+                    const isGroupToggle = this.dataset.groupToggle === 'true';
+
+                    if (isGroupToggle) {
+                        // 父节点：展开/折叠 + 打开总览
+                        const groupEl = this.closest('.section-group');
+                        const childrenEl = groupEl.querySelector('.section-children');
+                        const arrow = this.querySelector('.group-arrow');
+                        if (childrenEl) {
+                            childrenEl.classList.toggle('open');
+                            if (arrow) arrow.classList.toggle('open');
+                        }
+                        loadSectionFromFile(sectionId);
+                    } else {
+                        // 普通节或子节点：直接打开
                         loadSectionFromFile(sectionId);
                     }
                 });
@@ -770,33 +890,23 @@
                 })
                 .then(content => {
                     let htmlContent = content;
-                    
+
                     // 根据 type 字段决定如何渲染
                     const fileType = section.type || 'html'; // 默认为 html
-                    
-                    // if (fileType === 'md') {
-                    //     // 使用 marked 将 Markdown 转换为 HTML
-                    //     htmlContent = marked.parse(content);
-                    // }
 
                     if (fileType === 'md') {
                         // --- 第一步：保护公式 ---
-                        // 1. 创建一个数组来存储找到的公式
                         const mathBlocks = [];
-                        // 2. 使用正则表达式找到所有 $$...$$ 公式，并用占位符替换
-                        // 占位符格式为：MATH_BLOCK_0, MATH_BLOCK_1, ...
                         const protectedContent = content.replace(/\$\$([\s\S]+?)\$\$/g, (match, formula) => {
-                            mathBlocks.push(formula); // 将公式存入数组
-                            return `MATH_BLOCK_${mathBlocks.length - 1}`; // 返回占位符
+                            mathBlocks.push(formula);
+                            return `MATH_BLOCK_${mathBlocks.length - 1}`;
                         });
 
                         // --- 第二步：处理 Markdown ---
-                        // 1. 预处理：修正图片路径
                         const mdFilePath = section.file;
                         const mdFileDir = mdFilePath.substring(0, mdFilePath.lastIndexOf('/') + 1);
                         let processedContent = protectedContent.replace(/src="((?!http)[^"]+)"/g, `src="${mdFileDir}$1"`);
 
-                        // 2. 配置 marked
                         marked.setOptions({
                             gfm: true,
                             breaks: true,
@@ -805,21 +915,15 @@
                             sanitizer: false,
                         });
 
-                        // 3. 使用 marked 将 Markdown 转换为 HTML
-                        // 此时，公式部分还是占位符，不会被 <p> 标签包裹
                         htmlContent = marked.parse(processedContent);
 
                         // --- 第三步：恢复并渲染公式 ---
-                        // 1. 将占位符替换回原始的 $$...$$ 公式
                         htmlContent = htmlContent.replace(/MATH_BLOCK_(\d+)/g, (match, index) => {
                             return `$$${mathBlocks[parseInt(index)]}$$`;
                         });
 
-                        // 2. 将处理好的 HTML 放入页面
                         contentArea.innerHTML = htmlContent;
 
-                        // 3. 调用 KaTeX 渲染所有公式
-                        // 使用 setTimeout 确保 DOM 更新后再执行
                         setTimeout(() => {
                             renderMathInElement(contentArea, {
                                 delimiters: [
@@ -831,19 +935,16 @@
                                 throwOnError: false
                             });
 
-                            // 2. 为代码块添加复制按钮 (新增代码)
+                            // 为代码块添加复制按钮
                             const codeBlocks = contentArea.querySelectorAll('pre');
                             codeBlocks.forEach(pre => {
-                                // 避免重复添加按钮
                                 if (pre.querySelector('.copy-btn')) return;
 
-                                // 用 div 包裹 pre，用于按钮的绝对定位
                                 const wrapper = document.createElement('div');
                                 wrapper.className = 'code-wrapper';
                                 pre.parentNode.insertBefore(wrapper, pre);
                                 wrapper.appendChild(pre);
 
-                                // 创建复制按钮
                                 const btn = document.createElement('button');
                                 btn.className = 'copy-btn';
                                 btn.textContent = '复制';
@@ -862,7 +963,6 @@
                     }
 
                     // 如果是 'html'，直接使用原始内容
-                    
                     contentArea.innerHTML = htmlContent;
                     updateTOC(contentArea);
                     if (!tocVisible) {
