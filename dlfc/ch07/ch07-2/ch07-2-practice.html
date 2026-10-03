@@ -1,0 +1,331 @@
+<!-- 第7章：梯度下降 第2节：梯度下降优化- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第7章：梯度下降、第2节：梯度下降优化 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "迭代数值优化与初始值",
+            "question": "根据 ch07-2.tex 第 P1、P2 节，关于神经网络优化的迭代数值方法与初始参数 $\\mathbf{w}^{(0)}$，下列哪项描述最准确？",
+            "options": {
+            "A": "神经网络误差函数的解析解 $\\nabla E(\\mathbf{w}) = 0$ 可以精确求出，因此无需迭代",
+            "B": "对于复杂神经网络，几乎不可能找到解析解，需用迭代数值方法；所找到的解取决于初始参数值，可能需要多次随机初始化并比较验证集性能",
+            "C": "初始参数值对最终解没有影响，可以随意设定",
+            "D": "只需运行一次梯度算法即可保证找到全局最优解"
+            },
+            "answer": "B",
+            "explanation": "对于像神经网络所定义的复杂误差函数，几乎不可能找到 $\\nabla E(\\mathbf{w}) = 0$ 的解析解，因此需采用迭代数值方法。由于误差曲面形状极为复杂，所找到的解取决于初始参数值 $\\mathbf{w}^{(0)}$，为找到足够好的解可能需要多次运行算法，每次使用不同随机初始点，并在独立验证集上比较性能。"
+        },
+        {
+            "id": 2,
+            "topic": "梯度信息的计算效率",
+            "question": "根据 ch07-2.tex 第 P4、P5 节，关于不使用梯度信息与使用梯度信息寻找极小值的计算复杂度对比，下列哪项描述是正确的？",
+            "options": {
+            "A": "不用梯度：$\\mathcal{O}(W^2)$；用梯度：$\\mathcal{O}(W^3)$",
+            "B": "不用梯度：$\\mathcal{O}(W^3)$；用梯度（反向传播）：$\\mathcal{O}(W^2)$",
+            "C": "两者复杂度相同，都是 $\\mathcal{O}(W)$",
+            "D": "不用梯度：$\\mathcal{O}(W)$；用梯度：$\\mathcal{O}(W^2)$"
+            },
+            "answer": "B",
+            "explanation": "不用梯度信息时，每次函数求值只能获得 1 个标量信息，需 $\\mathcal{O}(W^2)$ 次求值，每次 $\\mathcal{O}(W)$ 步运算，总计算量为 $\\mathcal{O}(W^3)$。使用梯度信息时，每次计算梯度能带来 $W$ 个信息，需 $\\mathcal{O}(W)$ 次梯度计算，利用反向传播每次仅需 $\\mathcal{O}(W)$ 步，总计算量为 $\\mathcal{O}(W^2)$。"
+        },
+        {
+            "id": 3,
+            "topic": "批量梯度下降",
+            "question": "根据 ch07-2.tex 第 P6 节，批量梯度下降的权重更新公式 $\\mathbf{w}^{(\\tau)} = \\mathbf{w}^{(\\tau-1)} - \\eta \\nabla E(\\mathbf{w}^{(\\tau-1)})$ 中，$\\eta$ 和“批方法”分别指什么？",
+            "options": {
+            "A": "$\\eta$ 是动量系数；批方法指每次使用一个样本",
+            "B": "$\\eta$ 是学习率，控制每步走多远；批方法指一次使用全部训练集来计算梯度",
+            "C": "$\\eta$ 是正则化系数；批方法指每次使用小批量",
+            "D": "$\\eta$ 是迭代次数；批方法指数据分批存储"
+            },
+            "answer": "B",
+            "explanation": "$\\eta > 0$ 称为学习率，控制每步移动的大小。由于误差函数是定义在整个训练集上的，要计算 $\\nabla E$，每一步都需要对整个训练集进行处理，一次使用全部数据的技术称为批方法 (batch methods)。"
+        },
+        {
+            "id": 4,
+            "topic": "随机梯度下降",
+            "question": "根据 ch07-2.tex 第 P7、P8 节，随机梯度下降 (SGD) 的权重更新公式为 $\\mathbf{w}^{(\\tau)} = \\mathbf{w}^{(\\tau-1)} - \\eta \\nabla E_n(\\mathbf{w}^{(\\tau-1)})$。关于该公式及“训练轮次 (training epoch)”，下列哪项描述是正确的？",
+            "options": {
+            "A": "每次更新基于全部 $N$ 个数据点；一个 epoch 指一次参数更新",
+            "B": "每次更新仅基于一个数据点 $n$；一个 epoch 指完整遍历一次整个训练集",
+            "C": "每次更新基于小批量；一个 epoch 指一次前向传播",
+            "D": "每次更新基于两个数据点；一个 epoch 指一次反向传播"
+            },
+            "answer": "B",
+            "explanation": "SGD 每次仅基于一个数据点来更新权重向量。通过循环遍历数据集来重复这一更新操作，完整地遍历一次整个训练集被称为一个训练轮次 (training epoch)。该技术也被称为在线梯度下降，尤其当数据来源于连续的新数据流时。"
+        },
+        {
+            "id": 5,
+            "topic": "SGD 处理数据冗余与逃离局部极小值",
+            "question": "根据 ch07-2.tex 第 P9 节，关于随机梯度下降相比批量梯度下降的优势，下列哪项描述最准确？",
+            "options": {
+            "A": "SGD 能更高效地处理数据冗余，且有可能逃离局部极小值，因为整个数据集的驻点通常不是单个数据点的驻点",
+            "B": "SGD 的计算量随数据量翻倍而翻倍，但能保证找到全局最优解",
+            "C": "SGD 对数据冗余更敏感，但收敛速度更快",
+            "D": "SGD 与批量方法在数据冗余处理和逃离局部极小值方面没有区别"
+            },
+            "answer": "A",
+            "explanation": "SGD 的另一个优势是能更高效地处理数据中的冗余：若将数据集通过复制每个点使其规模翻倍，批量方法评估梯度所需的计算量会翻倍，而 SGD 不受影响。此外，SGD 有可能逃离局部极小值，因为对于整个数据集的误差函数而言的驻点，通常并不是单个数据点误差函数的驻点。"
+        },
+        {
+            "id": 6,
+            "topic": "小批量与梯度估计误差",
+            "question": "根据 ch07-2.tex 第 P10 节，在确定小批量 (mini-batch) 的最优大小时，基于 $N$ 个样本计算均值的误差为 $\\sigma/\\sqrt{N}$。若将小批量大小增大 100 倍，误差大约缩小为原来的多少？",
+            "options": {
+            "A": "缩小为原来的 1/100",
+            "B": "缩小为原来的 1/10",
+            "C": "缩小为原来的 1/1000",
+            "D": "误差不变"
+            },
+            "answer": "B",
+            "explanation": "基于 $N$ 个样本计算均值的误差为 $\\sigma/\\sqrt{N}$，这表明通过增大批量大小来提高真实梯度估计的精度，其收益是递减的。若将小批量大小增大 100 倍，误差仅缩小为原来的 $1/\\sqrt{100} = 1/10$。"
+        },
+        {
+            "id": 7,
+            "topic": "小批量的数据随机化",
+            "question": "根据 ch07-2.tex 第 P11 节，使用小批量时为什么要求数据点应当从数据集中随机选取，并在各轮迭代之间重新打乱数据？",
+            "options": {
+            "A": "因为随机选取可以减少内存占用",
+            "B": "因为原始数据集中相邻数据点可能存在由采集方式引入的相关性；随机打乱有助于使每个小批量更具代表性，并有助于逃离局部极小值",
+            "C": "因为随机选取可以保证梯度估计误差为零",
+            "D": "因为随机选取可以避免使用学习率"
+            },
+            "answer": "B",
+            "explanation": "在原始数据集中，相邻数据点之间可能存在由数据采集方式引入的相关性（例如数据点已按字母顺序或日期排序）。通常做法是先对整个数据集随机打乱，然后依次抽取连续的数据块作为小批量；在各轮迭代之间重新打乱数据，使每个小批量都不太可能与之前使用过的完全相同，这有助于逃离局部极小值。"
+        },
+        {
+            "id": 8,
+            "topic": "参数初始化的对称性破缺",
+            "question": "根据 ch07-2.tex 第 P12 节，为什么神经网络中同一层的参数不能全部初始化为相同的值（例如全为零）？",
+            "options": {
+            "A": "因为全零初始化会导致数值溢出",
+            "B": "因为接收相同输入的单元若参数相同，其参数更新会完全同步，每个单元计算出相同函数而变得冗余，即对称性未被打破",
+            "C": "因为全零初始化会使学习率失效",
+            "D": "因为全零初始化会导致梯度爆炸"
+            },
+            "answer": "B",
+            "explanation": "考虑一组接收相同输入的隐藏层单元，如果参数全部初始化为相同值（如全为零），那么这些单元的参数在更新时也会完全同步，每个单元计算出的函数完全相同，从而变得完全冗余。这一问题可通过从某种分布中随机初始化参数来解决，即对称性破缺 (symmetry breaking)。"
+        },
+        {
+            "id": 9,
+            "topic": "He 初始化",
+            "question": "根据 ch07-2.tex 第 P13 节，对于使用 ReLU 激活函数、输入连接数为 $M$ 的单元，He 初始化推荐的标准差 $\\epsilon$ 为多少？其中的因子 1/2 和 $\\sqrt{2}$ 分别来源于什么？",
+            "options": {
+            "A": "$\\epsilon = \\sqrt{2/M}$；因子 1/2 来源于 ReLU 截断一半输出，$\\sqrt{2}$ 用于弥补这一方差衰减",
+            "B": "$\\epsilon = \\sqrt{1/M}$；因子 1/2 来源于数据归一化",
+            "C": "$\\epsilon = \\sqrt{2M}$；因子 1/2 来源于学习率",
+            "D": "$\\epsilon = 2/M$；因子 1/2 来源于批大小"
+            },
+            "answer": "A",
+            "explanation": "He 初始化推荐 $\\epsilon = \\sqrt{2/M}$。其中公式 (7.22) 中的因子 1/2 来源于 ReLU 激活函数将一半的负数输出截断为 0，导致方差损失一半；为了弥补这一损失使信号在深层网络中传播时方差保持稳定，He 初始化在标准差公式中乘上 $\\sqrt{2}$（即公式 7.23）以抵消 ReLU 带来的方差衰减。"
+        },
+        {
+            "id": 10,
+            "topic": "偏置初始化与迁移学习",
+            "question": "根据 ch07-2.tex 第 P14 节，关于偏置参数的初始化和迁移学习，下列哪项描述最准确？",
+            "options": {
+            "A": "偏置参数通常初始化为零；迁移学习指从零开始训练",
+            "B": "偏置参数通常初始化为较小的正值，以确保学习初期大多数激活前处于激活状态，对 ReLU 单元尤为有用；迁移学习指利用在其他任务或无监督训练中得到的参数值来初始化",
+            "C": "偏置参数通常初始化为较大负值；迁移学习指丢弃预训练权重",
+            "D": "偏置参数无需初始化；迁移学习与初始化无关"
+            },
+            "answer": "B",
+            "explanation": "偏置参数通常被初始化为较小的正值，以确保在学习初期大多数激活前 (pre-activations) 处于激活状态，这对 ReLU 单元尤为有用，因为我们希望激活前保持为正值，从而产生非零梯度驱动学习。另一类重要的初始化技术是利用网络在其他任务上训练所得的参数值，或利用各种形式的无监督训练得到的参数值，这些技术属于广义上的迁移学习 (transfer learning)。"
+        }
+   ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

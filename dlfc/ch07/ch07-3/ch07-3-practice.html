@@ -1,0 +1,331 @@
+<!-- 第7章：梯度下降 第3节：收敛- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第7章：梯度下降、第3节：收敛 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "学习率与误差曲面谷地",
+            "question": "根据 ch07-3.tex 第 P1 节，当误差曲面呈现“长谷”形状（不同方向曲率差异显著）时，关于固定步长梯度下降的行为，下列哪项描述最准确？",
+            "options": {
+            "A": "增大学习率 $\\eta$ 总能加速收敛，不会产生任何问题",
+            "B": "在误差曲面大多数点上，局部负梯度 $-\\nabla E$ 并不指向极小值；若 $\\eta$ 太大，跨谷的振荡会发散，因此 $\\eta$ 必须保持足够小，导致沿谷方向进展非常缓慢",
+            "C": "梯度下降会自动调整步长，因此与学习率无关",
+            "D": "只要 $\\eta > 0$，梯度下降总能一步到达极小值"
+            },
+            "answer": "B",
+            "explanation": "在误差曲面大多数点上，局部梯度向量垂直于局部等高线，并不直接指向极小值。直观上增大 $\\eta$ 应带来更大步长和更快收敛，但实际中相继的步骤会在谷两侧来回振荡；若 $\\eta$ 太大，振荡会发散。由于 $\\eta$ 必须保持足够小以避免发散，沿谷方向的进展非常缓慢，梯度下降需要很多小步才能到达极小值，效率很低。"
+        },
+        {
+            "id": 2,
+            "topic": "二次近似下的梯度下降收敛性",
+            "question": "根据 ch07-3.tex 第 P2 节，在极小值附近的二次近似下，梯度下降沿 Hessian 特征向量方向 $\\mathbf{u}_i$ 的距离系数 $\\alpha_i$ 满足 $\\alpha_i^{\\text{new}} = (1 - \\eta \\lambda_i) \\alpha_i^{\\text{old}}$。由此可得，$T$ 步之后 $\\alpha_i^{(T)}$ 等于多少？",
+            "options": {
+            "A": "$\\alpha_i^{(T)} = (1 - \\eta \\lambda_i)^T \\alpha_i^{(0)}$",
+            "B": "$\\alpha_i^{(T)} = (1 + \\eta \\lambda_i)^T \\alpha_i^{(0)}$",
+            "C": "$\\alpha_i^{(T)} = (\\eta \\lambda_i)^T \\alpha_i^{(0)}$",
+            "D": "$\\alpha_i^{(T)} = \\alpha_i^{(0)}$"
+            },
+            "answer": "A",
+            "explanation": "由 $\\alpha_i^{\\text{new}} = (1 - \\eta \\lambda_i) \\alpha_i^{\\text{old}}$，经过 $T$ 步迭代可得 $\\alpha_i^{(T)} = (1 - \\eta \\lambda_i)^T \\alpha_i^{(0)}$。只要 $|1 - \\eta \\lambda_i| < 1$，当 $T \\to \\infty$ 时 $\\alpha_i = 0$，即 $\\mathbf{w} = \\mathbf{w}^*$，权重向量到达误差极小值。"
+        },
+        {
+            "id": 3,
+            "topic": "收敛条件与条件数",
+            "question": "根据 ch07-3.tex 第 P3 节，关于梯度下降的收敛条件与条件数，下列哪项描述是正确的？",
+            "options": {
+            "A": "收敛要求 $\\eta < 2/\\lambda_{\\min}$；收敛速率由最大特征值 $\\lambda_{\\max}$ 主导",
+            "B": "收敛要求 $\\eta < 2/\\lambda_{\\max}$；收敛速率由最小特征值 $\\lambda_{\\min}$ 主导，若 $\\lambda_{\\min}/\\lambda_{\\max}$ 很小（条件数很大），进展会极其缓慢",
+            "C": "学习率 $\\eta$ 可以任意大，不影响收敛",
+            "D": "条件数定义为 $\\lambda_{\\max}/\\lambda_{\\min}$，与收敛速率无关"
+            },
+            "answer": "B",
+            "explanation": "收敛要求 $|1 - \\eta \\lambda_i| < 1$，这限制了 $\\eta < 2/\\lambda_{\\max}$，其中 $\\lambda_{\\max}$ 是最大特征值。收敛速率由最小特征值 $\\lambda_{\\min}$ 主导，当 $\\eta$ 取最大允许值时，沿最小特征值方向的收敛因子为 $(1 - 2\\lambda_{\\min}/\\lambda_{\\max})$。若 $\\lambda_{\\min}/\\lambda_{\\max}$ 很小（对应 Hessian 的条件数 $\\lambda_{\\max}/\\lambda_{\\min}$ 很大），即误差等高线高度拉长，则向极小值的进展极其缓慢。"
+        },
+        {
+            "id": 4,
+            "topic": "动量法及其有效学习率",
+            "question": "根据 ch07-3.tex 第 P4 节，动量法的更新公式为 $\\Delta \\mathbf{w}^{(\\tau-1)} = -\\eta \\nabla E(\\mathbf{w}^{(\\tau-1)}) + \\mu \\Delta \\mathbf{w}^{(\\tau-2)}$。在误差曲面曲率较低、梯度近似不变的区域，动量项的效果是什么？",
+            "options": {
+            "A": "动量项使有效学习率从 $\\eta$ 减小为 $\\eta(1-\\mu)$",
+            "B": "动量项使有效学习率从 $\\eta$ 增大为 $\\eta/(1-\\mu)$",
+            "C": "动量项不改变有效学习率",
+            "D": "动量项使有效学习率变为 $\\eta \\mu$"
+            },
+            "answer": "B",
+            "explanation": "在梯度近似不变的区域，将动量更新公式迭代应用并求和可得 $\\Delta \\mathbf{w} = -\\frac{\\eta}{1-\\mu} \\nabla E$，即动量项的效果是将有效学习率从 $\\eta$ 增大到 $\\eta/(1-\\mu)$，类似于增大了学习率参数。"
+        },
+        {
+            "id": 5,
+            "topic": "动量法在高曲率区域的作用",
+            "question": "根据 ch07-3.tex 第 P5 节，在梯度下降呈振荡状态的高曲率区域，动量项的作用是什么？",
+            "options": {
+            "A": "动量项会加剧振荡，导致发散",
+            "B": "动量项的相继贡献会相互抵消，有效学习率接近 $\\eta$，从而在不引起发散振荡的情况下加快收敛",
+            "C": "动量项使有效学习率变为零",
+            "D": "动量项与高曲率区域无关"
+            },
+            "answer": "B",
+            "explanation": "在梯度下降呈振荡状态的高曲率区域，动量项的相继贡献会趋向于相互抵消，有效学习率接近 $\\eta$。因此，动量项可以在不引起发散振荡的情况下加快向极小值的收敛。"
+        },
+        {
+            "id": 6,
+            "topic": "动量参数取值范围与典型值",
+            "question": "根据 ch07-3.tex 第 P6 节，关于动量参数 $\\mu$ 的取值范围和典型取值，下列哪项描述是正确的？",
+            "options": {
+            "A": "$\\mu$ 应满足 $0 \\leqslant \\mu \\leqslant 1$，实践中典型值为 $\\mu = 0.9$",
+            "B": "$\\mu$ 应满足 $-1 \\leqslant \\mu \\leqslant 0$，典型值为 $\\mu = -0.9$",
+            "C": "$\\mu$ 必须大于 1",
+            "D": "$\\mu$ 与学习率 $\\eta$ 完全等价"
+            },
+            "answer": "A",
+            "explanation": "由 $\\Delta \\mathbf{w} = -\\frac{\\eta}{1-\\mu} \\nabla E$ 可知 $\\mu$ 应在 $0 \\leqslant \\mu \\leqslant 1$ 范围内，实践中典型值为 $\\mu = 0.9$。虽然动量改善了梯度下降的性能，但也引入了第二个需要选择的参数 $\\mu$。"
+        },
+        {
+            "id": 7,
+            "topic": "Nesterov 动量",
+            "question": "根据 ch07-3.tex 第 P7 节，关于 Nesterov 动量与传统动量方法的区别，下列哪项描述最准确？",
+            "options": {
+            "A": "Nesterov 动量先计算当前点的梯度再加动量；传统动量先根据之前的动量走一步再计算梯度",
+            "B": "Nesterov 动量先根据之前的动量走一步，然后在该新位置计算梯度以确定更新；传统动量先计算当前点的梯度再加动量",
+            "C": "Nesterov 动量与传统的动量方法完全相同",
+            "D": "Nesterov 动量不需要学习率参数"
+            },
+            "answer": "B",
+            "explanation": "在传统带动量的随机梯度下降中，我们先计算当前位置的梯度，然后加上上一步的动量进行放大后再走一步。而在 Nesterov 方法中，我们改变这两者的顺序：先根据之前的动量走一步，然后在这个新位置计算梯度以确定更新。对于批量梯度下降，Nesterov 动量可以改善收敛速率，但对于随机梯度下降它可能效果较差。"
+        },
+        {
+            "id": 8,
+            "topic": "学习率调度",
+            "question": "根据 ch07-3.tex 第 P8、P9 节，关于学习率调度 (Learning Rate Schedule)，下列哪项描述最准确？",
+            "options": {
+            "A": "学习率应始终设为固定值，训练全程不变",
+            "B": "实践中最佳结果通常是在训练开始时使用较大的 $\\eta$，然后随时间逐渐降低学习率；线性、幂律和指数衰减是常见的学习率调度方法",
+            "C": "学习率应始终设为很小的值以保证稳定",
+            "D": "学习率调度只适用于批量梯度下降，不适用于 SGD"
+            },
+            "answer": "B",
+            "explanation": "在 SGD 中需要指定学习率 $\\eta$：$\\eta$ 太小则学习缓慢，$\\eta$ 太大则可能导致不稳定。实践中最佳结果通常是在训练开始时使用较大的 $\\eta$，然后随时间降低学习率，使 $\\eta$ 成为步数 $\\tau$ 的函数。常见的学习率调度包括线性、幂律和指数衰减，其中超参数 $\\eta^{(0)}, \\eta^{(K)}, K, s, c$ 需通过实验确定。监控学习曲线有助于确保误差函数以合适速率下降。"
+        },
+        {
+            "id": 9,
+            "topic": "AdaGrad 与 RMSProp",
+            "question": "根据 ch07-3.tex 第 P11、P12 节，关于 AdaGrad 和 RMSProp 的区别，下列哪项描述最准确？",
+            "options": {
+            "A": "AdaGrad 使用指数加权平均，RMSProp 使用累积平方和",
+            "B": "AdaGrad 使用所有导数的累积平方和，导致后期权重更新可能变得非常小、训练过慢；RMSProp 用指数加权平均替换累积平方和以缓解这一问题",
+            "C": "两者完全相同，只是名称不同",
+            "D": "RMSProp 不使用学习率参数"
+            },
+            "answer": "B",
+            "explanation": "AdaGrad 的核心思想是用该参数所有导数的累积平方和来逐步降低每个学习率，但问题在于它从训练一开始就累积平方梯度，导致后期权重更新可能变得非常小，使训练过慢。RMSProp 的核心思想是用指数加权平均替换 AdaGrad 中的平方梯度和，其中 $0 < \\beta < 1$，典型值为 $\\beta = 0.9$。"
+        },
+        {
+            "id": 10,
+            "topic": "Adam 优化器",
+            "question": "根据 ch07-3.tex 第 P13 节，关于 Adam 优化方法，下列哪项描述最准确？",
+            "options": {
+            "A": "Adam 只使用梯度的一阶矩，不使用二阶矩",
+            "B": "Adam 结合了 RMSProp 与动量，对每个参数分别存储梯度与平方梯度的指数加权移动平均，并引入偏差校正项 $1/(1-\\beta_1^\\tau)$ 和 $1/(1-\\beta_2^\\tau)$；典型值为 $\\beta_1 = 0.9, \\beta_2 = 0.99$",
+            "C": "Adam 的偏差校正在 $\\tau$ 很大时会变得非常重要",
+            "D": "Adam 不是深度学习中最广泛使用的优化算法"
+            },
+            "answer": "B",
+            "explanation": "Adam 结合了 RMSProp 与动量，名称来源于“自适应矩估计 (adaptive moments)”。它为每个参数分别存储梯度与平方梯度的指数加权移动平均：$s_i^{(\\tau)} = \\beta_1 s_i^{(\\tau-1)} + (1-\\beta_1) \\frac{\\partial E}{\\partial w_i}$，$r_i^{(\\tau)} = \\beta_2 r_i^{(\\tau-1)} + (1-\\beta_2) \\left(\\frac{\\partial E}{\\partial w_i}\\right)^2$。偏差校正项 $1/(1-\\beta_1^\\tau)$ 和 $1/(1-\\beta_2^\\tau)$ 用于校正将 $s_i^{(0)}$ 和 $r_i^{(0)}$ 初始化为零所引入的偏差；由于 $\\beta_i < 1$，当 $\\tau$ 变大时偏差趋于零，实践中偏差校正有时会被省略。典型值为 $\\beta_1 = 0.9$ 和 $\\beta_2 = 0.99$。Adam 是深度学习中最广泛采用的优化算法。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

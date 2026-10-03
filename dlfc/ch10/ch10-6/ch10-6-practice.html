@@ -1,0 +1,266 @@
+<!-- 第10章：卷积网络 第6节：风格迁移- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第6节：风格迁移 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一章节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "神经风格迁移的基本框架",
+            "question": "根据 10.6 节，神经风格迁移 (neural style transfer) 的目标是什么？其误差函数 $E(\\mathbf{G})$ 由哪两项组成？如何找到生成图像 $\\mathbf{G}$？",
+            "options": {
+            "A": "目标是修改网络参数；误差函数仅包含内容误差；通过前向传播一次得到 $\\mathbf{G}$",
+            "B": "目标是生成一张合成图像 $\\mathbf{G}$，其内容由图像 $\\mathbf{C}$ 定义、风格取自图像 $\\mathbf{S}$；误差函数为 $E(\\mathbf{G}) = E_{\\text{content}}(\\mathbf{G}, \\mathbf{C}) + E_{\\text{style}}(\\mathbf{G}, \\mathbf{S})$，其中第一项鼓励 $\\mathbf{G}$ 具有与 $\\mathbf{C}$ 相似的内容，第二项鼓励 $\\mathbf{G}$ 具有与 $\\mathbf{S}$ 相似的风格；内容和风格的概念由这两项的泛函形式隐式定义；可以随机初始化图像开始，使用梯度下降最小化 $E(\\mathbf{G})$ 来找到 $\\mathbf{G}$",
+            "C": "目标是训练一个生成器网络；误差函数由交叉熵构成",
+            "D": "风格迁移只能用于灰度图像；不需要优化过程"
+            },
+            "answer": "B",
+            "explanation": "深度卷积网络中的早期层学习检测诸如边缘和纹理之类的简单特征，而后期层学习检测诸如物体之类的更复杂实体。我们可以利用这一性质，使用称为神经风格迁移的过程，将一张图像以另一张图像的风格重新渲染 (Gatys, Ecker, and Bethge, 2015)。我们的目标是生成一张合成图像 $\\mathbf{G}$，其“内容”由图像 $\\mathbf{C}$ 定义，其“风格”取自另一张图像 $\\mathbf{S}$。这是通过定义一个误差函数 $E(\\mathbf{G})$ 来实现的，该函数由两项之和组成：$E(\\mathbf{G}) = E_{\\text{content}}(\\mathbf{G}, \\mathbf{C}) + E_{\\text{style}}(\\mathbf{G}, \\mathbf{S})$，其中一项鼓励 $\\mathbf{G}$ 具有与 $\\mathbf{C}$ 相似的内容，另一项鼓励 $\\mathbf{G}$ 具有与 $\\mathbf{S}$ 相似的风格。内容和风格的概念由这两项的泛函形式隐式定义。我们可以从随机初始化的图像开始，使用梯度下降来最小化 $E(\\mathbf{G})$，从而找到 $\\mathbf{G}$。"
+        },
+        {
+            "id": 2,
+            "topic": "内容误差的定义",
+            "question": "根据 10.6 节式 (10.14)，内容误差 $E_{\\text{content}}(\\mathbf{G}, \\mathbf{C})$ 如何定义？选择不同的卷积层对结果有什么影响？",
+            "options": {
+            "A": "内容误差通过对风格矩阵取平方和定义；层数选择不影响结果",
+            "B": "内容误差定义为 $E_{\\text{content}}(\\mathbf{G}, \\mathbf{C}) = \\sum_{i,j,k} \\{a_{ijk}(\\mathbf{G}) - a_{ijk}(\\mathbf{C})\\}^2$，其中 $a_{ijk}(\\mathbf{G})$ 表示当输入图像为 $\\mathbf{G}$ 时该层中通道 $k$ 位置 $(i,j)$ 处单元的预激活值；即选择某一卷积层，比较 $\\mathbf{G}$ 与 $\\mathbf{C}$ 在该层的预激活值，使用平方和误差；选择哪一层会影响最终结果：较早的层旨在匹配边缘等低层特征，较晚的层则匹配更复杂的结构甚至完整物体",
+            "C": "内容误差要求位置无关；只能使用第一层",
+            "D": "内容误差直接比较原始像素值"
+            },
+            "answer": "B",
+            "explanation": "为了定义 $E_{\\text{content}}(\\mathbf{G}, \\mathbf{C})$，我们可以在网络中选择一个特定的卷积层，并测量当图像 $\\mathbf{G}$ 作为输入以及图像 $\\mathbf{C}$ 作为输入时该层中单元的激活值。然后可以使用如下形式的平方和误差函数鼓励相应的预激活值相似：$E_{\\text{content}}(\\mathbf{G}, \\mathbf{C}) = \\sum_{i,j,k} \\{a_{ijk}(\\mathbf{G}) - a_{ijk}(\\mathbf{C})\\}^2$，其中 $a_{ijk}(\\mathbf{G})$ 表示当输入图像为 $\\mathbf{G}$ 时该层中通道 $k$ 位置 $(i,j)$ 处单元的预激活值，$a_{ijk}(\\mathbf{C})$ 同理。选择哪一层来定义预激活值会影响最终结果：较早的层旨在匹配边缘等低层特征，较晚的层则匹配更复杂的结构甚至完整物体。"
+        },
+        {
+            "id": 3,
+            "topic": "风格矩阵与风格误差",
+            "question": "根据 10.6 节式 (10.15) 和 (10.16)，风格矩阵 (style matrix) $F_{kk'}(\\mathbf{G})$ 的定义是什么？为什么风格误差需要对位置取平均？",
+            "options": {
+            "A": "风格矩阵是权重矩阵；风格误差要求位置精确匹配",
+            "B": "风格矩阵定义为 $F_{kk'}(\\mathbf{G}) = \\sum_{i=1}^{I}\\sum_{j=1}^{J} a_{ijk}(\\mathbf{G})a_{ijk'}(\\mathbf{G})$，其中 $I$ 和 $J$ 是该卷积层特征图的维度；如果两个特征都被激活，乘积 $a_{ijk}a_{ijk'}$ 将会很大；$F_{kk'}$ 构成一个 $K \\times K$ 矩阵的元素（$K$ 为该层通道数）；风格误差为 $E_{\\text{style}}(\\mathbf{G}, \\mathbf{S}) = \\frac{1}{(2IJK)^2}\\sum_{k}\\sum_{k'}\\{F_{kk'}(\\mathbf{G}) - F_{kk'}(\\mathbf{S})\\}^2$；之所以对位置取平均，是因为风格由卷积层内不同通道特征共现决定，我们希望 $\\mathbf{G}$ 具有与 $\\mathbf{S}$ 匹配的特征但可以来自任意位置（而内容误差则要求位置精确匹配）",
+            "C": "风格矩阵只比较单个通道；风格误差不需要归一化",
+            "D": "风格矩阵与特征共现无关；风格误差直接比较原始像素"
+            },
+            "answer": "B",
+            "explanation": "在定义 $E_{\\text{style}}(\\mathbf{G}, \\mathbf{S})$ 时，直觉是风格由卷积层内不同通道特征共现决定。例如，如果风格图像 $\\mathbf{S}$ 中垂直边缘通常与橙色斑块相关联，那么我们希望生成的图像 $\\mathbf{G}$ 也是如此。然而，尽管内容误差试图让 $\\mathbf{G}$ 中的特征与 $\\mathbf{C}$ 中对应特征在相同位置匹配，对于风格误差我们希望 $\\mathbf{G}$ 具有与 $\\mathbf{S}$ 匹配的特征但可以来自任意位置，因此对特征图中的位置取平均。考虑一个特定的卷积层，可以通过形成互相关矩阵来度量输入图像 $\\mathbf{G}$ 中通道 $k$ 的特征与通道 $k'$ 中对应特征共现的程度：$F_{kk'}(\\mathbf{G}) = \\sum_{i=1}^{I}\\sum_{j=1}^{J} a_{ijk}(\\mathbf{G})a_{ijk'}(\\mathbf{G})$，其中 $I$ 和 $J$ 是该特定卷积层中特征图的维度，如果两个特征都被激活，乘积 $a_{ijk}a_{ijk'}$ 将会很大。如果该层有 $K$ 个通道，那么 $F_{kk'}$ 构成一个 $K \\times K$ 矩阵的元素，称为风格矩阵。可以通过比较图像 $\\mathbf{G}$ 和 $\\mathbf{S}$ 的风格矩阵来度量它们具有相同风格的程度：$E_{\\text{style}}(\\mathbf{G}, \\mathbf{S}) = \\frac{1}{(2IJK)^2}\\sum_{k=1}^{K}\\sum_{k'=1}^{K}\\{F_{kk'}(\\mathbf{G}) - F_{kk'}(\\mathbf{S})\\}^2$。"
+        },
+        {
+            "id": 4,
+            "topic": "多层风格贡献与权重调整",
+            "question": "根据 10.6 节式 (10.17)，如何利用多层风格贡献获得更令人满意的结果？权重系数 $\\lambda_l$ 如何确定？",
+            "options": {
+            "A": "只能使用单层；权重系数由梯度下降自动学习",
+            "B": "通过使用多层的贡献获得更令人满意的结果：$E_{\\text{style}}(\\mathbf{G}, \\mathbf{S}) = \\sum_l \\lambda_l E_{\\text{style}}^{(l)}(\\mathbf{G}, \\mathbf{S})$，其中 $l$ 表示卷积层；系数 $\\lambda_l$ 决定不同层之间的相对权重，以及相对于内容误差项的权重；这些权重系数通过主观判断经验性地调整",
+            "C": "多层贡献会降低效果；权重系数有解析解",
+            "D": "风格误差不能与内容误差相加"
+            },
+            "answer": "B",
+            "explanation": "尽管我们可以再次使用单层，但通过使用多层的贡献可以获得更令人满意的结果，形式为 $E_{\\text{style}}(\\mathbf{G}, \\mathbf{S}) = \\sum_l \\lambda_l E_{\\text{style}}^{(l)}(\\mathbf{G}, \\mathbf{S})$，其中 $l$ 表示卷积层。系数 $\\lambda_l$ 决定不同层之间的相对权重，以及相对于内容误差项的权重。这些权重系数通过主观判断经验性地调整。"
+        },
+        {
+            "id": 5,
+            "topic": "卷积、可分离核与转置卷积的数学性质",
+            "question": "根据 ch10-all-exercise.tex 中的习题 10.9 和 10.13，若核是可分离的 $K(l,m) = F(l)G(m)$，如何提高卷积效率？转置卷积与下采样卷积在矩阵表示上有何关系？",
+            "options": {
+            "A": "可分离核无法提高效率；转置卷积与下采样卷积的矩阵无关",
+            "B": "若核是可分离的 $K(l,m) = F(l)G(m)$，则与其执行单个二维卷积，可以使用两个一维卷积来计算相同答案，从而显著提高计算效率；转置卷积与下采样卷积在矩阵表示上的关系是：若将下采样（跨步）卷积的输入-输出关系写成矩阵 $\\mathbf{A}$ 乘以输入向量的形式，则对应的上采样卷积可表示为使用转置矩阵 $\\mathbf{A}^\\mathrm{T}$ 的矩阵乘法，这正是“转置卷积”名称的由来",
+            "C": "可分离核只能用于一维输入；转置卷积与矩阵乘法无关",
+            "D": "可分离核会降低计算精度；转置卷积必须使用池化实现"
+            },
+            "answer": "B",
+            "explanation": "习题 10.9 考虑形式为 (10.2) 的卷积，并假设内核是可分离的，使得 $K(l,m) = F(l)G(m)$ 对于某些函数 $F(\\cdot)$ 和 $G(\\cdot)$。证明与其执行单个二维卷积，现在可以使用两个一维卷积来计算相同的答案，从而显著提高计算效率。习题 10.13 通过一维向量示例演示为什么卷积上采样有时被称为转置卷积：考虑一个一维步幅卷积层，输入有四个单元，用零填充后变为 $(0, x_1, x_2, x_3, x_4, 0)$，滤波器参数为 $(w_1, w_2, w_3)$，步幅为 2，可将输出表示为矩阵 $\\mathbf{A}$ 乘以填充后的输入向量。对于上采样卷积，输入层激活值为 $(z_1, z_2)$，滤波器为 $(w_1, w_2, w_3)$，输出步幅为 2，假设重叠滤波器值相加且激活函数为恒等函数，六维输出向量可以表示为使用转置矩阵 $\\mathbf{A}^\\mathrm{T}$ 的矩阵乘法。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

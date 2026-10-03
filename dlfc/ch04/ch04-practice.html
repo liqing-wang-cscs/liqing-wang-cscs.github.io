@@ -1,0 +1,331 @@
+<!-- 第4章：单层网络：回归 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第4章：单层网络：回归 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一章的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "基函数",
+            "question": "在广义线性回归模型 $y(\\mathbf{x}, \\mathbf{w}) = w_0 + \\sum_{j=1}^M w_j \\phi_j(\\mathbf{x})$ 中，下列哪项描述最准确地指出了“线性回归”这一名称的由来？",
+            "options": {
+            "A": "模型关于输入 $\\mathbf{x}$ 是线性的",
+            "B": "模型关于参数 $\\mathbf{w}$ 是线性的",
+            "C": "基函数 $\\phi_j(\\mathbf{x})$ 必须是线性函数",
+            "D": "目标变量 $t$ 必须与输入 $\\mathbf{x}$ 呈线性关系"
+            },
+            "answer": "B",
+            "explanation": "在广义线性回归模型中，模型关于参数 $\\mathbf{w}$ 仍然是线性的，这是“线性回归”名称的由来；而关于输入 $\\mathbf{x}$ 可以是非线性的。"
+        },
+        {
+            "id": 2,
+            "topic": "似然函数",
+            "question": "在线性回归的概率视角中，假设 $t = y(\\mathbf{x}, \\mathbf{w}) + \\epsilon$，其中 $\\epsilon \\sim \\mathcal{N}(0, \\beta^{-1})$。最大化似然函数等价于最小化下列哪个函数？",
+            "options": {
+            "A": "绝对值误差函数",
+            "B": "平方和误差函数",
+            "C": "交叉熵损失函数",
+            "D": "Hinge 损失函数"
+            },
+            "answer": "B",
+            "explanation": "在高斯噪声假设下，最大化对数似然函数 $\\ln L$ 等价于最小化平方和误差函数 $E(\\mathbf{w}) = \\frac{1}{2}\\sum_{n=1}^N (y(\\mathbf{x}_n, \\mathbf{w}) - t_n)^2$。"
+        },
+        {
+            "id": 3,
+            "topic": "Moore–Penrose 伪逆",
+            "question": "当设计矩阵 $\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi}$ 不可逆时（例如特征数多于样本数），线性回归的最小二乘解应如何求得？",
+            "options": {
+            "A": "无法求解，模型失效",
+            "B": "使用 Moore–Penrose 伪逆 $\\boldsymbol{\\Phi}^\\dagger = (\\boldsymbol{\\Phi}^T\\boldsymbol{\\Phi})^{-1}\\boldsymbol{\\Phi}^T$ 给出最小范数解",
+            "C": "必须丢弃部分特征使矩阵可逆",
+            "D": "只能使用梯度下降法数值求解"
+            },
+            "answer": "B",
+            "explanation": "当 $\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi}$ 不可逆时，可使用 Moore–Penrose 伪逆给出一个最小范数的最小二乘解 $\\mathbf{w}_{\\text{ML}} = \\boldsymbol{\\Phi}^\\dagger \\mathbf{t}$。"
+        },
+        {
+            "id": 4,
+            "topic": "最小二乘法的几何解释",
+            "question": "根据 ch04-slides-v2.tex 中最小二乘法的几何解释，下列关于误差向量 $\\mathbf{e} = \\mathbf{t} - \\boldsymbol{\\Phi}\\mathbf{w}$ 的描述，哪项是正确的？",
+            "options": {
+            "A": "误差向量平行于子空间 $\\mathcal{S}$",
+            "B": "误差向量垂直于子空间 $\\mathcal{S}$，即 $\\boldsymbol{\\Phi}^T(\\mathbf{t} - \\boldsymbol{\\Phi}\\mathbf{w}) = \\mathbf{0}$",
+            "C": "误差向量与子空间 $\\mathcal{S}$ 成 45 度角",
+            "D": "误差向量必须为零向量"
+            },
+            "answer": "B",
+            "explanation": "最小二乘解对应的预测向量 $\\mathbf{y} = \\boldsymbol{\\Phi}\\mathbf{w}$ 是目标向量 $\\mathbf{t}$ 在子空间 $\\mathcal{S}$ 上的正交投影，因此误差向量 $\\mathbf{e} = \\mathbf{t} - \\boldsymbol{\\Phi}\\mathbf{w}$ 垂直于子空间 $\\mathcal{S}$，即满足 $\\boldsymbol{\\Phi}^T(\\mathbf{t} - \\boldsymbol{\\Phi}\\mathbf{w}) = \\mathbf{0}$。"
+        },
+        {
+            "id": 5,
+            "topic": "随机梯度下降",
+            "question": "关于随机梯度下降 (SGD) 与批梯度下降的对比，下列哪项描述是正确的？",
+            "options": {
+            "A": "SGD 每次更新遍历所有 $N$ 个样本计算总梯度",
+            "B": "批梯度下降每次更新仅基于一个随机选取的样本",
+            "C": "SGD 计算速度快，路径具有随机性，需要逐渐减小学习率以保证收敛",
+            "D": "SGD 的收敛路径完全确定，没有随机性"
+            },
+            "answer": "C",
+            "explanation": "SGD 每次更新仅基于一个随机选取的样本，计算速度快，可立即响应新数据，但路径具有随机性（在极小值附近震荡），需要逐渐减小学习率以保证收敛。A、B 描述恰好相反。"
+        },
+        {
+            "id": 6,
+            "topic": "正则化最小二乘法",
+            "question": "在正则化最小二乘法中，加入 $L_2$ 正则化项后的误差函数为 $E(\\mathbf{w}) = \\frac{1}{2}\\sum_{n=1}^N (y(\\mathbf{x}_n, \\mathbf{w}) - t_n)^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|^2$。其解析解为？",
+            "options": {
+            "A": "$\\mathbf{w} = (\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi})^{-1} \\boldsymbol{\\Phi}^T \\mathbf{t}$",
+            "B": "$\\mathbf{w} = (\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi} + \\lambda \\mathbf{I})^{-1} \\boldsymbol{\\Phi}^T \\mathbf{t}$",
+            "C": "$\\mathbf{w} = (\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi} - \\lambda \\mathbf{I})^{-1} \\boldsymbol{\\Phi}^T \\mathbf{t}$",
+            "D": "$\\mathbf{w} = \\lambda (\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi})^{-1} \\boldsymbol{\\Phi}^T \\mathbf{t}$"
+            },
+            "answer": "B",
+            "explanation": "加入 $L_2$ 正则化后，解析解为 $\\mathbf{w} = (\\boldsymbol{\\Phi}^T \\boldsymbol{\\Phi} + \\lambda \\mathbf{I})^{-1} \\boldsymbol{\\Phi}^T \\mathbf{t}$。加入 $\\lambda \\mathbf{I}$ 也保证了矩阵可逆。"
+        },
+        {
+            "id": 7,
+            "topic": "参数收缩法与贝叶斯解释",
+            "question": "根据 ch04-slides-v2.tex，关于 Lasso ($L_1$) 和 Ridge ($L_2$) 正则化的贝叶斯解释，下列哪项描述是正确的？",
+            "options": {
+            "A": "$L_2$ 正则化等价于高斯先验，$L_1$ 正则化等价于拉普拉斯先验",
+            "B": "$L_1$ 正则化等价于高斯先验，$L_2$ 正则化等价于拉普拉斯先验",
+            "C": "两者都等价于高斯先验",
+            "D": "两者都等价于拉普拉斯先验"
+            },
+            "answer": "A",
+            "explanation": "$L_2$ 正则化等价于假设权重服从高斯先验 $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\alpha^{-1}\\mathbf{I})$ 时的最大后验估计；$L_1$ 正则化等价于假设权重服从拉普拉斯先验。"
+        },
+        {
+            "id": 8,
+            "topic": "偏差-方差权衡",
+            "question": "根据 ch04-slides-v2.tex，关于偏差-方差权衡，下列哪项描述是正确的？",
+            "options": {
+            "A": "增加模型复杂度会降低偏差，同时降低方差",
+            "B": "增加模型复杂度会降低偏差，同时升高方差",
+            "C": "增加正则化强度会升高偏差，同时升高方差",
+            "D": "偏差和方差总是同时增大或同时减小"
+            },
+            "answer": "B",
+            "explanation": "增加模型复杂度会导致偏差降低、方差升高；减少模型复杂度或增加正则化会导致偏差升高、方差降低。目标是找到总误差最小的平衡点。"
+        },
+        {
+            "id": 9,
+            "topic": "决策理论",
+            "question": "根据 ch04-slides-v2.tex 的决策理论，对于平方损失 $L(t, y) = (y - t)^2$，最优预测 $y^*(\\mathbf{x})$ 是什么？",
+            "options": {
+            "A": "条件中位数 $\\text{median}(t|\\mathbf{x})$",
+            "B": "条件众数 $\\text{mode}(t|\\mathbf{x})$",
+            "C": "条件期望 $\\mathbb{E}_t[t|\\mathbf{x}]$",
+            "D": "条件方差 $\\text{Var}(t|\\mathbf{x})$"
+            },
+            "answer": "C",
+            "explanation": "对于平方损失，最优预测是目标变量的条件期望 $y^*(\\mathbf{x}) = \\mathbb{E}_t[t|\\mathbf{x}]$。若使用绝对值损失，最优解为条件中位数；若使用 $0-1$ 损失，最优解为条件众数。"
+        },
+        {
+            "id": 10,
+            "topic": "预测分布",
+            "question": "根据 ch04-slides-v2.tex，贝叶斯方法中的预测分布 $p(t|\\mathbf{x}, D) = \\int p(t|\\mathbf{x}, \\mathbf{w}) p(\\mathbf{w}|D) \\, d\\mathbf{w}$ 的方差包含哪两部分？",
+            "options": {
+            "A": "仅包含数据本身的噪声方差",
+            "B": "仅包含参数不确定性带来的方差",
+            "C": "数据本身的噪声方差 + 参数不确定性带来的方差",
+            "D": "预测分布的方差为零"
+            },
+            "answer": "C",
+            "explanation": "预测分布的方差包含两部分：数据本身的噪声方差和参数不确定性带来的方差。在训练数据稀缺的区域，参数不确定性增大，预测分布的方差会变大。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

@@ -1,0 +1,266 @@
+<!-- 第10章：卷积网络 第5节：图像分割- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第5节：图像分割 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "语义分割的定义与输出表示",
+            "question": "根据 10.5 节，语义分割 (semantic segmentation) 与图像分类、目标检测相比，提供了什么程度的细节？其输出空间和通道数是如何表示的？",
+            "options": {
+            "A": "语义分割与图像分类相同，整张图像一个标签；输出有 3 个通道",
+            "B": "语义分割中每个像素都被分配到预定义类别集合中的一个类别，比分类（整图一个标签）和检测（物体级别加边界框）提供更详细的分析；输出空间与输入图像具有相同维度，输入图像通常有 3 个通道（R、G、B），但若有 $C$ 个类别，输出数组将有 $C$ 个通道表示每个类别的概率；可为每个类别关联不同颜色，生成每个像素按概率最高类别着色的分割图",
+            "C": "语义分割只输出物体数量；输出通道数与类别数无关",
+            "D": "语义分割的输出维度低于输入图像"
+            },
+            "answer": "B",
+            "explanation": "在图像分类问题中，整张图像被分配到一个单一类别标签；检测多个物体并用边界框记录位置能提供更详细信息；通过语义分割可以获得更详细的分析，其中图像的每个像素都被分配到预定义类别集合中的一个类别。这意味着输出空间将与输入图像具有相同的维度，因此可以方便地表示为具有相同像素数的图像。尽管输入图像通常有三个通道 R、G、B，但如果存在 $C$ 个类别，输出数组将有 $C$ 个通道，表示每个类别的概率。如果为每个类别关联一种不同的颜色，那么分割网络的预测可以表示为一张图像，其中每个像素根据概率最高的类别着色。"
+        },
+        {
+            "id": 2,
+            "topic": "卷积分割与逐像素分类的低效性",
+            "question": "根据 10.5.1 节，逐像素应用 CNN 进行语义分割的简单方法为什么极其低效？如何通过卷积化改进？保持每层维度相同需要什么条件？",
+            "options": {
+            "A": "逐像素方法没有冗余计算；卷积化改进不需要任何条件",
+            "B": "以每个像素为中心取矩形区域输入 CNN 并逐像素处理虽然可行，但由于重叠图像块导致冗余计算而极其低效；可以通过将不同输入位置的前向传播计算组合到单个网络中消除这种低效，使最终全连接层也变为卷积层；保持每层与输入图像维度相同的条件是每层步幅为 1、使用相同填充且不使用池化，每个输出单元共享 softmax 权重；但这样的网络仍需多层多通道才能达到高精度，对合理分辨率图像计算成本过高",
+            "C": "逐像素方法效率很高；卷积化改进需要增加池化层",
+            "D": "保持维度相同的条件是使用跨步卷积和池化"
+            },
+            "answer": "B",
+            "explanation": "处理语义分割问题的一种简单方法是构建一个卷积网络，它以图像中以某个像素为中心的矩形区域作为输入，并具有一个 softmax 输出用于对该像素进行分类。通过依次将这样的网络应用于每个像素，就可以分割整张图像（根据输入窗口大小需要在图像周围进行边缘填充）。然而由于重叠图像块导致的冗余计算，这种方法会极其低效。可以通过将不同输入位置的前向传播计算组合到单个网络中来消除这种低效，从而得到一个最终全连接层也是卷积层的模型。因此可以创建一个 CNN，其中每一层都与输入图像具有相同的维度，方法是让每一层步幅为 1、使用相同填充且不使用池化，每个输出单元都有一个 softmax 激活函数，其权重在所有输出之间共享。尽管这可能可行，但这样的网络仍然需要许多层且每层有多个通道才能学到实现高精度所需的复杂内部表示，总体而言对于合理分辨率的图像这将过于昂贵。"
+        },
+        {
+            "id": 3,
+            "topic": "上采样与反池化",
+            "question": "根据 10.5.2 节，为语义分割创建高效架构的思路是什么？平均池化和最大池化的上采样对应操作分别是什么？改进的最大反池化方法是什么？",
+            "options": {
+            "A": "思路是继续下采样；平均池化上采样是将值放到第一个位置；最大池化上采样是复制到整个块",
+            "B": "思路是取标准深度卷积网络并添加额外的可学习层，将低维内部表示变换回原始图像分辨率；平均池化的上采样对应操作是将每个输入值复制到所有对应输出单元（对其输出应用平均池化可重新生成输入）；最大池化的上采样对应操作（最大反池化）是将每个输入值复制到对应输出块的第一个单元，其余设为零（对其输出应用最大池化可重新生成输入）；改进方法是在下采样时记录每个块中最大值的位置，上采样时将非零元素放在相同位置，从而保留更多空间信息",
+            "C": "思路是移除所有卷积层；反池化操作与池化无关",
+            "D": "改进的最大反池化是随机放置非零元素"
+            },
+            "answer": "B",
+            "explanation": "大多数卷积网络使用若干级下采样，使得随着通道数增加，特征图尺寸减小，从而保持网络整体规模和成本可控，同时允许网络从图像中提取语义上有意义的高阶特征。可以为语义分割创建更高效的架构：取一个标准深度卷积网络并添加额外的可学习层，将低维内部表示变换回原始图像分辨率。为此需要一种方法来逆转跨步卷积和池化操作的下采样效果。考虑池化的上采样对应操作，其中输出层比输入层有更多单元，例如每个输入单元对应一个 $2 \\times 2$ 输出单元块。为找到平均池化的上采样对应操作，可以简单地将每个输入值复制到所有对应输出单元中，对该操作的输出应用平均池化可以重新生成输入。对于最大池化，每个输入值被复制到对应输出块的第一个单元，其余值设为零，对输出层应用最大池化可重新生成输入，这有时称为最大反池化。将非零值分配给输出块的第一个元素似乎有些随意，因此可以使用一种改进方法：选择一种网络架构，其中每个最大池化下采样层在网络后面都有一个对应的上采样层，在下采样期间记录每个块中哪个元素具有最大值，然后在对应的上采样层中选择非零元素具有相同位置，从而保留更多来自下采样层的空间信息。"
+        },
+        {
+            "id": 4,
+            "topic": "转置卷积与全卷积网络",
+            "question": "根据 10.5.3 节，转置卷积 (transpose convolution) 的原理是什么？它为什么被称为“转置卷积”和“分数步幅卷积”？为什么不建议使用“反卷积”这一术语？全卷积网络的定义是什么？",
+            "options": {
+            "A": "转置卷积与跨步卷积无关；应使用“反卷积”术语；全卷积网络必须包含池化层",
+            "B": "转置卷积原理：使用一个滤波器将输入数组中的一个像素连接到输出数组中的一个小块，当沿输入数组移动一步时在输出数组上移动两步或更多步，输出维度高于输入；重叠的输出单元通过对各滤波器位置的贡献求和或取平均得到；称为“转置卷积”是因为下采样卷积写成矩阵形式时，对应上采样由转置矩阵给出；称为“分数步幅卷积”是因为标准卷积的步幅是输出步长与输入步长之比（如图中为 $1/2$）；不建议使用“反卷积”因为该词在数学中表示泛函分析中卷积操作的逆，是不同概念；若网络没有池化层、下采样和上采样完全用卷积完成，则称为全卷积网络，可接受任意大小图像并输出相同大小分割图",
+            "C": "转置卷积的输出维度低于输入；“反卷积”是推荐术语；全卷积网络不能处理任意大小输入",
+            "D": "转置卷积没有重叠输出问题；全卷积网络与转置卷积无关"
+            },
+            "answer": "B",
+            "explanation": "上面考虑的上采样方法是固定函数，很像平均池化和最大池化下采样操作。我们也可以使用一种可学习的上采样，它类似于用于下采样的跨步卷积。在跨步卷积中，输出图上的每个单元通过共享的可学习权重连接到输入图上的一个小块；当我们沿输出数组移动一步时，滤波器在输入数组上移动两步或更多步，因此输出数组的维度低于输入数组。对于上采样，我们使用一个滤波器将输入数组中的一个像素连接到输出数组中的一个小块，然后选择架构使得当我们沿输入数组移动一步时在输出数组上移动两步或更多步。注意有些输出单元会有多个滤波器位置重叠，相应的输出值可以通过对各个滤波器位置的贡献求和或取平均来得到。这种上采样称为转置卷积，因为如果将下采样卷积表示为矩阵形式，那么对应的上采样由转置矩阵给出。它也被称为分数步幅卷积，因为标准卷积的步幅是输出层步长与输入层步长之比（例如图中为 $1/2$）。注意这有时也被称为“反卷积”，但最好避免这个术语，因为反卷积在数学中被广泛用于表示泛函分析中卷积操作的逆，这是一个不同的概念。如果我们有一个没有池化层的网络架构，使得下采样和上采样完全使用卷积完成，那么该架构被称为全卷积网络。它可以接受任意大小的图像，并输出相同大小的分割图。"
+        },
+        {
+            "id": 5,
+            "topic": "U-net 架构",
+            "question": "根据 10.5.4 节，U-net 架构要解决什么问题？其核心结构是什么？拼接 (concatenation) 的作用是什么？最后一层如何处理？",
+            "options": {
+            "A": "U-net 要解决分类精度问题；核心是增加池化层；拼接用于减少参数；最后一层使用全连接层",
+            "B": "U-net 要解决下采样导致空间分辨率降低、位置信息被丢弃的问题（这对需要逐像素分类的语义分割不利）；核心结构是：对称排列的下采样层和上采样层，每个下采样层都有对应的上采样层，且每个下采样层最终的通道激活集合与上采样层中对应的第一组通道进行拼接；拼接的作用是使上采样层能够访问更高分辨率的空间信息，从而在逐像素分类时保留更多位置细节；U-net 最后一层可使用 $1 \\times 1$ 卷积将通道数减少到类别数，然后接 softmax 激活函数",
+            "C": "U-net 要解决参数过多问题；核心是不对称结构；拼接用于增加通道数而不保留空间信息",
+            "D": "U-net 不需要上采样层；最后一层使用最大池化"
+            },
+            "answer": "B",
+            "explanation": "我们已经看到，与跨步卷积和池化相关的下采样允许增加通道数，同时不会使网络规模变得过于庞大。这也会降低空间分辨率，因此随着信号在网络中流动，位置信息会被丢弃。尽管这对图像分类来说没问题，但空间信息的丢失对语义分割来说是个问题，因为我们想要对每个像素进行分类。解决这个问题的一种方法是 U-net 架构 (Ronneberger, Fischer, and Brox, 2015)，其名称来自示意图的 U 形。其核心概念是，对于每个下采样层，都有一个对应的上采样层，并且每个下采样层最终的通道激活集合与上采样层中对应的第一组通道进行拼接，从而使这些层能够访问更高分辨率的空间信息。注意，U-net 的最后一层可以使用 $1 \\times 1$ 卷积将通道数减少到类别数，然后接一个 softmax 激活函数。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

@@ -1,0 +1,331 @@
+<!-- 第1章：深度学习革命 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第1章：深度学习革命 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一章的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "深度学习知识图谱",
+            "question": "在《深度学习基础》知识图谱中，以下哪一项属于“核心架构”分支下的内容？",
+            "options": {
+            "A": "反向传播",
+            "B": "Transformer 注意力机制",
+            "C": "线性代数",
+            "D": "自然语言处理"
+            },
+            "answer": "B",
+            "explanation": "在 ch01-graph-v2.tex 的知识图谱中，“核心架构”分支包含 CNN 卷积网络、RNN/LSTM 循环网络和 Transformer 注意力机制。反向传播属于“优化与训练”，线性代数属于“数学基础”，自然语言处理属于“应用领域”。"
+        },
+        {
+            "id": 2,
+            "topic": "人工智能知识图谱",
+            "question": "在 ch01-graph-v3.tex 的人工智能知识图谱中，“基础支撑”分支不包含以下哪一项？",
+            "options": {
+            "A": "大数据",
+            "B": "算力硬件 GPU/TPU",
+            "C": "数学算法",
+            "D": "AI 安全"
+            },
+            "answer": "D",
+            "explanation": "“基础支撑”分支包含大数据、算力硬件、数学算法和云计算；“AI 安全”属于“伦理与未来”分支。"
+        },
+        {
+            "id": 3,
+            "topic": "世界模型知识图谱",
+            "question": "在 ch01-graph-v4.tex 的世界模型知识图谱中，“工作机制”分支不包含以下哪一项？",
+            "options": {
+            "A": "“做梦”训练",
+            "B": "未来预测",
+            "C": "潜在空间规划",
+            "D": "零样本泛化"
+            },
+            "answer": "D",
+            "explanation": "“工作机制”分支包含“做梦”训练、未来预测、潜在空间规划和轨迹推演；“零样本泛化”属于“关键能力”分支。"
+        },
+        {
+            "id": 4,
+            "topic": "深度学习发展历程",
+            "question": "根据 ch01-slides.tex 中“深度学习发展历程：关键突破”表格，1986 年反向传播算法解决的关键问题是什么？",
+            "options": {
+            "A": "提出神经元的数学形式化描述",
+            "B": "实现首个可训练的线性分类算法",
+            "C": "解决多层网络权重无法有效更新的难题",
+            "D": "实现通用语言理解与人类意图对齐"
+            },
+            "answer": "C",
+            "explanation": "1986 年反向传播算法的核心贡献是解决多层网络权重无法有效更新的难题。A 对应 1943 年 M-P 模型，B 对应 1958 年感知器，D 对应 2022 年 ChatGPT。"
+        },
+        {
+            "id": 5,
+            "topic": "数学基础：微积分",
+            "question": "在 ch01-slides.tex 中，关于微积分在深度学习中的核心作用，下列哪项描述最准确？",
+            "options": {
+            "A": "用于存储图像、文本嵌入及网络参数",
+            "B": "用于建模数据生成过程并处理不确定性",
+            "C": "没有微积分，就无法通过梯度下降法自动训练神经网络",
+            "D": "用于利用 GPU 并行加速矩阵运算"
+            },
+            "answer": "C",
+            "explanation": "微积分提供导数、偏导数、梯度和链式法则，是反向传播和梯度下降优化的数学基础。A 属于线性代数中张量的作用，B 属于概率统计的作用，D 属于线性代数与 GPU 计算的作用。"
+        },
+        {
+            "id": 6,
+            "topic": "反向传播算法",
+            "question": "根据 ch01-slides.tex，反向传播算法中参数更新的正确表达式是？",
+            "options": {
+            "A": "$w_{new} = w_{old} + \\eta \\cdot \\frac{\\partial L}{\\partial w}$",
+            "B": "$w_{new} = w_{old} - \\eta \\cdot \\frac{\\partial L}{\\partial w}$",
+            "C": "$w_{new} = w_{old} \\cdot \\eta \\cdot \\frac{\\partial L}{\\partial w}$",
+            "D": "$w_{new} = w_{old} / \\left( \\eta \\cdot \\frac{\\partial L}{\\partial w} \\right)$"
+            },
+            "answer": "B",
+            "explanation": "梯度下降的参数更新公式为 $w_{new} = w_{old} - \\eta \\cdot \\frac{\\partial L}{\\partial w}$，其中 $\\eta$ 是学习率，$\\frac{\\partial L}{\\partial w}$ 是损失函数对权重的梯度。"
+        },
+        {
+            "id": 7,
+            "topic": "优化器",
+            "question": "在 ch01-slides.tex 中，关于 Adam 优化器的描述，下列哪项最准确？",
+            "options": {
+            "A": "仅依赖当前梯度，容易陷入局部最优",
+            "B": "引入“惯性”积累之前的梯度方向，抑制震荡",
+            "C": "结合 Momentum 与 RMSProp，为每个参数自适应调整学习率",
+            "D": "通过随机丢弃神经元来增强鲁棒性"
+            },
+            "answer": "C",
+            "explanation": "Adam 结合了 Momentum 和 RMSProp 的思想，为每个参数自适应调整学习率，收敛快且对超参数不敏感。A 描述的是基础 SGD，B 描述的是 Momentum，D 描述的是 Dropout。"
+        },
+        {
+            "id": 8,
+            "topic": "正则化技术",
+            "question": "根据 ch01-slides.tex，关于 Dropout 的描述，下列哪项是正确的？",
+            "options": {
+            "A": "训练时随机丢弃一部分神经元，测试时恢复所有神经元并按比例缩放权重",
+            "B": "在损失函数中加入权重的惩罚项",
+            "C": "当验证集误差不再下降时提前停止训练",
+            "D": "将每层输入强制拉回到均值 0、方差 1 的分布"
+            },
+            "answer": "A",
+            "explanation": "Dropout 在训练时随机“丢弃”一部分神经元，强迫网络不依赖特定路径；测试时恢复所有神经元，权重按比例缩放。B 描述 L1/L2 正则化，C 描述早停法，D 描述批量归一化。"
+        },
+        {
+            "id": 9,
+            "topic": "Transformer",
+            "question": "根据 ch01-slides.tex，Transformer 的核心思想与主要优势是什么？",
+            "options": {
+            "A": "引入循环连接，使信息在时间步之间传递",
+            "B": "通过局部感知和权值共享提取特征",
+            "C": "完全摒弃循环和卷积，仅依靠自注意力机制，易于并行化且扩展性极佳",
+            "D": "通过生成器与判别器相互对抗进行训练"
+            },
+            "answer": "C",
+            "explanation": "Transformer 完全摒弃循环和卷积，仅依靠自注意力机制，能够直接计算序列中任意两个位置的相关性，支持并行计算，扩展性极佳。A 描述 RNN，B 描述 CNN，D 描述 GAN。"
+        },
+        {
+            "id": 10,
+            "topic": "深度学习未来发展趋势",
+            "question": "根据 ch01-slides.tex 中“深度学习的未来发展趋势”，下列哪项不属于其中列出的趋势？",
+            "options": {
+            "A": "多模态融合，打破文本、图像、音频界限",
+            "B": "可解释性与安全，打开“黑盒”并解决伦理对齐问题",
+            "C": "高效能与绿色 AI，发展模型压缩、量化及稀疏化技术",
+            "D": "完全放弃神经网络，回归传统符号逻辑推理"
+            },
+            "answer": "D",
+            "explanation": "课件中列出的未来趋势包括通向 AGI、多模态融合、可解释性与安全、高效能与绿色 AI、数据效率与小样本学习、神经符号结合。神经符号结合是融合深度学习与符号逻辑，而非完全放弃神经网络。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

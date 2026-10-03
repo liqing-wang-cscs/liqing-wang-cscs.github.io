@@ -1,0 +1,331 @@
+<!-- 第8章：反向传播 第2节：自动微分法 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第8章：反向传播、第2节：自动微分法 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "梯度评估的四种方法",
+            "question": "根据 ch08-2-0.tex 第 8.2.0 节，评估神经网络误差函数梯度的四种主要方法分别是什么？",
+            "options": {
+            "A": "手动推导并实现反向传播、数值微分（有限差分）、符号微分、自动微分",
+            "B": "梯度下降、牛顿法、动量法、Adam",
+            "C": "前向传播、反向传播、卷积、池化",
+            "D": "批梯度下降、随机梯度下降、小批量梯度下降、在线梯度下降"
+            },
+            "answer": "A",
+            "explanation": "评估神经网络误差函数梯度的四种主要方法是：(1) 手动推导反向传播方程并在软件中显式实现；(2) 用有限差分法进行数值微分；(3) 符号微分；(4) 自动微分。"
+        },
+        {
+            "id": 2,
+            "topic": "手动推导反向传播的优缺点",
+            "question": "根据 ch08-2-0.tex 第 P2 节，手动推导并实现反向传播方程的主要缺点是什么？",
+            "options": {
+            "A": "计算结果精度低，无法达到数值精度",
+            "B": "推导方程和编写代码都耗时且容易出错；前向与反向方程分开编码导致代码冗余，模型更改时两者需同步修改，限制了快速探索不同架构的能力",
+            "C": "只能处理线性模型",
+            "D": "无法利用中间变量"
+            },
+            "answer": "B",
+            "explanation": "手动推导并实现反向传播如果操作得当能产生高效精确的代码，但推导方程和编写代码的过程都非常耗时且容易出错。还会导致代码冗余，因为前向传播方程与反向传播方程分开编写。由于涉及重复计算，模型更改时前向和后向实现必须同步修改，这种工作量很容易成为限制因素，影响快速有效地探索不同网络架构。"
+        },
+        {
+            "id": 3,
+            "topic": "数值微分的特点",
+            "question": "根据 ch08-2-0.tex 第 P3 节，关于数值微分（有限差分法）评估梯度的优缺点，下列哪项描述最准确？",
+            "options": {
+            "A": "计算精度高且可扩展性好，适合大规模网络",
+            "B": "只需前向传播代码，实现简单；但计算精度有限且可扩展性差（随网络规模增大计算成本急剧上升）；不过可用于调试其他方法，验证反向传播代码的正确性",
+            "C": "不需要前向传播代码即可计算梯度",
+            "D": "数值微分是深度学习中最常用的梯度计算方法"
+            },
+            "answer": "B",
+            "explanation": "数值微分只需对前向传播方程进行软件实现。其计算精度有限，但对于使用 SGD 的网络训练不太成问题；主要缺点是扩展性差。然而该技术对调试其他方法非常有用，因为梯度评估只使用前向传播代码，可用于验证反向传播或其他梯度评估代码的正确性。"
+        },
+        {
+            "id": 4,
+            "topic": "符号微分与表达式膨胀",
+            "question": "根据 ch08-2-0.tex 第 P4 节，符号微分的主要缺点是什么？什么是“表达式膨胀 (expression swell)”？",
+            "options": {
+            "A": "符号微分无法达到机器精度；表达式膨胀指计算过程中内存占用增加",
+            "B": "符号微分生成的导数表达式长度可能相对于原函数呈指数级增长，导致计算时间大幅增加；由于 $u(x)$ 和 $v(x)$ 等子表达式在 $f(x)$ 和 $f'(x)$ 中重复出现，若因子本身包含子因子则出现嵌套重复，复杂度迅速增长，这一问题称为表达式膨胀",
+            "C": "符号微分不支持任何数学函数；表达式膨胀指参数数量增加",
+            "D": "符号微分只能处理乘积形式；表达式膨胀指学习率过大"
+            },
+            "answer": "B",
+            "explanation": "符号微分的主要缺点是生成的导数表达式长度可能相对于原函数呈指数级增长，导致相应的计算时间大幅增加。以 $f(x) = u(x)v(x)$ 为例，$f'(x) = u'(x)v(x) + u(x)v'(x)$ 中存在冗余计算，$u(x)$ 和 $v(x)$ 在计算 $f(x)$ 和 $f'(x)$ 时都需要求值。如果因子本身又包含子因子，就会出现表达式的嵌套重复，复杂度迅速增长，这一问题称为表达式膨胀。"
+        },
+        {
+            "id": 5,
+            "topic": "符号微分的封闭形式限制",
+            "question": "根据 ch08-2-0.tex 第 P6 节，符号微分的另一个主要缺点是什么？",
+            "options": {
+            "A": "无法达到机器精度",
+            "B": "要求被微分的表达式必须以封闭形式给出，因此无法处理循环、递归、条件执行和过程调用等重要控制流操作",
+            "C": "计算速度比数值微分慢",
+            "D": "无法处理乘法运算"
+            },
+            "answer": "B",
+            "explanation": "符号微分还有一个主要缺点，即它要求被微分的表达式必须以封闭形式（closed form）给出。因此，它无法处理重要的控制流操作，例如循环、递归、条件执行以及过程调用，而这些都是在定义网络函数时可能希望使用的有价值的构造。"
+        },
+        {
+            "id": 6,
+            "topic": "自动微分的原理与优势",
+            "question": "根据 ch08-2-0.tex 第 P7 节，关于自动微分的原理与优势，下列哪项描述最准确？",
+            "options": {
+            "A": "自动微分的目标是寻找导数的数学表达式，与符号微分相同",
+            "B": "自动微分的目标是让计算机仅根据前向传播方程的代码自动生成实现梯度计算的代码；它达到机器精度，能利用中间变量避免冗余计算，并能处理分支、循环、递归和过程调用等控制流元素",
+            "C": "自动微分精度低于数值微分",
+            "D": "自动微分只适用于线性模型"
+            },
+            "answer": "B",
+            "explanation": "与符号微分不同，自动微分的目标并非寻找导数的数学表达式，而是让计算机仅根据前向传播方程的代码自动生成实现梯度计算的代码。它与符号微分一样能够达到机器精度，但效率更高，因为它能够利用前向传播方程定义中使用的中间变量从而避免冗余计算。自动微分不仅能处理传统的封闭形式数学表达式，还能处理分支、循环、递归和过程调用等控制流元素，因此能力显著强于符号微分。"
+        },
+        {
+            "id": 7,
+            "topic": "前向模式自动微分",
+            "question": "根据 ch08-2-1.tex 第 8.2.1 节，前向模式自动微分中，主变量 $z_i$ 和切线变量 $\\dot{z}_i$ 分别是什么？代码如何传播？",
+            "options": {
+            "A": "主变量是输入变量，切线变量是输出变量；代码只传播主变量",
+            "B": "主变量是参与函数求值的中间变量 $z_i$，切线变量 $\\dot{z}_i$ 表示该变量的某种导数值；代码传播元组 $(z_i, \\dot{z}_i)$，使变量值和导数值并行计算",
+            "C": "主变量是权重，切线变量是偏置；代码只传播切线变量",
+            "D": "主变量和切线变量完全相同"
+            },
+            "answer": "B",
+            "explanation": "在前向模式自动微分中，为每一个参与函数求值的中间变量 $z_i$（称为主变量）附加一个额外的变量，用以表示该变量的某种导数值，记为 $\\dot{z}_i$（称为切线变量）。切线变量及其相关代码由软件环境自动生成。代码不再仅仅进行前向传播以计算 $\\{z_i\\}$，而是传播元组 $(z_i, \\dot{z}_i)$，使得变量值与导数值被并行计算。"
+        },
+        {
+            "id": 8,
+            "topic": "前向模式的计算代价与雅可比矩阵",
+            "question": "根据 ch08-2-1.tex 第 P4 节，对于具有 $D$ 个输入和 $K$ 个输出的函数，前向模式自动微分计算完整雅可比矩阵需要多少次前向传播？一次传播产生雅可比矩阵的什么？",
+            "options": {
+            "A": "需要 $K$ 次前向传播；一次传播产生雅可比矩阵的一行",
+            "B": "需要 $D$ 次前向传播；一次传播产生雅可比矩阵的一列",
+            "C": "需要 1 次前向传播；一次传播产生完整的雅可比矩阵",
+            "D": "需要 $D \\times K$ 次前向传播；一次传播产生一个元素"
+            },
+            "answer": "B",
+            "explanation": "前向模式自动微分的一次传播可以产生 $K \\times D$ 雅可比矩阵的一列。为了计算雅可比矩阵的第 $j$ 列，需要通过设置 $\\dot{x}_j = 1$ 且 $i \\ne j$ 时 $\\dot{x}_i = 0$ 来初始化切线方程的前向传播，即 $\\dot{\\mathbf{x}} = \\mathbf{e}_j$。为了计算完整的雅可比矩阵需要 $D$ 次前向模式传播。若只需计算雅可比矩阵与向量 $\\mathbf{r}$ 的乘积，则设置 $\\dot{\\mathbf{x}} = \\mathbf{r}$ 即可在一次前向传播中完成。"
+        },
+        {
+            "id": 9,
+            "topic": "逆向模式自动微分",
+            "question": "根据 ch08-2-2.tex 第 8.2.2 节，逆向模式自动微分中，伴随变量 $\\overline{v}_i$ 的定义是什么？计算一次需要多少次反向传播？",
+            "options": {
+            "A": "$\\overline{v}_i = \\frac{\\partial v_i}{\\partial f}$；需要 $D$ 次反向传播（$D$ 为输入数）",
+            "B": "$\\overline{v}_i = \\frac{\\partial f}{\\partial v_i}$；即使有多个输入，也只需一次反向传播即可计算对所有输入的导数",
+            "C": "$\\overline{v}_i = v_i$；不需要反向传播",
+            "D": "$\\overline{v}_i = \\frac{\\partial f}{\\partial x_i}$；需要 $K$ 次反向传播（$K$ 为输出数）"
+            },
+            "answer": "B",
+            "explanation": "逆向模式自动微分中，伴随变量定义为 $\\overline{v}_i = \\frac{\\partial f}{\\partial v_i}$，可以视为误差反向传播过程的推广。这些变量从输出开始，利用链式法则 $\\overline{v}_i = \\sum_{j \\in \\mathrm{ch}(i)} \\overline{v}_j \\frac{\\partial v_j}{\\partial v_i}$ 逐步反向计算，其中 $\\mathrm{ch}(i)$ 表示节点 $i$ 的子节点集合。即使有多个输入，也只需一次反向传播即可计算导数。对于神经网络误差函数，$E$ 关于权重和偏置的导数即为相应的伴随变量。但若有多个输出，则需要对每个输出变量分别运行一次反向传播。"
+        },
+        {
+            "id": 10,
+            "topic": "前向模式与逆向模式的对比及混合使用",
+            "question": "根据 ch08-2-2.tex 第 P3、P4 节，关于前向模式与逆向模式的对比及混合使用，下列哪项描述最准确？",
+            "options": {
+            "A": "逆向模式比前向模式更节省内存，且更容易实现",
+            "B": "逆向模式通常比前向模式更耗内存（需存储所有中间主变量），也更难实现；两种模式单次通过网络的计算开销均不超过单次函数求值的6倍（实际约2-3倍）；混合使用可高效计算 Hessian-向量积 $\\mathbf{H}\\mathbf{v}$，复杂度为 $\\mathcal{O}(W)$ 而非显式构造 Hessian 的 $\\mathcal{O}(W^2)$",
+            "C": "两种模式的内存消耗和实现难度完全相同",
+            "D": "Hessian-向量积必须显式构造完整 Hessian 矩阵才能计算"
+            },
+            "answer": "B",
+            "explanation": "逆向模式通常比前向模式更耗内存，因为必须存储所有中间主变量以供反向传播时计算伴随变量使用；而前向模式中主变量和切线变量一起计算，变量使用后即可丢弃，因此前向模式通常也更容易实现。对于两种模式，单次通过网络的计算开销均保证不超过单次函数求值的6倍，实践中通常接近2到3倍。混合使用方面：计算 Hessian-向量积时，先设置 $\\dot{\\mathbf{x}} = \\mathbf{v}$ 用前向模式得到方向导数 $\\mathbf{v}^\\top \\nabla f$，再用反向模式微分得到 $\\nabla^2 f \\, \\mathbf{v} = \\mathbf{H} \\mathbf{v}$。若神经网络参数数量为 $W$，该计算复杂度为 $\\mathcal{O}(W)$，而显式构造 Hessian 的复杂度为 $\\mathcal{O}(W^2)$。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

@@ -1,0 +1,331 @@
+<!-- 第10章：卷积网络 第3节：可视化训练好的CNN- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第3节：可视化训练好的CNN - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "视觉皮层与 Gabor 滤波器",
+            "question": "根据 10.3.1 节，Hubel 和 Wiesel (1959) 发现的“简单细胞”具有什么响应特性？其响应可以用什么数学函数建模？该函数的各参数分别控制什么？",
+            "options": {
+            "A": "简单细胞对任意视觉刺激都有相同响应；可用高斯函数建模",
+            "B": "简单细胞对具有特定角度方向且位于视野中特定位置的简单边缘有强烈响应，对其他刺激响应很小；其响应可用 Gabor 滤波器建模 $G(x,y) = A\\exp(-\\alpha\\overline{x}^2 - \\beta\\overline{y}^2)\\sin(\\omega\\overline{x} + \\phi)$，其中 $\\theta$ 控制方向、$\\omega$ 控制频率、$\\phi$ 控制相位、$(x_0,y_0)$ 控制位置、$\\alpha,\\beta$ 控制衰减范围",
+            "C": "简单细胞只对颜色有响应；可用 Softmax 函数建模",
+            "D": "简单细胞对物体整体形状有响应；可用多项式建模"
+            },
+            "answer": "B",
+            "explanation": "Hubel 和 Wiesel (1959) 在向猫的眼睛呈现视觉刺激时测量了猫视觉皮层中单个神经元的电响应，发现一些称为“简单细胞”的神经元对具有特定角度方向且位于视野中特定位置的简单边缘视觉输入有强烈响应，而其他刺激引起的响应相对很小。更详细的研究表明这些简单细胞的响应可用 Gabor 滤波器建模：$G(x,y) = A\\exp(-\\alpha\\overline{x}^2 - \\beta\\overline{y}^2)\\sin(\\omega\\overline{x} + \\phi)$，其中 $\\overline{x}$ 和 $\\overline{y}$ 表示坐标系旋转角度 $\\theta$ 后的坐标。$\\sin(\\cdot)$ 项表示方向由极角 $\\theta$ 定义、频率为 $\\omega$、相位角为 $\\phi$ 的正弦空间振荡；指数因子产生衰减包络使滤波器局限在位置 $(x_0,y_0)$ 附近，衰减速率由 $\\alpha$ 和 $\\beta$ 控制。"
+        },
+        {
+            "id": 2,
+            "topic": "复杂细胞、祖母细胞与 Neocognitron",
+            "question": "根据 10.3.1 节，复杂细胞 (complex cells) 和“祖母细胞”分别有什么特性？Neocognitron 与 CNN 有何异同？",
+            "options": {
+            "A": "复杂细胞对位置变化极其敏感；祖母细胞不存在；Neocognitron 使用了反向传播训练",
+            "B": "复杂细胞对更复杂刺激作出响应，似乎通过组合简单细胞输出得到，对输入的小变化（如位置偏移）具有一定不变性，类似 CNN 中的池化单元；更深层视觉处理具有更特定的响应和更大不变性，可对特定复杂对象（如祖母）作出响应而不论位置、尺度、光照等变换；Neocognitron 是 CNN 前身，包含局部感受野、共享权重和池化，但缺少端到端反向传播训练，依赖无监督聚类算法的贪婪逐层学习",
+            "C": "复杂细胞与简单细胞完全相同；祖母细胞只对颜色响应；Neocognitron 是现代 CNN",
+            "D": "复杂细胞不使用池化机制；祖母细胞对任意输入都响应"
+            },
+            "answer": "B",
+            "explanation": "Hubel 和 Wiesel 还发现“复杂细胞”的存在，它们对更复杂的刺激作出响应，似乎是通过组合和处理简单细胞的输出而得到的。这些响应表现出对输入的小变化（如位置偏移）有一定程度的不变性，类似于卷积深度网络中的池化单元。哺乳动物视觉处理系统的更深层具有更加特定的响应，对视觉输入的变换具有更大不变性。这类细胞被称为“祖母细胞”，因为从概念上说，这种细胞可以当且仅当视觉输入对应于某人的祖母时作出响应，而不论位置、尺度、光照或场景的其他变换如何。这项工作直接启发了一种早期形式的深度神经网络 neocognitron (Fukushima, 1980)，它是卷积神经网络的前身。Neocognitron 具有多层处理结构，包括具有共享权重的局部感受野，随后是局部平均或最大池化以赋予位置不变性，但它缺乏端到端训练过程，因为它早于反向传播的发展，转而依赖通过无监督聚类算法进行的贪婪逐层学习。"
+        },
+        {
+            "id": 3,
+            "topic": "第一层滤波器可视化",
+            "question": "根据 10.3.2 节，为什么第一层卷积滤波器可以直接可视化？在 ImageNet 上训练的 CNN 第一层滤波器与 Gabor 滤波器相似，这说明了什么？",
+            "options": {
+            "A": "第一层滤波器直接可视化困难；与 Gabor 相似说明 CNN 是大脑的完美模型",
+            "B": "第一层滤波器对应原始输入图像空间中的小图像块，可直接将网络权重可视化为小图像；第一层卷积计算滤波器与对应图像块的内积，内积幅度大时单元激活值大；在 ImageNet 上训练的 CNN 第一层滤波器与 Gabor 滤波器有显著相似性，但这不意味着 CNN 是大脑工作方式的良好模型，因为通过各种统计方法都可得到非常相似的结果；这些特征性滤波器是自然图像统计的一般性质，因此对自然和人工系统的图像理解都有用",
+            "C": "第一层滤波器只能可视化灰度图像；与 Gabor 相似说明训练数据无影响",
+            "D": "第一层滤波器可视化需要数值优化；与 Gabor 相似是偶然现象"
+            },
+            "answer": "B",
+            "explanation": "对于第一层卷积层中的滤波器，可视化相对直接，因为它们对应于原始输入图像空间中的小图像块，可以直接将与这些滤波器相关的网络权重可视化为小图像。第一层卷积层计算滤波器与对应图像块之间的内积，因此当内积幅度很大时该单元会有较大激活值。图 10.12 展示了在 ImageNet 数据集上训练的 CNN 第一层的示例滤波器，与图 10.11 中的 Gabor 滤波器存在显著相似性。然而这并不意味着卷积神经网络是大脑工作方式的良好模型，因为通过各种统计方法都可得到非常相似的结果 (Hyvärinen, Hurri, and Hoyer, 2009)。这是因为这些特征性滤波器是自然图像统计的一般性质，因此无论对自然系统还是人工系统而言，它们都被证明对图像理解很有用。"
+        },
+        {
+            "id": 4,
+            "topic": "后续层的可视化与层次结构",
+            "question": "根据 10.3.2 节，为什么后续层难以直接解释？通过找出使隐藏单元激活最强的图像块，观察到了什么样的层次结构？",
+            "options": {
+            "A": "后续层输入是原始像素，容易可视化；层次结构只包含边缘",
+            "B": "后续层输入不是图像块，而是滤波器响应的组合，因此不能直接可视化权重；一种方法（类似于 Hubel 和 Wiesel 的方法）是向网络呈现大量图像块，观察哪些图像块在特定隐藏单元中产生最高激活值；在五层卷积网络上观察到自然的层次结构：第一层响应边缘、第二层响应纹理和简单形状、第三层显示物体组成部分（如车轮）、第五层显示完整物体",
+            "C": "后续层与第一层同样容易可视化；层次结构中所有层响应相同",
+            "D": "后续层只能用数学公式解释；层次结构不存在"
+            },
+            "answer": "B",
+            "explanation": "尽管可以可视化第一层中的滤波器，但网络中后续层更难以解释，因为它们的输入不是图像块，而是滤波器响应的组合。一种类似于 Hubel 和 Wiesel 所使用的方法是向网络呈现大量图像块，观察哪些图像块会在任意特定隐藏单元中产生最高的激活值。图 10.13 展示了使用具有五个卷积层、随后两个全连接层的网络得到的示例，该网络在涵盖 1,000 个类别的 130 万个 ImageNet 数据点上训练。可以看到一种自然的层次结构：第一层响应边缘，第二层响应纹理和简单形状，第三层显示物体的组成部分（如车轮），第五层显示完整物体。复杂度随深度稳步增加。"
+        },
+        {
+            "id": 5,
+            "topic": "通过数值优化生成代表性图像",
+            "question": "根据 10.3.2 节，若要通过数值优化输入变量来最大化某单元激活值，为什么应最大化 softmax 之前的预激活值而不是类别概率？为什么需要正则化？",
+            "options": {
+            "A": "应直接最大化 softmax 输出；无约束优化不会产生问题",
+            "B": "因为输出单元通常使用 softmax 激活函数，直接优化 softmax 输出会因分母的影响而耦合其他类别（例如寻找最能代表“狗”的图像时可能使图像变得不那么像猫）；最大化输入到 softmax 的预激活值可确保优化只依赖于一个类别；对输出单元激活值进行无约束优化会导致单个像素值被驱动到无穷大，并产生难以解释的高频结构，因此需要某种形式的正则化（如像素值平方和、模糊操作去除高频、裁剪操作将对类别标签贡献小的像素值设为零）",
+            "C": "预激活值与类别概率完全等价；正则化只是为了加速计算",
+            "D": "最大化类别概率与对抗训练无关"
+            },
+            "answer": "B",
+            "explanation": "可以对输入变量进行数值优化以最大化某特定单元的激活值 (Zeiler and Fergus, 2013; Simonyan, Vedaldi, and Zisserman, 2013; Yosinski et al., 2015)。若选择某个单元作为输出单元之一，则可寻找最能代表对应类别标签的图像。由于输出单元通常使用 softmax 激活函数，最好最大化输入到 softmax 的预激活值而非直接最大化类别概率，因为这样可以确保优化只依赖于一个类别。例如若寻找对类别“狗”产生最强响应的图像，若优化 softmax 输出，由于 softmax 分母的影响，可能会使图像变得不那么像猫。这种方法与对抗训练有关。然而对输出单元激活值进行无约束优化会导致单个像素值被驱动到无穷大，并产生难以解释的高频结构，因此需要某种形式的正则化来找到更接近自然图像的解。Yosinski 等人 (2015) 使用了由像素值平方和组成的正则化函数，以及一种交替过程：在基于梯度的图像像素值更新之间，交替进行模糊操作以去除高频结构，并进行裁剪操作将那些对类别标签贡献很小的像素值设为零。"
+        },
+        {
+            "id": 6,
+            "topic": "显著图与 Grad-CAM",
+            "question": "根据 10.3.3 节，显著图 (saliency maps) 的目标是什么？为什么最好研究最后一个卷积层？Grad-CAM 方法的核心步骤是什么？",
+            "options": {
+            "A": "显著图目标是识别图像中所有区域；应研究第一个卷积层；Grad-CAM 直接使用 softmax 输出",
+            "B": "显著图旨在识别图像中对确定类别标签最重要的那些区域；最好通过研究最后一个卷积层完成，因为该层仍保留空间定位信息（这些信息在随后的全连接层中会丢失），同时具有最高层次的语义表示；Grad-CAM 首先计算给定类别 $c$ 的输出单元预激活值 $a^{(c)}$（softmax 之前）相对于最后一个卷积层中通道 $k$ 所有单元预激活值 $a_{ij}^{(k)}$ 的导数，对每个通道取平均得到 $\\alpha_k = \\frac{1}{M_k}\\sum_i\\sum_j \\frac{\\partial a^{(c)}}{\\partial a_{ij}^{(k)}}$，然后加权求和 $\\mathbf{L} = \\sum_k \\alpha_k \\mathbf{A}^{(k)}$",
+            "C": "显著图只适用于第一层；Grad-CAM 不使用梯度",
+            "D": "显著图与空间定位无关；Grad-CAM 公式中不包含通道级平均"
+            },
+            "answer": "B",
+            "explanation": "显著图 (saliency maps) 旨在识别图像中对确定类别标签最重要的那些区域。最好通过研究最后一个卷积层完成，因为该层仍保留空间定位信息（这些信息在随后的全连接层中会丢失），同时具有最高层次的语义表示。Grad-CAM（梯度类别激活映射）方法 (Selvaraju et al., 2016) 首先对给定输入图像，计算给定类别 $c$ 的输出单元预激活值 $a^{(c)}$（softmax 之前）相对于最后一个卷积层中通道 $k$ 所有单元预激活值 $a_{ij}^{(k)}$ 的导数。对每个通道，对这些导数取平均得到 $\\alpha_k = \\frac{1}{M_k}\\sum_i\\sum_j \\frac{\\partial a^{(c)}}{\\partial a_{ij}^{(k)}}$，其中 $i,j$ 索引通道 $k$ 的行列，$M_k$ 是该通道单元总数。然后使用这些平均值构成加权和 $\\mathbf{L} = \\sum_k \\alpha_k \\mathbf{A}^{(k)}$，其中 $\\mathbf{A}^{(k)}$ 是元素为 $a_{ij}^{(k)}$ 的矩阵。所得数组具有与最后一个卷积层相同的维度（如 VGG 网络为 $14 \\times 14$），可以热力图形式叠加在原始图像上。"
+        },
+        {
+            "id": 7,
+            "topic": "对抗攻击与快速梯度符号法",
+            "question": "根据 10.3.4 节，对抗攻击 (adversarial attacks) 是什么？快速梯度符号法 (fast gradient sign method) 的核心公式是什么？其与常规训练的区别是什么？",
+            "options": {
+            "A": "对抗攻击修改网络参数；公式为 $\\mathbf{x}' = \\mathbf{x} - \\epsilon\\nabla_{\\mathbf{x}}E$；与训练完全相同",
+            "B": "对抗攻击对图像进行非常小的、人类无法察觉的修改，使图像被神经网络错误分类；快速梯度符号法公式为 $\\mathbf{x}' = \\mathbf{x} + \\epsilon\\,\\text{sign}(\\nabla_{\\mathbf{x}}E(\\mathbf{x}, t))$，其中 $t$ 是真实标签，$E$ 可以是负对数似然；常规训练调整网络参数以最小化误差，而该修改在保持训练好的网络参数不变的情况下改变图像以增大误差；通过保持 $\\epsilon$ 很小确保图像变化对人类肉眼不可察觉，但这可产生被网络以高置信度错误分类的图像",
+            "C": "对抗攻击只能应用于线性模型；公式中不需要梯度",
+            "D": "对抗攻击是网络训练的正规组成部分；$\\epsilon$ 应取很大值"
+            },
+            "answer": "B",
+            "explanation": "相对于输入图像像素值变化的梯度也可以用来构造针对卷积网络的对抗攻击 (Szegedy et al., 2013)。这些攻击通过对图像进行非常小的修改，小到人类无法察觉，却能使图像被神经网络错误分类。构造对抗图像的一种简单方法称为快速梯度符号法 (Goodfellow, Shlens, and Szegedy, 2014)，该方法将图像 $\\mathbf{x}$ 中的每个像素值改变一个固定量 $\\epsilon$，其符号由误差函数 $E(\\mathbf{x}, t)$ 相对于像素值的梯度决定：$\\mathbf{x}' = \\mathbf{x} + \\epsilon\\,\\text{sign}(\\nabla_{\\mathbf{x}}E(\\mathbf{x}, t))$。这里 $t$ 是 $\\mathbf{x}$ 的真实标签，误差 $E(\\mathbf{x}, t)$ 可以是例如 $\\mathbf{x}$ 的负对数似然。所需梯度可通过反向传播高效计算。在常规训练中网络参数被调整以最小化该误差，而该修改则是在保持训练好的网络参数不变的情况下改变图像以增大误差。通过保持 $\\epsilon$ 很小，我们确保图像的变化对人类肉眼不可察觉；值得注意的是，这可以产生被网络以高置信度错误分类的图像。"
+        },
+        {
+            "id": 8,
+            "topic": "对抗攻击的普遍性与安全影响",
+            "question": "根据 10.3.4 节，对抗攻击是否只是过拟合的结果？其在网络间和模型类型间的普遍性如何？对安全有什么影响？",
+            "options": {
+            "A": "对抗攻击只是过拟合；只针对特定网络有效；不影响现实安全",
+            "B": "表面上看似乎源于过拟合，但事实证明针对某个特定训练网络调整的对抗图像在输入到其他网络时也能产生类似虚假输出；即使使用灵活性低得多的线性模型也能获得类似对抗结果；甚至可构造物理制品使真实拍摄的图像被误分类（如图 10.17 的停车标志被分类为限速标志）；虽然基本对抗攻击可通过简单修改训练过程应对，但更复杂方法更难防御，理解其含义并减轻潜在缺陷仍是开放研究领域，带来潜在安全隐患",
+            "C": "对抗攻击只影响线性模型；物理世界不受影响",
+            "D": "所有对抗攻击都已被完全解决"
+            },
+            "answer": "B",
+            "explanation": "以这种方式欺骗神经网络的能力引发了潜在的安全隐患，因为它为攻击训练好的分类器创造了机会。表面上看，这个问题似乎源于过拟合，即高容量模型精确适应了特定图像，以至于输入的微小变化会导致预测类别概率的巨大变化。然而事实证明，一个针对某个特定训练网络被调整以产生虚假输出的图像，在输入到其他网络时也能产生类似的虚假输出 (Goodfellow, Shlens, and Szegedy, 2014)。此外即使使用灵活性低得多的线性模型也能获得类似的对抗结果。甚至有可能构造出物理制品，使得该制品的常规、未受损坏的图像在呈现给训练好的神经网络时会产生错误预测（如图 10.17 中经过修改的物理停车标志被 CNN 稳健分类为 45 英里/小时限速标志）。尽管这些基本类型的对抗攻击可以通过对网络训练过程进行简单修改来应对，但更复杂的方法更难被击败。理解这些结果的含义并减轻其潜在缺陷仍然是开放的研究领域。"
+        },
+        {
+            "id": 9,
+            "topic": "DeepDream 的机制",
+            "question": "根据 10.3.5 节，DeepDream 的目标是什么？其基本步骤和目标函数是什么？",
+            "options": {
+            "A": "目标是生成与输入完全相同的图像；步骤是仅前向传播；目标函数是最小化预激活值",
+            "B": "目标是生成具有夸张特征的合成图像，通过放大网络中特定隐藏层对输入图像的响应实现；基本步骤：将图像输入网络并前向传播到某特定层，将该层的反向传播 $\\delta$ 变量设置为该层节点的预激活值，反向传播到输入层得到图像像素上的梯度向量，沿梯度方向迈出一小步修改图像（可重复多次）；目标函数为 $F(\\mathbf{I}) = \\sum_{i,j,k} a_{ijk}(\\mathbf{I})^2$，即所选层中所有单元预激活值的平方和，通过梯度上升增大该函数",
+            "C": "目标是修改网络参数；使用反向传播最小化误差",
+            "D": "DeepDream 与梯度无关；目标函数是交叉熵"
+            },
+            "answer": "B",
+            "explanation": "DeepDream (Mordvintsev, Olah, and Tyka, 2015) 的目标是生成具有夸张特征的合成图像。我们通过确定网络中某个特定隐藏层里哪些节点对特定图像响应强烈，然后修改图像以放大这些响应来实现这一点。基本步骤：将一张图像输入网络并前向传播到某个特定层；然后将该层的反向传播 $\\delta$ 变量设置为这些节点的预激活值；运行反向传播到输入层，以获得图像像素上的梯度向量；最后沿梯度向量方向迈出一小步来修改图像。这一过程可以看作是一种基于梯度的方法，用于增大函数 $F(\\mathbf{I}) = \\sum_{i,j,k} a_{ijk}(\\mathbf{I})^2$，其中 $a_{ijk}(\\mathbf{I})$ 是当输入图像为 $\\mathbf{I}$ 时，所选层中通道 $k$ 第 $i$ 行第 $j$ 列单元的预激活值，求和覆盖该层中所有单元和所有通道。为了生成看起来平滑的图像，会以空间平滑和像素裁剪的形式施加一些正则化；如果需要更强的增强效果，这一过程可重复多次。"
+        },
+        {
+            "id": 10,
+            "topic": "DeepDream 的性质与判别模型的生成能力",
+            "question": "根据 10.3.5 节，DeepDream 可以应用于哪些输入？其正则化的作用是什么？为什么说判别模型也能生成图像？",
+            "options": {
+            "A": "DeepDream 只能应用于随机噪声；不需要正则化；判别模型完全无法生成图像",
+            "B": "DeepDream 可以应用于照片，也可以从随机噪声组成的输入开始，获得完全由训练好的网络生成的图像；为了生成平滑图像，会施加空间平滑和像素裁剪等正则化，避免出现不自然的高频结构或极端像素值；有趣的是，尽管卷积网络被训练用于区分物体类别，它们似乎至少能够捕捉到从这些类别生成图像所需的部分信息；DeepDream 虽为训练好的网络操作提供了一些洞见，但主要被用作生成有趣图像的艺术形式",
+            "C": "DeepDream 只能处理灰度图像；正则化会降低图像质量；判别模型与生成能力无关",
+            "D": "DeepDream 不需要使用预激活值；正则化只是为了减少计算量"
+            },
+            "answer": "B",
+            "explanation": "DeepDream 技术可以应用于照片，也可以从由随机噪声组成的输入开始，获得完全由训练好的网络生成的图像。为了生成看起来平滑的图像，会以空间平滑和像素裁剪的形式施加一些正则化（避免出现不自然的高频结构或极端像素值）；如果需要更强的增强效果，这一过程可以重复多次。有趣的是，尽管卷积网络被训练用于区分物体类别，它们似乎至少能够捕捉到从这些类别生成图像所需的部分信息。尽管 DeepDream 为训练好的网络的操作提供了一些洞见，但它主要被用作一种艺术形式来生成看起来有趣的图像。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

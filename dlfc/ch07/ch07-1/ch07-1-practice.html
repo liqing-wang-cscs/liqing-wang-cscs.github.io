@@ -1,0 +1,331 @@
+<!-- 第7章：梯度下降 第1节：误差平面- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第7章：梯度下降、第1节：误差平面 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "归纳偏置与层级化表示",
+            "question": "根据 ch07-1.tex 第 P1 节，关于深度神经网络的归纳偏置 (Inductive Biases) 和层级化表示 (Hierarchical Representations)，下列哪项描述最准确？",
+            "options": {
+            "A": "归纳偏置是指模型对训练数据的记忆能力，层级化表示是指模型参数的分层存储",
+            "B": "归纳偏置是模型为从有限数据泛化而做出的假设或偏好；层级化表示指特征从低级到高级、从简单到复杂的层次结构",
+            "C": "归纳偏置只存在于卷积神经网络中，层级化表示只存在于循环神经网络中",
+            "D": "归纳偏置和层级化表示是同一个概念的不同名称"
+            },
+            "answer": "B",
+            "explanation": "归纳偏置是模型为了从有限数据中进行泛化而做出的一系列假设或偏好；层级化表示是深度学习（尤其是多层神经网络）的核心特征，指数据特征被组织成从低级到高级、从简单到复杂的层次结构。"
+        },
+        {
+            "id": 2,
+            "topic": "梯度优化与直接误差函数评估",
+            "question": "根据 ch07-1.tex 第 P2 节，为什么深度学习中几乎都依赖基于梯度的优化方法，而不是直接误差函数评估 (Direct Error Function Evaluations)？",
+            "options": {
+            "A": "因为直接误差函数评估在数学上是不可能的",
+            "B": "因为神经网络参数量通常非常大，在高维空间中逐点评估函数值效率极低；而梯度信息指明了下降方向，效率天差地别",
+            "C": "因为直接误差函数评估只能用于线性模型",
+            "D": "因为梯度信息可以完全替代误差函数的值"
+            },
+            "answer": "B",
+            "explanation": "直接误差函数评估不使用梯度信息，仅通过反复代入参数值计算误差函数的数值来寻找最小值，是一种“盲搜”策略。神经网络参数量通常非常大（数万到数百万），在高维空间中逐点评估效率极低；而利用梯度信息就好比知道了山坡的倾斜方向，可以直接朝着下坡方向大步前进。"
+        },
+        {
+            "id": 3,
+            "topic": "反向传播算法",
+            "question": "根据 ch07-1.tex 第 P3 节，反向传播算法能高效计算导数的核心原因是什么？",
+            "options": {
+            "A": "它使用了数值微分来近似每个参数的导数",
+            "B": "它巧妙地运用了链式法则，并利用动态规划思想避免重复计算，将计算复杂度降到与前向传播相当的水平",
+            "C": "它对每个参数单独求导，不共享任何中间结果",
+            "D": "它只在输出层计算导数，忽略隐藏层"
+            },
+            "answer": "B",
+            "explanation": "反向传播算法巧妙地运用了微积分中的链式法则，并利用了动态规划思想来避免重复计算。它从输出层向输入层逐层回传“误差信号”，将原本呈指数级爆炸的计算量降维成了线性级别，计算整个网络梯度的时间复杂度大约只是前向传播的两倍。"
+        },
+        {
+            "id": 4,
+            "topic": "经典统计学与现代深度学习的优化理念",
+            "question": "根据 ch07-1.tex 第 P4 节，关于经典统计学与现代深度学习在优化理念上的根本差异，下列哪项描述最准确？",
+            "options": {
+            "A": "经典统计学参数多、数据少，追求泛化；现代深度学习参数少、数据多，追求精确拟合",
+            "B": "经典统计学数据多、参数少，追求精确拟合；现代深度学习参数极多，目标从来不是简单的精确优化，而更看重泛化能力",
+            "C": "两者都只追求在训练集上的精确优化",
+            "D": "两者都不需要使用正则化方法"
+            },
+            "answer": "B",
+            "explanation": "经典统计学中数据点数量通常远远多于模型参数数量，最优解对应似然函数最大值，拟合参数值本身具有直接参考价值；现代深度学习使用包含海量可学习参数的极其复杂的模型，目标从来不是简单的精确优化，学习算法本身的属性和行为以及正则化方法对泛化能力至关重要。"
+        },
+        {
+            "id": 5,
+            "topic": "权重空间与误差曲面",
+            "question": "根据 ch07-1.tex 第 P5 节，关于“权重空间” (Weight Space) 和“误差曲面” (Error Surface) 的几何直观，下列哪项描述最准确？",
+            "options": {
+            "A": "权重空间是一个二维坐标系，误差曲面是权重空间中的一条曲线",
+            "B": "权重空间是一个多维坐标系，每个点代表一组参数组合；误差曲面是该空间中的地形高低起伏，误差值决定“海拔高度”",
+            "C": "误差曲面与权重空间无关，是独立的概念",
+            "D": "权重空间的维度等于训练数据的数量"
+            },
+            "answer": "B",
+            "explanation": "权重空间可以想象成一个多维坐标系，如果神经网络有 1000 个参数，权重空间就是 1000 维空间，空间里每个“点”代表一组特定的参数组合。误差函数在这个多维空间中就像地形的高低起伏，参数组合决定“水平位置”，误差值决定“海拔高度”。"
+        },
+        {
+            "id": 6,
+            "topic": "驻点与梯度的数学性质",
+            "question": "根据 ch07-1.tex 第 P6 节，关于误差函数 $E(\\mathbf{w})$ 的驻点 (Stationary Points)，下列哪项描述是正确的？",
+            "options": {
+            "A": "驻点一定是全局极小值点",
+            "B": "驻点是梯度为零的点，可进一步分为极小值点、极大值点和鞍点",
+            "C": "驻点处梯度不为零，但误差函数值最小",
+            "D": "驻点只存在于线性模型中"
+            },
+            "answer": "B",
+            "explanation": "误差函数的最小值出现在梯度为零的点上，即 $\\nabla E(\\mathbf{w}) = \\mathbf{0}$。梯度为零的点称为驻点，可进一步分为极小值点 (minima)、极大值点 (maxima) 和鞍点 (saddle points)。"
+        },
+        {
+            "id": 7,
+            "topic": "误差曲面的对称性与等效极小值",
+            "question": "根据 ch07-1.tex 第 P7 节，在一个具有 $M$ 个隐藏单元的两层网络中，权重空间中的每一个点都属于一个包含多少个等效点的集合？",
+            "options": {
+            "A": "$M$ 个",
+            "B": "$2M$ 个",
+            "C": "$M! \\, 2^M$ 个",
+            "D": "$M^2$ 个"
+            },
+            "answer": "C",
+            "explanation": "对于具有 $M$ 个隐藏单元的两层网络，每个点属于一个包含 $M! \\, 2^M$ 个等效点的集合。其中 $M!$ 来源于隐藏单元的排列对称性，$2^M$ 来源于使用奇函数激活函数（如 tanh）时的符号对称性。"
+        },
+        {
+            "id": 8,
+            "topic": "全局极小值与局部极小值",
+            "question": "根据 ch07-1.tex 第 P8 节，关于深度神经网络中的全局极小值与局部极小值，下列哪项描述最准确？",
+            "options": {
+            "A": "梯度下降法在实际中经常陷入较差的局部极小值，导致训练失败",
+            "B": "在高维空间中，鞍点的数量远远多于局部极小值，且局部极小值的质量通常都很高，因此实践中大型网络能在不同初始条件下达到相似性能的解",
+            "C": "深度神经网络的误差曲面只有一个全局极小值，没有局部极小值",
+            "D": "局部极小值一定比全局极小值差很多，必须避免"
+            },
+            "answer": "B",
+            "explanation": "过去人们曾认为基于梯度的方法可能会陷入较差的局部极小值中，但在实践中情况并非如此。在高维空间中，成为真正局部极小值的概率呈指数级下降，因此优化算法遇到的大部分“平地”其实是鞍点；即使真的掉进了局部极小值，这些极小值对应的误差值往往都非常接近且处于平坦区域，对应着极好的泛化能力。"
+        },
+        {
+            "id": 9,
+            "topic": "误差函数的局部二次近似",
+            "question": "根据 ch07-1.tex 第 P9 节，误差函数 $E(\\mathbf{w})$ 在点 $\\tilde{\\mathbf{w}}$ 附近的二阶泰勒展开式 $E(\\mathbf{w}) \\approx E(\\tilde{\\mathbf{w}}) + (\\mathbf{w} - \\tilde{\\mathbf{w}})^T \\mathbf{b} + \\frac{1}{2} (\\mathbf{w} - \\tilde{\\mathbf{w}})^T \\mathbf{H} (\\mathbf{w} - \\tilde{\\mathbf{w}})$ 中，$\\mathbf{b}$ 和 $\\mathbf{H}$ 分别是什么？",
+            "options": {
+            "A": "$\\mathbf{b}$ 是梯度，$\\mathbf{H}$ 是海森矩阵（二阶导数矩阵）",
+            "B": "$\\mathbf{b}$ 是海森矩阵，$\\mathbf{H}$ 是梯度",
+            "C": "$\\mathbf{b}$ 和 $\\mathbf{H}$ 都是常数",
+            "D": "$\\mathbf{b}$ 是误差值，$\\mathbf{H}$ 是学习率"
+            },
+            "answer": "A",
+            "explanation": "$\\mathbf{b} \\equiv \\nabla E|_{\\mathbf{w} = \\tilde{\\mathbf{w}}}$ 是 $E$ 在 $\\tilde{\\mathbf{w}}$ 处计算的梯度；$\\mathbf{H}(\\tilde{\\mathbf{w}}) \\equiv \\nabla\\nabla E(\\mathbf{w})|_{\\mathbf{w} = \\tilde{\\mathbf{w}}}$ 是海森矩阵，即对应的二阶导数矩阵。"
+        },
+        {
+            "id": 10,
+            "topic": "海森矩阵与驻点分类",
+            "question": "根据 ch07-1.tex 第 P10 和 P11 节，利用海森矩阵的特征值如何判断驻点 $\\mathbf{w}^*$ 的类型？",
+            "options": {
+            "A": "所有特征值为正：局部极大值；所有特征值为负：局部极小值；有正有负：鞍点",
+            "B": "所有特征值为正：局部极小值；所有特征值为负：局部极大值；有正有负：鞍点",
+            "C": "特征值与驻点类型无关",
+            "D": "只需看特征值的个数，不需要看正负"
+            },
+            "answer": "B",
+            "explanation": "在误差函数 $E(\\mathbf{w}) = E(\\mathbf{w}^*) + \\frac{1}{2} \\sum_i \\lambda_i \\alpha_i^2$ 中，如果所有特征值 $\\lambda_i$ 均为正，则 $\\mathbf{w}^*$ 对应于局部极小值；如果所有特征值均为负，则对应于局部极大值；如果特征值中既有正数又有负数，则 $\\mathbf{w}^*$ 代表一个鞍点。$\\mathbf{w}^*$ 为局部极小值的充要条件是梯度为零且海森矩阵为正定矩阵。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

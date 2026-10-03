@@ -1,0 +1,266 @@
+<!-- 第9章：正则化 第2节：权重衰减- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第9章：正则化、第2节：权重衰减 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "权重衰减的定义与梯度",
+            "question": "根据 9.2 节 P1--P3，关于权重衰减 (weight decay) 及其梯度，下列哪项描述最准确？",
+            "options": {
+            "A": "权重衰减的正则化项为 $\\frac{\\lambda}{2}\\mathbf{w}^T\\mathbf{w}$，其梯度为 $\\nabla\\widetilde{E}(\\mathbf{w}) = \\nabla E(\\mathbf{w}) - \\lambda\\mathbf{w}$",
+            "B": "权重衰减的正则化项为 $\\frac{\\lambda}{2}\\mathbf{w}^T\\mathbf{w}$，其梯度为 $\\nabla\\widetilde{E}(\\mathbf{w}) = \\nabla E(\\mathbf{w}) + \\lambda\\mathbf{w}$；在顺序学习算法中它促使权重值向零衰减，除非数据支持；系数 $1/2$ 求导后消失",
+            "C": "权重衰减只能用于线性回归，不能用于神经网络",
+            "D": "权重衰减等价于一个均值为零的拉普拉斯先验"
+            },
+            "answer": "B",
+            "explanation": "最简单的正则化器由模型参数的平方和构成，正则化误差函数为 $\\widetilde{E}(\\mathbf{w}) = E(\\mathbf{w}) + \\frac{\\lambda}{2}\\mathbf{w}^T\\mathbf{w}$，其中 $\\lambda$ 控制正则化强度。该正则化项在机器学习文献中称为权重衰减，因为它在顺序学习算法中促使权重值向零衰减，除非数据支持。其梯度的优势是易于计算：$\\nabla\\widetilde{E}(\\mathbf{w}) = \\nabla E(\\mathbf{w}) + \\lambda\\mathbf{w}$，其中系数 $1/2$ 在求导时消失。该正则化项也可解释为权重向量上零均值高斯先验的负对数，提供了一种将先验知识纳入模型训练过程的概率视角。"
+        },
+        {
+            "id": 2,
+            "topic": "权重衰减的几何效果与有效参数数",
+            "question": "根据 9.2 节 P4，关于二次正则化器在参数空间中的几何效果以及“有效参数数 (effective number of parameters)”，下列哪项描述最准确？",
+            "options": {
+            "A": "正则化均匀地收缩所有参数的幅度，与误差函数的曲率无关",
+            "B": "正则化的效果是收缩权重参数的幅度，但对输出相对不敏感的参数（如 $w_1$）收缩幅度更大，因为该方向误差函数等高线更宽；有效参数数是正则化后仍保持活跃的参数数量：$\\lambda \\to \\infty$ 时有效参数数趋于零，$\\lambda = 0$ 时等于实际参数总数",
+            "C": "正则化会增加有效参数的数量",
+            "D": "有效参数数与正则化系数 $\\lambda$ 无关"
+            },
+            "answer": "B",
+            "explanation": "在二维参数空间（坐标轴已旋转至与 Hessian 特征向量对齐）中，正则化项的效果是收缩权重参数的幅度。但该效果对 $w_1$ 比对 $w_2$ 大得多：直观上只有 $w_2$ 是“活跃”的，因为输出对 $w_1$ 相对不敏感，因此正则化器将 $w_1$ 推向接近零。有效参数数是正则化后仍保持活跃的参数数量：$\\lambda \\to \\infty$ 时所有参数被驱动为零，有效参数数为零；$\\lambda$ 减小时参数数量增加，直到 $\\lambda = 0$ 时等于模型中实际参数总数。这表明通过正则化控制模型复杂度与通过限制参数数量控制模型复杂度有相似之处。"
+        },
+        {
+            "id": 3,
+            "topic": "一致正则化器",
+            "question": "根据 9.2.1 节 P5--P6，为什么简单的权重衰减 (9.1) 不是“一致正则化器”？满足线性变换不变性的正则化器形式是什么？",
+            "options": {
+            "A": "简单权重衰减对所有参数一视同仁，因此满足线性变换不变性",
+            "B": "简单权重衰减对所有参数（权重和偏置）一视同仁，不满足线性变换下的不变性，会任意偏袒某个解而非等效解；一致正则化器形式为 $\\frac{\\lambda_1}{2}\\sum_{w \\in \\mathcal{W}_1} w^2 + \\frac{\\lambda_2}{2}\\sum_{w \\in \\mathcal{W}_2} w^2$，对不同层的权重分别求和并排除偏置",
+            "C": "一致正则化器必须包含偏置项",
+            "D": "一致正则化器只需对权重求平方和，无需分层"
+            },
+            "answer": "B",
+            "explanation": "简单权重衰减 (9.1) 的一个局限是它破坏了网络映射的某些理想变换性质。考虑输入线性变换 $x_i \\to \\widetilde{x}_i = a x_i + b$ 和输出线性变换 $y_k \\to \\widetilde{y}_k = c y_k + d$，为使网络映射保持不变，需要对应地变换权重和偏置（如 (9.9)--(9.13)）。任何正则化器都应与此性质一致，否则会任意偏袒某个解而非等效解。简单权重衰减对所有参数一视同仁，显然不满足该性质。一致正则化器形式为 $\\frac{\\lambda_1}{2}\\sum_{w \\in \\mathcal{W}_1} w^2 + \\frac{\\lambda_2}{2}\\sum_{w \\in \\mathcal{W}_2} w^2$，其中 $\\mathcal{W}_1, \\mathcal{W}_2$ 分别表示第一层和第二层的权重集合，偏置被排除在求和之外。"
+        },
+        {
+            "id": 4,
+            "topic": "非正常先验与分层正则化器",
+            "question": "根据 9.2.1 节 P7--P9，一致正则化器对应的先验分布为什么是“非正常的 (improper)”？实践中如何处理？更一般的分组正则化器形式是什么？",
+            "options": {
+            "A": "非正常先验是可归一化的，实践中无需特殊处理；一般形式为 $\\Omega(\\mathbf{w}) = \\frac{1}{2}\\sum_k \\alpha_k \\|\\mathbf{w}\\|_k^2$",
+            "B": "非正常先验无法归一化，因为偏置参数未受约束；这在贝叶斯框架中会给正则化系数选择和模型比较带来困难，因此常见做法是为偏置引入单独的先验（带各自超参数），从而打破平移不变性；更一般的分组正则化器为 $\\Omega(\\mathbf{w}) = \\frac{1}{2}\\sum_k \\alpha_k \\|\\mathbf{w}\\|_k^2$，其中 $\\|\\mathbf{w}\\|_k^2 = \\sum_{j \\in \\mathcal{W}_k} w_j^2$",
+            "C": "非正常先验是指参数为负的先验",
+            "D": "分组正则化器不能为每一层使用不同的正则化器"
+            },
+            "answer": "B",
+            "explanation": "(9.14) 对应的先验分布为 $p(\\mathbf{w}|\\alpha_1, \\alpha_2) \\propto \\exp(-\\frac{\\alpha_1}{2}\\sum_{w \\in \\mathcal{W}_1} w^2 - \\frac{\\alpha_2}{2}\\sum_{w \\in \\mathcal{W}_2} w^2)$。这种形式的先验是非正常的（无法归一化），因为偏置参数未受约束。使用非正常先验会在贝叶斯框架中给正则化系数选择和模型比较带来困难。因此，常见做法是为偏置引入单独的先验（这打破了平移不变性），并赋予它们各自的超参数。更一般地，可将权重分为任意数量的组 $\\mathcal{W}_k$，正则化器为 $\\Omega(\\mathbf{w}) = \\frac{1}{2}\\sum_k \\alpha_k \\|\\mathbf{w}\\|_k^2$，其中 $\\|\\mathbf{w}\\|_k^2 = \\sum_{j \\in \\mathcal{W}_k} w_j^2$。例如，可为多层网络中每一层使用不同的正则化器。"
+        },
+        {
+            "id": 5,
+            "topic": "广义权重衰减与 Lasso 稀疏性",
+            "question": "根据 9.2.2 节 P10--P12，广义权重衰减 $\\Omega(\\mathbf{w}) = \\frac{\\lambda}{2}\\sum_{j=1}^M |w_j|^q$ 中，当 $q = 1$ 时（即 Lasso）具有什么特殊性质？",
+            "options": {
+            "A": "$q = 1$ 时正则化器与 $q = 2$ 完全相同，不产生稀疏性",
+            "B": "$q = 1$ 即 Lasso，当 $\\lambda$ 足够大时会将某些系数 $w_j$ 驱动为零，产生稀疏模型；这是因为最小化正则化误差函数等价于在约束 $\\sum_j |w_j|^q \\leq \\eta$ 下最小化未正则化误差函数，而 $q = 1$ 的约束区域在坐标轴方向有尖角，最优解容易落在坐标轴上；相比之下二次正则化器使两个权重参数都保持非零值",
+            "C": "$q = 1$ 时正则化器会产生负的权重值",
+            "D": "Lasso 只能用于线性模型"
+            },
+            "answer": "B",
+            "explanation": "广义权重衰减 $\\Omega(\\mathbf{w}) = \\frac{\\lambda}{2}\\sum_{j=1}^M |w_j|^q$ 中，$q = 2$ 对应二次正则化器；$q = 1$ 在统计学文献中称为 Lasso (Tibshirani, 1996)。对二次误差函数，若 $\\lambda$ 足够大，某些系数 $w_j$ 会被驱动为零，导致稀疏模型，其中对应的基函数不起作用。这是因为最小化 $E(\\mathbf{w}) + \\frac{\\lambda}{2}\\sum_j |w_j|^q$ 等价于在约束 $\\sum_j |w_j|^q \\leq \\eta$ 下最小化 $E(\\mathbf{w})$（两者通过拉格朗日乘子关联）。稀疏性的来源可在约束区域的几何形状中看出：$q = 1$ 的约束区域在坐标轴方向有尖角，误差函数的最小值更容易落在坐标轴上，从而使部分参数为零。相比之下，二次正则化器使两个权重参数都保持非零值。正则化允许在有限大小的数据集上训练复杂模型而不严重过拟合，实质上是限制了有效模型复杂度；但这将确定最优模型复杂度的问题从寻找合适的可学习参数数量转移到确定合适的正则化系数 $\\lambda$ 值上。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

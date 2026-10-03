@@ -1,0 +1,331 @@
+<!-- 第5章：单层网络：分类 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第5章：单层网络：分类 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一章的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "判别函数与决策边界",
+            "question": "在单层网络分类模型中，关于判别函数 $y(\\mathbf{x})$ 与决策边界的关系，下列哪项描述最准确？",
+            "options": {
+            "A": "判别函数直接给出后验概率 $p(\\mathcal{C}_k|\\mathbf{x})$，决策边界由概率阈值决定",
+            "B": "判别函数将输入 $\\mathbf{x}$ 映射到得分，决策边界由方程 $y_i(\\mathbf{x}) = y_j(\\mathbf{x})$ 定义",
+            "C": "判别函数必须是线性的，否则无法定义决策边界",
+            "D": "决策边界是输入空间中被分配给特定类别的区域"
+            },
+            "answer": "B",
+            "explanation": "判别函数 $y(\\mathbf{x})$ 将输入映射到一个用于决定类别的输出值；决策边界由 $y_i(\\mathbf{x}) = y_j(\\mathbf{x})$ 定义，分隔不同决策区域。A 描述的是概率模型而非一般判别函数；C 错误，判别函数可非线性；D 描述的是决策区域而非决策边界。"
+        },
+        {
+            "id": 2,
+            "topic": "损失矩阵与拒绝选项",
+            "question": "关于损失矩阵 $L_{kj}$ 和拒绝选项 (Reject Option)，下列哪项描述是正确的？",
+            "options": {
+            "A": "损失矩阵的对角线元素 $L_{kk}$ 通常取较大值以惩罚正确分类",
+            "B": "拒绝选项通过设定阈值 $\\theta$，当最大后验概率低于该阈值时拒绝做出判断",
+            "C": "拒绝选项会增加错误分类的代价，因此不适用于医疗诊断",
+            "D": "损失矩阵只适用于二分类问题"
+            },
+            "answer": "B",
+            "explanation": "拒绝选项引入一个“拒绝”类别：若所有类别的最大后验概率 $p(\\mathcal{C}_k|\\mathbf{x})$ 低于阈值 $\\theta$，则拒绝判断，转由人类专家处理。A 错误，对角线通常 $L_{kk}=0$；C 错误，拒绝选项正适用于错误代价高的场景（如医疗诊断）；D 错误，损失矩阵可推广到多分类。"
+        },
+        {
+            "id": 3,
+            "topic": "生成式与判别式模型",
+            "question": "关于生成式概率模型与判别式概率模型的区别，下列哪项描述最准确？",
+            "options": {
+            "A": "生成式模型直接建模 $p(\\mathcal{C}_k|\\mathbf{x})$，判别式模型建模 $p(\\mathbf{x}, \\mathcal{C}_k)$",
+            "B": "生成式模型建模 $p(\\mathbf{x}, \\mathcal{C}_k) = p(\\mathbf{x}|\\mathcal{C}_k)p(\\mathcal{C}_k)$，判别式模型直接建模 $p(\\mathcal{C}_k|\\mathbf{x})$ 或决策边界",
+            "C": "判别式模型可以生成新样本，生成式模型不能",
+            "D": "两者完全等价，只是名称不同"
+            },
+            "answer": "B",
+            "explanation": "生成式模型对联合概率 $p(\\mathbf{x}, \\mathcal{C}_k) = p(\\mathbf{x}|\\mathcal{C}_k)p(\\mathcal{C}_k)$ 建模，可通过贝叶斯定理计算后验；判别式模型直接建模后验 $p(\\mathcal{C}_k|\\mathbf{x})$ 或直接学习决策边界。A 描述恰好相反；C 错误，生成式模型可生成新样本；D 错误，两者在数据需求、鲁棒性、精度等方面有显著差异。"
+        },
+        {
+            "id": 4,
+            "topic": "朴素贝叶斯",
+            "question": "关于朴素贝叶斯 (Naive Bayes) 分类器，下列哪项描述最准确？",
+            "options": {
+            "A": "它是一种判别式模型，直接建模 $p(\\mathcal{C}_k|\\mathbf{x})$",
+            "B": "它假设给定类别 $\\mathcal{C}_k$ 后，输入特征的各分量 $x_i$ 之间条件独立，即 $p(\\mathbf{x}|\\mathcal{C}_k) = \\prod_{i=1}^D p(x_i|\\mathcal{C}_k)$",
+            "C": "它的参数数量随特征维度呈指数增长",
+            "D": "独立性假设在现实中总是成立，因此分类效果必然优于其他模型"
+            },
+            "answer": "B",
+            "explanation": "朴素贝叶斯是一种生成式模型，其核心假设是给定类别后特征各分量条件独立，即 $p(\\mathbf{x}|\\mathcal{C}_k) = \\prod_{i=1}^D p(x_i|\\mathcal{C}_k)$。A 错误，它是生成式；C 错误，独立性假设将参数数量从指数级降为线性级；D 错误，独立性假设在现实中往往不成立，但分类效果通常依然不错。"
+        },
+        {
+            "id": 5,
+            "topic": "Logistic Sigmoid 函数",
+            "question": "关于 Logistic Sigmoid 函数 $\\sigma(a) = \\frac{1}{1+e^{-a}}$，下列哪项描述是正确的？",
+            "options": {
+            "A": "它将实数域映射到 $(-1, 1)$ 区间",
+            "B": "它满足 $\\sigma(-a) = 1 - \\sigma(a)$，且导数 $\\sigma'(a) = \\sigma(a)(1-\\sigma(a))$",
+            "C": "它的反函数不存在",
+            "D": "它只能用于多分类问题"
+            },
+            "answer": "B",
+            "explanation": "Logistic Sigmoid 函数将实数域映射到 $(0,1)$，满足 $\\sigma(-a) = 1 - \\sigma(a)$，导数 $\\sigma'(a) = \\sigma(a)(1-\\sigma(a))$，反函数为 $\\sigma^{-1}(y) = \\ln\\{y/(1-y)\\}$。A 错误，映射到 $(0,1)$；C 错误，反函数存在；D 错误，主要用于二分类。"
+        },
+        {
+            "id": 6,
+            "topic": "逻辑回归与最大似然估计",
+            "question": "关于逻辑回归 (Logistic Regression)，下列哪项描述最准确？",
+            "options": {
+            "A": "它是一种生成式模型，通过建模 $p(\\mathbf{x}|\\mathcal{C}_k)$ 进行分类",
+            "B": "其参数估计使用最小二乘法，因为假设噪声为高斯分布",
+            "C": "它是一种判别式模型，使用最大似然估计，损失函数通常是交叉熵误差",
+            "D": "它的最大似然解有闭式解析解，无需迭代"
+            },
+            "answer": "C",
+            "explanation": "逻辑回归是一种判别式模型，直接建模 $p(\\mathcal{C}_1|\\mathbf{x}) = \\sigma(\\mathbf{w}^T\\mathbf{x})$，使用最大似然估计，损失函数通常是交叉熵误差。A 错误，它是判别式；B 错误，不使用最小二乘法；D 错误，最大似然解没有闭式解，需数值优化（如 IRLS）。"
+        },
+        {
+            "id": 7,
+            "topic": "Softmax 函数与多类逻辑回归",
+            "question": "关于 Softmax 函数 $y_k = \\frac{e^{a_k}}{\\sum_{j=1}^K e^{a_j}}$，下列哪项描述是正确的？",
+            "options": {
+            "A": "输出值在 $(-1, 1)$ 之间，且所有输出之和为 0",
+            "B": "输出值在 $(0, 1)$ 之间，且所有输出之和为 1",
+            "C": "它是 Sigmoid 函数在二分类问题中的特例",
+            "D": "它不能用于神经网络的输出层"
+            },
+            "answer": "B",
+            "explanation": "Softmax 函数将一组任意实数转化为概率分布：输出值在 $(0,1)$ 之间，且所有输出之和为 1。它是 Sigmoid 函数在多分类问题中的推广（Sigmoid 是 K=2 的特例），常用于多类逻辑回归和神经网络的输出层。"
+        },
+        {
+            "id": 8,
+            "topic": "迭代重加权最小二乘法",
+            "question": "关于迭代重加权最小二乘法 (IRLS)，下列哪项描述最准确？",
+            "options": {
+            "A": "IRLS 用于求解线性回归的闭式解",
+            "B": "IRLS 将逻辑回归的最大似然问题转化为一系列加权最小二乘问题，能保证收敛到全局最优解",
+            "C": "IRLS 只能用于生成式模型",
+            "D": "IRLS 不需要迭代，直接一步求解"
+            },
+            "answer": "B",
+            "explanation": "逻辑回归的最大似然解没有闭式解，IRLS 是一种数值优化算法，将最大化似然函数的问题转化为一系列加权最小二乘问题。对于逻辑回归这种凸优化问题，IRLS 能保证收敛到全局最优解，是求解广义线性模型 (GLM) 的标准算法之一。"
+        },
+        {
+            "id": 9,
+            "topic": "二次判别函数",
+            "question": "在生成式分类模型中，若假设各类别的类条件概率 $p(\\mathbf{x}|\\mathcal{C}_k)$ 服从高斯分布，且协方差矩阵 $\\Sigma_k$ 各不相同，则决策边界是什么形状？",
+            "options": {
+            "A": "线性超平面",
+            "B": "二次曲面（椭圆、抛物线、双曲线等）",
+            "C": "圆形",
+            "D": "无法确定"
+            },
+            "answer": "B",
+            "explanation": "当各类别协方差矩阵 $\\Sigma_k$ 各不相同时，对数后验概率中包含 $\\mathbf{x}^T \\Sigma_k^{-1} \\mathbf{x}$ 项，相减后无法抵消，导致决策边界是二次曲面。若假设所有类别共享同一个协方差矩阵 $\\Sigma_k = \\Sigma$，二次项抵消，退化为线性判别分析 (LDA)。"
+        },
+        {
+            "id": 10,
+            "topic": "分类器评估：ROC 曲线与混淆矩阵",
+            "question": "关于分类器评估指标，下列哪项描述是正确的？",
+            "options": {
+            "A": "在类别不平衡的数据集中，准确率 (Accuracy) 是最可靠的评估指标",
+            "B": "混淆矩阵是一个 $K \\times K$ 的表格，用于总结分类模型的性能，可计算 Precision、Recall 等指标",
+            "C": "ROC 曲线的 X 轴是真正率 (TPR)，Y 轴是假正率 (FPR)",
+            "D": "AUC = 0.5 表示完美分类，AUC = 1.0 表示随机猜测"
+            },
+            "answer": "B",
+            "explanation": "混淆矩阵是一个 $K \\times K$ 的表格，用于总结分类模型性能，是计算 Precision、Recall、Specificity 等指标的基础。A 错误，类别不平衡时准确率具有误导性；C 错误，ROC 曲线 X 轴是假正率 (FPR)，Y 轴是真正率 (TPR)；D 错误，AUC = 0.5 表示随机猜测，AUC = 1.0 表示完美分类。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

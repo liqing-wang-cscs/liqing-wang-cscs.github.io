@@ -1,0 +1,266 @@
+<!-- 第9章：正则化 第1节：归纳偏置- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第9章：正则化、第1节：归纳偏置 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "归纳偏置与逆问题",
+            "question": "根据 9.1.1 节，为什么说大多数机器学习任务本质上是“逆问题 (inverse problems)”且具有“不适定性 (ill-posed)”？",
+            "options": {
+            "A": "因为从条件分布 $p(t|\\mathbf{x})$ 采样目标值是困难的",
+            "B": "因为给定有限数量的样本，可能有无限多个分布能够生成观测到的训练数据，任何在观测目标值处具有非零概率密度的分布都是候选；为做出预测必须从无限多可能中选择一个特定分布",
+            "C": "因为输入数据维度总是高于输出数据维度",
+            "D": "因为条件分布 $p(t|\\mathbf{x})$ 不存在"
+            },
+            "answer": "B",
+            "explanation": "给定条件分布 $p(t|\\mathbf{x})$ 和有限输入点，从中采样目标值原则上很简单；但机器学习要解决的是其逆问题，即仅凭有限样本推断整个分布。这在本质上是不适定的，因为可能有无限多个分布能够生成观测到的训练数据，任何在观测目标值处具有非零概率密度的分布都是候选。为对新输入做预测，必须从无限多可能中选出特定分布，这种偏好即为归纳偏置或先验知识。"
+        },
+        {
+            "id": 2,
+            "topic": "归纳偏置与先验知识",
+            "question": "根据 9.1.1 节，关于归纳偏置 (inductive bias) 及其在深度学习中的应用，下列哪项描述最准确？",
+            "options": {
+            "A": "归纳偏置只适用于线性模型，神经网络不存在归纳偏置",
+            "B": "归纳偏置是偏好某种选择而非其他的倾向，可来自帮助约束解空间的背景知识；例如形如 $\\widetilde{E}(\\mathbf{w}) = E(\\mathbf{w}) + \\frac{\\lambda}{2}\\mathbf{w}^T\\mathbf{w}$ 的正则化项促使权重较小，引入偏向变化更缓慢函数的归纳偏置；但需注意不要引入与数据生成过程不一致的偏置或约束",
+            "C": "归纳偏置总是能改善模型性能，不存在任何风险",
+            "D": "归纳偏置与迁移学习、多任务学习无关"
+            },
+            "answer": "B",
+            "explanation": "归纳偏置是对某种选择而非其他的偏好，可来自帮助约束解空间的背景信息。例如，许多应用中输入的微小变化应导致输出的微小变化，因此应偏向平滑变化的函数；形如 (9.1) 的正则化项促使权重较小，从而引入偏向缓慢变化函数的偏置。但需注意不要引入与数据生成过程不一致的偏置或约束，例如当实际存在显著非线性时假设输入输出线性会导致系统产生不准确的结果。迁移学习和多任务学习也可以从正则化视角理解：任务相似性假设代表比简单正则化更复杂的归纳偏置形式。"
+        },
+        {
+            "id": 3,
+            "topic": "没有免费午餐定理",
+            "question": "根据 9.1.2 节，关于“没有免费午餐定理 (no free lunch theorem)”，下列哪项描述最准确？",
+            "options": {
+            "A": "该定理表明某些学习算法在所有问题上都优于其他算法",
+            "B": "该定理表明在所有可能问题上取平均时，每种学习算法都与任何其他算法一样好；若某模型在某些问题上优于平均，必然在另一些问题上劣于平均。但这是相当理论化的概念，因为可能问题的空间包含了任何合理实际应用中都不太可能出现的关系；实际应用中大多数问题具有一定程度的平滑性",
+            "C": "该定理表明神经网络是通用的学习算法，能解决所有任务",
+            "D": "该定理与实际应用无关，可以完全忽略"
+            },
+            "answer": "B",
+            "explanation": "没有免费午餐定理指出，在所有可能问题上取平均时，每种学习算法都与任何其他算法一样好；若某模型在某些问题上优于平均，必然在另一些问题上劣于平均。然而这是相当理论化的概念，因为可能问题的空间包含了任何合理实际应用中都非常不典型的关系。例如大多数实际问题表现出一定程度的平滑性，即输入微小变化大多与目标值微小变化相关联。神经网络及大多数广泛使用的机器学习技术都表现出这种形式的归纳偏置，因此具有广泛的适用性。该定理虽理论化，但确实凸显了偏置在决定机器学习算法性能方面的核心重要性。"
+        },
+        {
+            "id": 4,
+            "topic": "对称性、不变性与群的公理",
+            "question": "根据 9.1.3 节，关于对称性 (symmetry)、不变性 (invariance) 以及群的公理，下列哪项描述是正确的？",
+            "options": {
+            "A": "群只需要满足封闭性和结合性两条公理",
+            "B": "群由一组元素和二元运算组成，需满足四条公理：封闭性、结合性、存在单位元、存在逆元；例如正方形旋转 $90^\\circ$ 的倍数构成群，二维平面中物体的连续平移也构成群",
+            "C": "群只包含有限个元素",
+            "D": "平移不变性和尺度不变性与群论无关"
+            },
+            "answer": "B",
+            "explanation": "对称性指使特定性质保持不变的变换（如平移或缩放）。对应某种对称性的所有变换的集合构成称为群 (group) 的数学结构。群由一组元素和将元素对组合的二元运算 $\\mathcal{A} \\circ \\mathcal{B}$ 组成，需满足四条公理：(1) 封闭性：集合中任意两元素的组合仍在集合中；(2) 结合性：$(\\mathcal{A} \\circ \\mathcal{B}) \\circ \\mathcal{C} = \\mathcal{A} \\circ (\\mathcal{B} \\circ \\mathcal{C})$；(3) 单位元：存在元素 $\\mathcal{I}$ 使得 $\\mathcal{A} \\circ \\mathcal{I} = \\mathcal{I} \\circ \\mathcal{A} = \\mathcal{A}$；(4) 逆元：对每个元素 $\\mathcal{A}$ 存在 $\\mathcal{A}^{-1}$ 使得 $\\mathcal{A} \\circ \\mathcal{A}^{-1} = \\mathcal{A}^{-1} \\circ \\mathcal{A} = \\mathcal{I}$。群可以是有限的（如正方形旋转 $90^\\circ$ 的倍数），也可以是连续的（如二维平面中物体的连续平移）。"
+        },
+        {
+            "id": 5,
+            "topic": "等变性 (Equivariance)",
+            "question": "根据 9.1.4 节，关于不变性与等变性的关系，下列哪项描述最准确？",
+            "options": {
+            "A": "等变性是不变性的特例，即输出变换为单位变换",
+            "B": "不变性是等变性的特例，即输出变换为单位变换；一般等变性可表示为 $\\mathcal{S}(\\mathcal{T}(\\mathbf{I})) = \\widetilde{\\mathcal{T}}(\\mathcal{S}(\\mathbf{I}))$，其中输入变换 $\\mathcal{T}$ 与输出变换 $\\widetilde{\\mathcal{T}}$ 可以不同",
+            "C": "不变性和等变性完全等价",
+            "D": "等变性只适用于图像分类任务"
+            },
+            "answer": "B",
+            "explanation": "等变性 (equivariance) 是不变性的重要推广：网络的输出在输入被变换时不是保持不变，而是自身以特定方式被变换。一般形式为 $\\mathcal{S}(\\mathcal{T}(\\mathbf{I})) = \\widetilde{\\mathcal{T}}(\\mathcal{S}(\\mathbf{I}))$，其中 $\\mathcal{T}$ 和 $\\widetilde{\\mathcal{T}}$ 可以不同。例如分割网络的例子中，若图像被平移，期望对象的分割也相应平移，此时 $\\mathcal{T} = \\widetilde{\\mathcal{T}}$；若分割图像分辨率更低，则 $\\widetilde{\\mathcal{T}}$ 表示低维分割空间中对应的平移。不变性是等变性的特例，其中输出变换为单位变换：$\\mathcal{C}(\\mathcal{T}(\\mathbf{I})) = \\mathcal{C}(\\mathbf{I})$，即对象类别不依赖其在图像中的位置。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

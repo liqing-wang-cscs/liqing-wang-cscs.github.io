@@ -1,0 +1,331 @@
+<!-- 第7章：梯度下降 第4节：归一化- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第7章：梯度下降、第4节：归一化 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "归一化的必要性",
+            "question": "根据 ch07-4.tex 第 P1 节，关于归一化在神经网络训练中的作用，下列哪项描述最准确？",
+            "options": {
+            "A": "归一化只在输入层需要，隐藏层无需归一化",
+            "B": "归一化消除了网络处理极大或极小数值的需求；虽然原则上权重和偏置可以适应任何取值，但实践中归一化对确保有效训练至关重要",
+            "C": "归一化会降低模型的表达能力，因此应避免使用",
+            "D": "归一化只适用于线性模型"
+            },
+            "answer": "B",
+            "explanation": "对神经网络前向传播过程中计算出的变量进行归一化，消除了网络处理极大或极小数值的需求。虽然原则上神经网络中的权重和偏置可以适应输入和隐藏变量取的任何值，但在实践中归一化对于确保有效训练至关重要。根据归一化对象不同，可分为对输入数据、小批量或跨层的三种归一化方法。"
+        },
+        {
+            "id": 2,
+            "topic": "输入数据归一化",
+            "question": "根据 ch07-4.tex 第 P3 节，输入数据归一化的计算方式 $\\widetilde{x}_{ni} = \\frac{x_{ni} - \\mu_i}{\\sigma_i}$ 中，均值和方差的计算时机及对开发集、验证集、测试集的处理要求是什么？",
+            "options": {
+            "A": "均值和方差在每次训练迭代中重新计算；不同数据集使用各自的均值和方差",
+            "B": "均值和方差在任何训练开始之前一次性计算；必须使用相同的 $\\mu_i$ 和 $\\sigma_i$ 值预处理开发集、验证集和测试集数据",
+            "C": "均值和方差只对训练集计算，其他数据集无需归一化",
+            "D": "均值和方差由模型自动学习得到"
+            },
+            "answer": "B",
+            "explanation": "均值和方差的计算是一次性的，在任何训练开始之前进行。输入值通过 $\\widetilde{x}_{ni} = \\frac{x_{ni} - \\mu_i}{\\sigma_i}$ 重新缩放，使重新缩放后的值具有零均值和单位方差。必须使用相同的 $\\mu_i$ 和 $\\sigma_i$ 值来预处理任何开发集、验证集或测试集数据，以确保所有输入都以相同的方式缩放。"
+        },
+        {
+            "id": 3,
+            "topic": "梯度消失与梯度爆炸",
+            "question": "根据 ch07-4.tex 第 P5 节，梯度消失和梯度爆炸现象产生的原因是什么？批归一化如何解决这一问题？",
+            "options": {
+            "A": "由学习率过大引起；批归一化通过减小学习率解决",
+            "B": "由链式法则中大量雅可比矩阵元素连乘引起：若大多数项幅值小于 1 则乘积趋于 0（梯度消失），若大多数项幅值大于 1 则乘积趋于无穷（梯度爆炸）；批归一化在很大程度上解决了这个问题",
+            "C": "由数据量不足引起；批归一化通过增加数据解决",
+            "D": "由激活函数选择不当引起；批归一化通过更换激活函数解决"
+            },
+            "answer": "B",
+            "explanation": "根据链式法则，误差函数对第一层参数的梯度是各层雅可比矩阵元素的连乘。如果其中大多数项的幅值小于 1，那么大量这样的项相乘将趋于 0；如果大多数项的幅值大于 1，乘积将趋于无穷。因此随着网络深度增加，梯度往往会变得非常大或非常小。批归一化在很大程度上解决了这个问题。"
+        },
+        {
+            "id": 4,
+            "topic": "批归一化的计算方式",
+            "question": "根据 ch07-4.tex 第 P6 节，对于大小为 $K$ 的小批量，批归一化的预激活值归一化公式 $\\widehat{a}_{ni} = \\frac{a_{ni} - \\mu_i}{\\sqrt{\\sigma_i^2 + \\delta}}$ 中，$\\delta$ 的作用是什么？",
+            "options": {
+            "A": "$\\delta$ 是学习率",
+            "B": "$\\delta$ 是一个小常数，引入它是为了避免在 $\\sigma_i^2$ 很小时出现数值计算问题",
+            "C": "$\\delta$ 是可学习参数",
+            "D": "$\\delta$ 是动量系数"
+            },
+            "answer": "B",
+            "explanation": "在批归一化中，$\\delta$ 是一个小常数，引入它是为了避免在方差 $\\sigma_i^2$ 很小的情况下出现数值计算问题（如除以零）。归一化的求和是在小批量的元素上进行的，对预激活值进行归一化。"
+        },
+        {
+            "id": 5,
+            "topic": "批归一化的可学习参数",
+            "question": "根据 ch07-4.tex 第 P7 节，批归一化中引入 $\\widetilde{a}_{ni} = \\gamma_i \\widehat{a}_{ni} + \\beta_i$ 的目的是什么？$\\beta_i$ 和 $\\gamma_i$ 与输入数据归一化的关键区别是什么？",
+            "options": {
+            "A": "目的是进一步归一化；$\\beta_i$ 和 $\\gamma_i$ 是固定常数",
+            "B": "目的是弥补归一化导致的表示能力下降，重新缩放预激活值使其具有均值 $\\beta_i$ 和标准差 $\\gamma_i$；$\\beta_i$ 和 $\\gamma_i$ 是可学习的自适应参数，与网络权重和偏置一起通过梯度下降联合学习，这是与输入数据归一化的关键区别",
+            "C": "目的是减少参数数量；$\\beta_i$ 和 $\\gamma_i$ 是超参数",
+            "D": "目的是增加计算量；$\\beta_i$ 和 $\\gamma_i$ 无需学习"
+            },
+            "answer": "B",
+            "explanation": "通过归一化预激活值，减少了该层参数的自由度，从而降低了表示能力。引入 $\\widetilde{a}_{ni} = \\gamma_i \\widehat{a}_{ni} + \\beta_i$ 可以重新缩放预激活值使其具有均值 $\\beta_i$ 和标准差 $\\gamma_i$，弥补这一损失。$\\beta_i$ 和 $\\gamma_i$ 是自适应参数，与网络的权重和偏置一起通过梯度下降进行联合学习，这些可学习参数代表了批归一化与输入数据归一化之间的关键区别。"
+        },
+        {
+            "id": 6,
+            "topic": "批归一化参数演变的优势",
+            "question": "根据 ch07-4.tex 第 P8 节，为什么说批归一化中参数 $\\beta_i$ 和 $\\gamma_i$ 比原始网络中的均值和方差更容易学习？",
+            "options": {
+            "A": "因为 $\\beta_i$ 和 $\\gamma_i$ 不需要计算梯度",
+            "B": "在原始网络中，小批量上的均值和方差由该层所有权重和偏置通过复杂函数决定；而在批归一化表示中，均值和方差直接由独立的参数 $\\beta_i$ 和 $\\gamma_i$ 决定，训练过程中更容易学习",
+            "C": "因为 $\\beta_i$ 和 $\\gamma_i$ 是固定值",
+            "D": "因为批归一化减少了网络层数"
+            },
+            "answer": "B",
+            "explanation": "对于原始网络，一个小批量数据上的均值和方差是由该层所有的权重和偏置通过一个复杂的函数决定的；而在由批归一化给出的表示中，均值和方差直接由独立的参数 $\\beta_i$ 和 $\\gamma_i$ 决定，事实证明，在梯度下降过程中这些参数要容易学习得多。关键区别在于参数在训练过程中的演变方式。"
+        },
+        {
+            "id": 7,
+            "topic": "批归一化的推理阶段处理",
+            "question": "根据 ch07-4.tex 第 P10 节，网络训练完成后，推理阶段如何处理批归一化中的均值和方差？",
+            "options": {
+            "A": "使用当前新数据点本身的均值和方差",
+            "B": "通过对整个训练集重新计算每层的均值和方差",
+            "C": "使用训练阶段计算的移动平均值 $\\overline{\\mu}_i^{(\\tau)} = \\alpha \\overline{\\mu}_i^{(\\tau-1)} + (1-\\alpha) \\mu_i$ 和 $\\overline{\\sigma}_i^{(\\tau)} = \\alpha \\overline{\\sigma}_i^{(\\tau-1)} + (1-\\alpha) \\sigma_i$",
+            "D": "推理阶段不需要归一化"
+            },
+            "answer": "C",
+            "explanation": "训练完成后不再拥有训练时的小批量数据，也无法仅凭单个数据样本确定均值和方差。原则上可以在最后一次更新后针对整个训练集计算每层的均值和方差，但这需要对整个数据集进行处理，计算代价过于高昂。作为替代，在整个训练阶段计算移动平均值 $\\overline{\\mu}_i^{(\\tau)} = \\alpha \\overline{\\mu}_i^{(\\tau-1)} + (1-\\alpha) \\mu_i$ 和 $\\overline{\\sigma}_i^{(\\tau)} = \\alpha \\overline{\\sigma}_i^{(\\tau-1)} + (1-\\alpha) \\sigma_i$（其中 $0 \\leq \\alpha \\leq 1$）。这些移动平均值在训练过程中不起作用，但在推理阶段用于处理新的数据点。"
+        },
+        {
+            "id": 8,
+            "topic": "批归一化有效性的理论解释",
+            "question": "根据 ch07-4.tex 第 P11 节，关于批归一化为何有效，最初的设计动机与后续研究的解释分别是什么？",
+            "options": {
+            "A": "最初认为是平滑了误差曲面；后续研究发现是内部协变量偏移",
+            "B": "最初认为是内部协变量偏移（早期层权重更新改变后续层所接收的数值分布）；后续研究（Santurkar 等，2018）表明协变量偏移不是关键因素，训练效果的提升实际源于误差函数曲面平滑度的改善",
+            "C": "两种解释完全相同",
+            "D": "目前尚无任何解释"
+            },
+            "answer": "B",
+            "explanation": "批归一化最初的设计动机是观察到了内部协变量偏移现象：网络中较早层的权重更新会改变后续层所接收到的数值分布。然而后续研究（Santurkar 等人，2018年）表明，协变量偏移并不是一个关键因素，训练效果的提升实际上源于误差函数曲面平滑度的改善。"
+        },
+        {
+            "id": 9,
+            "topic": "层归一化",
+            "question": "根据 ch07-4.tex 第 P12 节，层归一化 (Layer Normalization) 的提出背景及其与批归一化的方向差异是什么？",
+            "options": {
+            "A": "层归一化跨小批量样本对每个隐藏单元归一化；批归一化跨隐藏单元对每个数据点归一化",
+            "B": "层归一化针对每个数据点单独跨该层的所有隐藏单元值进行归一化；批归一化为每个隐藏单元单独跨小批量内的样本归一化。它最初在 RNN 背景下提出（分布每个时间步变化使批归一化不可行），也适用于 Transformer",
+            "C": "层归一化与批归一化完全相同",
+            "D": "层归一化只适用于输入层"
+            },
+            "answer": "B",
+            "explanation": "批归一化的问题是：小批量尺寸过小会使均值和方差估计过于嘈杂；非常大的训练集的小批量可能被分配到不同 GPU，使跨小批量全局归一化效率很低。一种替代方案是：针对每个数据点，单独跨该层的所有隐藏单元值进行归一化，这被称为层归一化 (Ba, Kiros, and Hinton, 2016)。它最初是在循环神经网络的背景下提出的，因为在 RNN 中数据分布会在每个时间步之后发生改变，使批归一化变得不可行；不过层归一化在其他架构（如 Transformer）中同样非常有用。"
+        },
+        {
+            "id": 10,
+            "topic": "层归一化的计算与推理",
+            "question": "根据 ch07-4.tex 第 P13 节，层归一化的计算公式中，求和 $i = 1, \\dots, M$ 是在什么范围内进行的？它与批归一化在推理阶段处理方式的关键区别是什么？",
+            "options": {
+            "A": "求和在小批量内进行；层归一化推理时需要移动平均值",
+            "B": "求和在该层的所有隐藏单元上进行；层归一化在训练和推理阶段可采用相同的归一化函数，因此无需存储移动平均值",
+            "C": "求和在所有训练数据上进行；层归一化推理时使用固定均值",
+            "D": "求和只在输出层进行；层归一化与批归一化推理方式相同"
+            },
+            "answer": "B",
+            "explanation": "层归一化的公式为 $\\mu_n = \\frac{1}{M} \\sum_{i=1}^M a_{ni}$，$\\sigma_n^2 = \\frac{1}{M} \\sum_{i=1}^M (a_{ni} - \\mu_n)^2$，$\\widehat{a}_{ni} = \\frac{a_{ni} - \\mu_n}{\\sqrt{\\sigma_n^2 + \\delta}}$，其中求和是在该层的所有隐藏单元上进行的。与批归一化一样，也为每个隐藏单元分别引入可学习的均值和标准差参数。关键区别是：层归一化在训练和推理阶段可采用相同的归一化函数，因此无需存储移动平均值。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

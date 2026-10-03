@@ -619,13 +619,21 @@
         // ==============================================================
         const courseData = [
             {
+                id: 'ch0',
+                title: '第零章 · 大纲计划',
+                sections: [
+                    { id: 'ch0s1', title: '0.1 大纲计划', file: 'ch00/ch00-syllabus.md', type: 'md' },
+                ]
+            },
+            {
                 id: 'ch1',
                 title: '第一章 · 深度学习革命',
                 sections: [
                     { id: 'ch1s1', title: '1.1 深度学习', file: 'ch01/ch01-graph-v2.pdf', type: 'pdf' },
                     { id: 'ch1s2', title: '1.2 人工智能', file: 'ch01/ch01-graph-v3.pdf', type: 'pdf' },
                     { id: 'ch1s3', title: '1.3 世界模型', file: 'ch01/ch01-graph-v4.pdf', type: 'pdf' },
-                    { id: 'ch1s4', title: '1.4 幻灯片', file: 'ch01/ch01-slides.pdf', type: 'pdf' }
+                    { id: 'ch1s4', title: '1.4 幻灯片', file: 'ch01/ch01-slides.pdf', type: 'pdf' },
+                    { id: 'ch1s5', title: '1.5 本章自测题', file: 'ch01/ch01-practice.html', type: 'html' }
                 ]
             },
             {
@@ -636,7 +644,8 @@
                     { id: 'ch2s2', title: '2.2 幻灯片', file: 'ch02/ch02-slides-v2.pdf', type: 'pdf' },
                     { id: 'ch2s3', title: '2.3 案例分析', file: 'ch02/ch02-case-study.pdf', type: 'pdf' },
                     { id: 'ch2s4', title: '2.4 练习题幻灯片', file: 'ch02/ch02-slides-v3.pdf', type: 'pdf' },
-                    { id: 'ch2s5', title: '2.5 练习题打印版', file: 'ch02/ch02-ten-exercise.pdf', type: 'pdf' }
+                    { id: 'ch2s5', title: '2.5 练习题打印版', file: 'ch02/ch02-ten-exercise.pdf', type: 'pdf' },
+                    { id: 'ch2s6', title: '2.6 本章自测题', file: 'ch02/ch02-practice.html', type: 'html' }
                 ]
             },
             {
@@ -644,7 +653,8 @@
                 title: '第三章 · 标准分布',
                 sections: [
                     { id: 'ch3s1', title: '3.1 思维导图', file: 'ch03/ch03-graph.pdf', type: 'pdf' },
-                    { id: 'ch3s2', title: '3.2 幻灯片带习题', file: 'ch03/ch03-slides-with-exercise.pdf', type: 'pdf' }
+                    { id: 'ch3s2', title: '3.2 幻灯片带习题', file: 'ch03/ch03-slides-with-exercise.pdf', type: 'pdf' },
+                    { id: 'ch3s3', title: '3.3 本章自测题', file: 'ch03/ch03-practice.html', type: 'html' }
                 ]
             },
             {
@@ -653,33 +663,35 @@
                 sections: [
                     { id: 'ch4s1', title: '4.1 思维导图', file: 'ch04/ch04-graph.pdf', type: 'pdf' },
                     { id: 'ch4s2', title: '4.2 幻灯片', file: 'ch04/ch04-slides-v2.pdf', type: 'pdf' },
-                    { id: 'ch4s3', title: '4.2 练习题打印版', file: 'ch04/ch04-five-exercise.pdf', type: 'pdf' }
+                    { id: 'ch4s3', title: '4.3 练习题打印版', file: 'ch04/ch04-five-exercise.pdf', type: 'pdf' },
+                    { id: 'ch4s4', title: '4.4 本章自测题', file: 'ch04/ch04-practice.html', type: 'html' }
                 ]
             },
             {
                 id: 'ch5',
                 title: '第五章 · 单层网络-分类',
                 sections: [
-                    { id: 'ch5s1', title: '5.2 决策理论思维导图', file: 'ch05/ch05-2-graph.pdf', type: 'pdf' },
-                    { id: 'ch5s2', title: '5.3 生成式分类器思维导图', file: 'ch05/ch05-3-graph.pdf', type: 'pdf' },
-                    { id: 'ch5s3', title: '5.4 判别分类器思维导图', file: 'ch05/ch05-4-graph.pdf', type: 'pdf' },
-                    { id: 'ch5s4', title: '第五章幻灯片 ', file: 'ch05/ch05-slides.pdf', type: 'pdf' }
+                    { id: 'ch5s1', title: '5.1 第五章幻灯片 ', file: 'ch05/ch05-slides.pdf', type: 'pdf' },
+                    { id: 'ch5s2', title: '5.2 决策理论思维导图', file: 'ch05/ch05-2-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s3', title: '5.3 生成式分类器思维导图', file: 'ch05/ch05-3-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s4', title: '5.4 判别分类器思维导图', file: 'ch05/ch05-4-graph.pdf', type: 'pdf' },
+                    { id: 'ch5s5', title: '5.5 本章自测题', file: 'ch05/ch05-practice.html', type: 'html' }
                 ]
             },
             {
                 id: 'ch6',
                 title: '第六章 · 深度神经网络',
                 sections: [
-                    { id: 'ch6s1a', title: '6.1 幻灯片', file: 'ch06/ch06-1/ch06-1-slides.pdf', type: 'pdf' },
-                    { id: 'ch6s1b', title: '6.1 练习题', file: 'ch06/ch06-1/ch06-1-practice-v2.html', type: 'html' },
-                    { id: 'ch6s2a', title: '6.2 幻灯片', file: 'ch06/ch06-2/ch06-2-slides.pdf', type: 'pdf' },
-                    { id: 'ch6s2b', title: '6.2 练习题', file: 'ch06/ch06-2/ch06-2-practice-v2.html', type: 'html' },
-                    { id: 'ch6s3a', title: '6.3 幻灯片', file: 'ch06/ch06-3/ch06-3-slides.pdf', type: 'pdf' },
-                    { id: 'ch6s3b', title: '6.3 练习题', file: 'ch06/ch06-3/ch06-3-practice-v2.html', type: 'html' },
-                    { id: 'ch6s4a', title: '6.4 幻灯片', file: 'ch06/ch06-4/ch06-4-slides.pdf', type: 'pdf' },
-                    { id: 'ch6s4b', title: '6.4 练习题', file: 'ch06/ch06-4/ch06-4-practice-v2.html', type: 'html' },
-                    { id: 'ch6s5a', title: '6.5 幻灯片', file: 'ch06/ch06-5/ch06-5-slides.pdf', type: 'pdf' },
-                    { id: 'ch6s5b', title: '6.5 练习题', file: 'ch06/ch06-5/ch06-5-practice-v2.html', type: 'html' }
+                    { id: 'ch6s1a', title: '6.1 固定基函数的局限性', file: 'ch06/ch06-1/ch06-1-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s1b', title: '6.1 自测题', file: 'ch06/ch06-1/ch06-1-practice-v2.html', type: 'html' },
+                    { id: 'ch6s2a', title: '6.2 多层网络', file: 'ch06/ch06-2/ch06-2-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s2b', title: '6.2 自测题', file: 'ch06/ch06-2/ch06-2-practice-v2.html', type: 'html' },
+                    { id: 'ch6s3a', title: '6.3 深度网络', file: 'ch06/ch06-3/ch06-3-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s3b', title: '6.3 自测题', file: 'ch06/ch06-3/ch06-3-practice-v2.html', type: 'html' },
+                    { id: 'ch6s4a', title: '6.4 误差函数', file: 'ch06/ch06-4/ch06-4-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s4b', title: '6.4 自测题', file: 'ch06/ch06-4/ch06-4-practice-v2.html', type: 'html' },
+                    { id: 'ch6s5a', title: '6.5 混合密度网络', file: 'ch06/ch06-5/ch06-5-slides.pdf', type: 'pdf' },
+                    { id: 'ch6s5b', title: '6.5 自测题', file: 'ch06/ch06-5/ch06-5-practice-v2.html', type: 'html' }
                 ]
             },
             {
@@ -687,9 +699,13 @@
                 title: '第七章 · 梯度下降',
                 sections: [
                     { id: 'ch7s1', title: '7.1 误差曲面', file: 'ch07/ch07-1/ch07-1.pdf', type: 'pdf' },
+                    { id: 'ch7s1b', title: '7.1 自测题', file: 'ch07/ch07-1/ch07-1-practice.html', type: 'html' },
                     { id: 'ch7s2', title: '7.2 梯度下降优化', file: 'ch07/ch07-2/ch07-2.pdf', type: 'pdf' },
+                    { id: 'ch7s2b', title: '7.2 自测题', file: 'ch07/ch07-2/ch07-2-practice.html', type: 'html' },
                     { id: 'ch7s3', title: '7.3 收敛', file: 'ch07/ch07-3/ch07-3.pdf', type: 'pdf' },
+                    { id: 'ch7s3b', title: '7.3 自测题', file: 'ch07/ch07-3/ch07-3-practice.html', type: 'html' },
                     { id: 'ch7s4', title: '7.4 归一化', file: 'ch07/ch07-4/ch07-4.pdf', type: 'pdf' },
+                    { id: 'ch7s4b', title: '7.4 自测题', file: 'ch07/ch07-4/ch07-4-practice.html', type: 'html' }
                 ]
             },
             {
@@ -700,9 +716,11 @@
                     { id: 'ch8s1b', title: '8.1-34 例子-数值微分法', file: 'ch08/ch08-1/ch08-1-34.pdf', type: 'pdf' },
                     { id: 'ch8s1c', title: '8.1-5 雅可比矩阵', file: 'ch08/ch08-1/ch08-1-5.pdf', type: 'pdf' },
                     { id: 'ch8s1d', title: '8.1-6 黑塞矩阵', file: 'ch08/ch08-1/ch08-1-6.pdf', type: 'pdf' },
+                    { id: 'ch8s1e', title: '8.1 自测题', file: 'ch08/ch08-1/ch08-1-practice.html', type: 'html' },
                     { id: 'ch8s2a', title: '8.2-0 深度学习里的自动微分', file: 'ch08/ch08-2/ch08-2-0.pdf', type: 'pdf' },
                     { id: 'ch8s2b', title: '8.2-1 前向自动微分', file: 'ch08/ch08-2/ch08-2-1.pdf', type: 'pdf' },
-                    { id: 'ch8s2c', title: '8.2-2 逆向自动微分', file: 'ch08/ch08-2/ch08-2-2.pdf', type: 'pdf' }
+                    { id: 'ch8s2c', title: '8.2-2 逆向自动微分', file: 'ch08/ch08-2/ch08-2-2.pdf', type: 'pdf' },
+                    { id: 'ch8s2d', title: '8.2 自测题', file: 'ch08/ch08-2/ch08-2-practice.html', type: 'html' }
                 ]
             },
             {
@@ -710,11 +728,17 @@
                 title: '第九章 · 正则化',
                 sections: [
                     { id: 'ch9s1', title: '9.1 归纳偏置', file: 'ch09/ch09-1/ch09-1-cn.md', type: 'md' },
+                    { id: 'ch9s1b', title: '9.1 自测题', file: 'ch09/ch09-1/ch09-1-practice.html', type: 'html' },
                     { id: 'ch9s2', title: '9.2 权重衰减', file: 'ch09/ch09-2/ch09-2-cn.md', type: 'md' },
+                    { id: 'ch9s2b', title: '9.2 自测题', file: 'ch09/ch09-2/ch09-2-practice.html', type: 'html' },
                     { id: 'ch9s3', title: '9.3 学习曲线', file: 'ch09/ch09-3/ch09-3-cn.md', type: 'md' },
+                    { id: 'ch9s3b', title: '9.3 自测题', file: 'ch09/ch09-3/ch09-3-practice.html', type: 'html' },
                     { id: 'ch9s4', title: '9.4 参数共享', file: 'ch09/ch09-4/ch09-4-cn.md', type: 'md' },
+                    { id: 'ch9s4b', title: '9.4 自测题', file: 'ch09/ch09-4/ch09-4-practice.html', type: 'html' },
                     { id: 'ch9s5', title: '9.5 残差连接', file: 'ch09/ch09-5/ch09-5-cn.md', type: 'md' },
-                    { id: 'ch9s6', title: '9.6 模型平均', file: 'ch09/ch09-6/ch09-6-cn.md', type: 'md' }
+                    { id: 'ch9s5b', title: '9.5 自测题', file: 'ch09/ch09-5/ch09-5-practice.html', type: 'html' },
+                    { id: 'ch9s6', title: '9.6 模型平均', file: 'ch09/ch09-6/ch09-6-cn.md', type: 'md' },
+                    { id: 'ch9s6b', title: '9.6 自测题', file: 'ch09/ch09-6/ch09-6-practice.html', type: 'html' }
                 ]
             },
             {
@@ -722,6 +746,7 @@
                 title: '第十章 · 卷积网络',
                 sections: [
                     { id: 'ch10s1', title: '10.1 计算机视觉', file: 'ch10/ch10-1/ch10-1.md', type: 'md' },
+                    { id: 'ch10s1b', title: '10.1 自测题', file: 'ch10/ch10-1/ch10-1-practice.html', type: 'html' },
                     {
                         id: 'ch10s2',
                         title: '10.2 卷积滤波器',
@@ -739,6 +764,7 @@
                             { id: 'ch10s2-8', title: '10.2.8 网络架构示例', file: 'ch10/ch10-2/ch10-2-8/ch10-2-8.md', type: 'md' }
                         ]
                     },
+                    { id: 'ch10s2b', title: '10.2 自测题', file: 'ch10/ch10-2/ch10-2-practice.html', type: 'html' },
                     {
                         id: 'ch10s3',
                         title: '10.3 可视化训练好的CNN',
@@ -752,6 +778,7 @@
                             { id: 'ch10s3-5', title: '10.3.5 合成图像', file: 'ch10/ch10-3/ch10-3-5/ch10-3-5.md', type: 'md' }
                         ]
                     },
+                    { id: 'ch10s3b', title: '10.3 自测题', file: 'ch10/ch10-3/ch10-3-practice.html', type: 'html' },
                     {
                         id: 'ch10s4',
                         title: '10.4 目标检测',
@@ -765,6 +792,7 @@
                             { id: 'ch10s4-5', title: '10.4.5 非最大抑制', file: 'ch10/ch10-4/ch10-4-5/ch10-4-5.md', type: 'md' }
                         ]
                     },
+                    { id: 'ch10s4b', title: '10.4 自测题', file: 'ch10/ch10-4/ch10-4-practice.html', type: 'html' },
                     {
                         id: 'ch10s5',
                         title: '10.5 图像分割',
@@ -777,7 +805,9 @@
                             { id: 'ch10s5-4', title: '10.5.4 U-Net架构', file: 'ch10/ch10-5/ch10-5-4/ch10-5-4.md', type: 'md' }
                         ]
                     },
-                    { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' }
+                    { id: 'ch10s5b', title: '10.5 自测题', file: 'ch10/ch10-5/ch10-5-practice.html', type: 'html' },
+                    { id: 'ch10s6', title: '10.6 风格迁移', file: 'ch10/ch10-6/ch10-6.md', type: 'md' },
+                    { id: 'ch10s6b', title: '10.6 自测题', file: 'ch10/ch10-6/ch10-6-practice.html', type: 'html' }
                 ]
             }
         ];

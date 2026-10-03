@@ -1,0 +1,331 @@
+<!-- 第2章：概率 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第2章：概率 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一章的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "医学筛查案例",
+            "question": "在医学筛查案例中，假设人群中 1% 患有癌症，无癌症者中 3% 测试为阳性，有癌症者中 10% 测试为阴性。若某人被随机测试且结果为阳性，他实际患有癌症的概率约为多少？",
+            "options": {
+            "A": "约 3%",
+            "B": "约 23%",
+            "C": "约 90%",
+            "D": "约 97%"
+            },
+            "answer": "B",
+            "explanation": "根据贝叶斯定理，$p(C=1|T=1) = \\frac{p(T=1|C=1)p(C=1)}{p(T=1)} = \\frac{0.9 \\times 0.01}{0.0387} = \\frac{90}{387} \\simeq 0.23$，即约 23%。"
+        },
+        {
+            "id": 2,
+            "topic": "医学筛查案例",
+            "question": "在医学筛查案例中，根据 10,000 人样本构建的混淆矩阵，假阳性 (FP) 和假阴性 (FN) 的人数分别是多少？",
+            "options": {
+            "A": "FP = 90，FN = 10",
+            "B": "FP = 297，FN = 10",
+            "C": "FP = 10，FN = 297",
+            "D": "FP = 297，FN = 90"
+            },
+            "answer": "B",
+            "explanation": "无癌症者 9,900 人，假阳性率 3%，故 FP = 9,900 × 3% = 297；有癌症者 100 人，假阴性率 10%，故 FN = 100 × 10% = 10。"
+        },
+        {
+            "id": 3,
+            "topic": "贝叶斯定理",
+            "question": "在机器学习中，贝叶斯定理通常写为 $p(\\boldsymbol{\\theta}|D) = \\frac{p(D|\\boldsymbol{\\theta}) p(\\boldsymbol{\\theta})}{p(D)}$。其中 $p(\\boldsymbol{\\theta})$ 和 $p(D|\\boldsymbol{\\theta})$ 分别称为什么？",
+            "options": {
+            "A": "后验概率和似然",
+            "B": "先验概率和似然",
+            "C": "似然和证据",
+            "D": "先验概率和后验概率"
+            },
+            "answer": "B",
+            "explanation": "$p(\\boldsymbol{\\theta})$ 是先验概率 (Prior)，$p(D|\\boldsymbol{\\theta})$ 是似然 (Likelihood)，$p(\\boldsymbol{\\theta}|D)$ 是后验概率 (Posterior)，$p(D)$ 是证据 (Evidence)。"
+        },
+        {
+            "id": 4,
+            "topic": "先验概率与正则化",
+            "question": "根据 ch02-slides-v2.tex，关于先验概率与正则化的对应关系，下列哪项描述是正确的？",
+            "options": {
+            "A": "L1 正则化等价于高斯先验，L2 正则化等价于拉普拉斯先验",
+            "B": "L2 正则化等价于高斯先验，L1 正则化等价于拉普拉斯先验",
+            "C": "L1 和 L2 正则化都等价于高斯先验",
+            "D": "L1 和 L2 正则化都等价于拉普拉斯先验"
+            },
+            "answer": "B",
+            "explanation": "在最大后验估计 (MAP) 框架下，高斯先验对应 L2 正则化，拉普拉斯先验对应 L1 正则化。"
+        },
+        {
+            "id": 5,
+            "topic": "独立变量",
+            "question": "根据 ch02-slides-v2.tex，关于独立变量的描述，下列哪项是错误的？",
+            "options": {
+            "A": "若 $P(X, Y) = P(X)P(Y)$，则 $X$ 和 $Y$ 相互独立",
+            "B": "i.i.d. 假设使得似然函数可以写成连乘形式 $L = \\prod p(x_i)$",
+            "C": "朴素贝叶斯假设特征之间条件独立，极大简化了计算",
+            "D": "在序列数据中，独立性假设通常成立，因此可以直接使用 i.i.d. 假设"
+            },
+            "answer": "D",
+            "explanation": "在序列数据（如时间序列、文本）中，独立性假设通常不成立，需使用 RNN 或 Transformer 建模依赖关系。"
+        },
+        {
+            "id": 6,
+            "topic": "高斯分布",
+            "question": "根据 ch02-slides-v2.tex，关于高斯分布的关键性质，下列哪项描述是错误的？",
+            "options": {
+            "A": "高斯分布完全由一阶矩（均值）和二阶矩（协方差）决定",
+            "B": "高斯分布经过线性变换后仍为高斯分布",
+            "C": "高斯分布的边缘分布和条件分布仍为高斯分布",
+            "D": "高斯分布的微分熵与均值 $\\mu$ 有关，方差 $\\sigma^2$ 不影响熵"
+            },
+            "answer": "D",
+            "explanation": "高斯分布的微分熵为 $H[x] = \\frac{1}{2}(1 + \\ln(2\\pi\\sigma^2))$，仅取决于方差 $\\sigma^2$，与均值 $\\mu$ 无关。因此 D 的描述正好相反。"
+        },
+        {
+            "id": 7,
+            "topic": "KL 散度",
+            "question": "根据 ch02-slides-v2.tex 和 ch02-slides-v3.tex，关于 KL 散度的性质，下列哪项描述是正确的？",
+            "options": {
+            "A": "$\\text{KL}(p||q) \\geq 0$，且 $\\text{KL}(p||q) = \\text{KL}(q||p)$",
+            "B": "$\\text{KL}(p||q) \\geq 0$，当且仅当 $p = q$ 时取等号，且 $\\text{KL}(p||q) \\neq \\text{KL}(q||p)$",
+            "C": "$\\text{KL}(p||q) \\leq 0$，且具有对称性",
+            "D": "$\\text{KL}(p||q)$ 可以为负值，且当 $p = q$ 时取得最大值"
+            },
+            "answer": "B",
+            "explanation": "KL 散度具有非负性，$\\text{KL}(p||q) \\geq 0$，当且仅当 $p = q$ 时取等号；同时具有非对称性，$\\text{KL}(p||q) \\neq \\text{KL}(q||p)$。"
+        },
+        {
+            "id": 8,
+            "topic": "最大后验估计",
+            "question": "根据 ch02-slides-v2.tex，最大后验估计 (MAP) 与最大似然估计 (MLE) 的主要区别是什么？",
+            "options": {
+            "A": "MAP 仅考虑数据，MLE 同时考虑数据与先验",
+            "B": "MLE 仅考虑数据，MAP 同时考虑数据与先验",
+            "C": "MAP 和 MLE 完全相同，没有区别",
+            "D": "MLE 计算后验分布，MAP 计算似然函数"
+            },
+            "answer": "B",
+            "explanation": "MLE 为 $\\arg\\max \\ln p(D|\\boldsymbol{\\theta})$，仅看数据；MAP 为 $\\arg\\max [\\ln p(D|\\boldsymbol{\\theta}) + \\ln p(\\boldsymbol{\\theta})]$，同时考虑数据与先验。"
+        },
+        {
+            "id": 9,
+            "topic": "重期望公式与方差分解",
+            "question": "根据 ch02-slides-v3.tex 习题 2.11，方差分解公式 $\\text{var}[x] = \\mathbb{E}_y[\\text{var}_x[x|y]] + \\text{var}_y[\\mathbb{E}_x[x|y]]$ 的物理意义是什么？",
+            "options": {
+            "A": "总方差等于组内方差与组间方差之差",
+            "B": "总方差等于组内方差的期望加上组间方差（期望的方差）",
+            "C": "总方差等于组间方差减去组内方差",
+            "D": "总方差仅由组内方差决定"
+            },
+            "answer": "B",
+            "explanation": "方差分解公式表明：总方差 = 组内方差的期望 + 组间方差（期望的方差）。"
+        },
+        {
+            "id": 10,
+            "topic": "线性变换对熵的影响",
+            "question": "根据 ch02-slides-v3.tex 习题 2.30，对于非奇异线性变换 $\\mathbf{y} = \\mathbf{A}\\mathbf{x}$，熵的变换关系为 $H[\\mathbf{y}] = H[\\mathbf{x}] + \\ln|\\det\\mathbf{A}|$。若 $\\mathbf{A}$ 为正交矩阵，则下列哪项描述是正确的？",
+            "options": {
+            "A": "熵会增加，因为正交矩阵的行列式大于 1",
+            "B": "熵会减少，因为正交矩阵的行列式小于 1",
+            "C": "熵不变，因为正交矩阵的行列式为 1",
+            "D": "熵变为零，因为正交变换不改变分布"
+            },
+            "answer": "C",
+            "explanation": "正交矩阵满足 $|\\det\\mathbf{A}| = 1$，因此 $\\ln|\\det\\mathbf{A}| = 0$，熵不变。正交变换相当于旋转，不改变体积伸缩率。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

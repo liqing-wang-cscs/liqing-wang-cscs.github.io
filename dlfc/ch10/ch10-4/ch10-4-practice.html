@@ -1,0 +1,331 @@
+<!-- 第10章：卷积网络 第4节：目标检测- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第4节：目标检测 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "边界框的定义与表示",
+            "question": "根据 10.4.1 节 P3，边界框 (bounding box) 的定义是什么？如何用向量表示？坐标有哪些表示方式？",
+            "options": {
+            "A": "边界框是覆盖整张图像的大矩形；用单一坐标表示；只能用像素表示",
+            "B": "边界框是紧贴物体边界的矩形；用向量 $\\mathbf{b} = (b_x, b_y, b_W, b_H)$ 表示，包含中心坐标、宽度和高度；坐标可用像素表示，也可归一化为连续数值，按惯例图像左上角为 $(0,0)$、右下角为 $(1,1)$",
+            "C": "边界框只能用宽度和高度表示；坐标范围固定为 $0$ 到 $255$",
+            "D": "边界框只用于图像分类，不用于目标检测"
+            },
+            "answer": "B",
+            "explanation": "指定图像中物体位置的一种广泛使用的方法是定义边界框，它由一个紧贴物体边界的矩形组成。边界框可以通过其中心坐标以及宽度和高度来定义，形式为向量 $\\mathbf{b} = (b_x, b_y, b_W, b_H)$。这里 $\\mathbf{b}$ 的元素可以用像素表示，也可以表示为连续数值；按照惯例，图像左上角坐标为 $(0,0)$，右下角坐标为 $(1,1)$。"
+        },
+        {
+            "id": 2,
+            "topic": "单物体分类与定位的输出设计",
+            "question": "根据 10.4.1 节 P4，当图像包含一个且仅一个来自 $C$ 个类别的物体时，CNN 的输出如何设计？边界框坐标使用什么损失函数？",
+            "options": {
+            "A": "使用 $C$ 个 softmax 输出单元，无需额外输出；边界框使用交叉熵损失",
+            "B": "使用 $C$ 个 softmax 输出单元表示类别，额外增加四个使用线性激活函数的输出，训练用于预测边界框坐标 $(b_x, b_y, b_W, b_H)$；由于这些量是连续的，平方和误差函数可能是合适的；例如 Redmon 等人 (2015) 将图像划分为 $7 \\times 7$ 网格，对每个网格单元使用卷积网络输出类别和边界框坐标",
+            "C": "只使用四个线性输出单元，不需要类别输出",
+            "D": "使用 $C+4$ 个 softmax 输出单元"
+            },
+            "answer": "B",
+            "explanation": "当假设图像包含一个且仅一个来自预定义 $C$ 个类别的物体时，CNN 通常有 $C$ 个输出单元，其激活函数由 softmax 定义。可以通过额外的四个输出对物体进行定位，这些输出使用线性激活函数，训练用于预测边界框坐标 $(b_x, b_y, b_W, b_H)$。由于这些量是连续的，对相应输出使用平方和误差函数可能是合适的。例如 Redmon et al. (2015) 首先将图像划分为 $7 \\times 7$ 网格，对每个网格单元使用卷积网络，基于来自整张图像的特征输出与该网格单元关联的任何物体的类别和边界框坐标。"
+        },
+        {
+            "id": 3,
+            "topic": "交并比 (IoU) 的定义与用途",
+            "question": "根据 10.4.2 节 P5，交并比 (IoU) 的定义是什么？为什么它比简单的重叠面积更好？它在训练和评估中的角色分别是什么？",
+            "options": {
+            "A": "IoU 是交集面积与目标框面积之比；范围是 $0$ 到 $\\infty$；主要用作训练损失",
+            "B": "IoU 是两个边界框交集面积与并集面积之比，取值范围 $0$ 到 $1$；它比简单重叠面积更好，因为比值形式对物体大小有归一化作用，且并集包含预测框在真实框之外的部分，能惩罚越界预测；IoU 通常不直接用作训练损失函数（因为它难以通过梯度下降优化），主要用作评估指标，通常 IoU 超过阈值 $0.5$ 时认为预测正确",
+            "C": "IoU 是并集面积与交集面积之比；主要用作激活函数",
+            "D": "IoU 只能用于图像分类任务"
+            },
+            "answer": "B",
+            "explanation": "对于目标定位需要某种方法来衡量边界框相对于真实标注的准确度。预测框与目标框重叠程度可作为度量基础，但重叠面积会取决于图像中物体大小；此外预测边界框如果有一部分落在真实边界框之外也应受到惩罚。一种能同时解决这两个问题的更好度量称为交并比 (IoU)，它等于两个边界框交集面积与并集面积之比。IoU 取值范围是 0 到 1，如果超过阈值（通常设为 0.5），预测可标记为正确。注意 IoU 通常不直接用作训练损失函数，因为它难以通过梯度下降优化，因此训练通常使用居中物体进行，IoU 分数主要用作评估指标。"
+        },
+        {
+            "id": 4,
+            "topic": "滑动窗口方法及其缺点",
+            "question": "根据 10.4.3 节 P6--P7，滑动窗口 (sliding window) 方法的基本思想是什么？其主要缺点是什么？",
+            "options": {
+            "A": "基本思想是直接输出整张图像的类别；没有缺点",
+            "B": "基本思想是用紧密裁剪的物体样本和背景样本训练分类器，然后通过将输入窗口在图像上扫描来检测物体，对每个位置将图像相应子集作为分类器输入，高概率位置定义边界框；主要缺点是潜在窗口位置数量巨大导致计算成本非常高；还需使用各种尺度的窗口以适应不同大小物体；步幅大小与定位精度之间存在权衡；对包含数百万参数的深度网络，朴素实现成本可能高得令人望而却步",
+            "C": "基本思想是只扫描图像中心；主要缺点是精度过高",
+            "D": "滑动窗口不使用分类器"
+            },
+            "answer": "B",
+            "explanation": "目标检测和目标定位的一种方法是首先创建训练集，其中包含待检测物体的紧密裁剪示例以及不包含任何物体的类似裁剪图像区域（背景类）的示例，用于训练分类器（如深度 CNN），其输出表示输入窗口中存在每个特定类别物体的概率。训练好的模型通过将输入窗口在图像上扫描来检测新图像中的物体，对每个位置将图像相应子集作为分类器输入，这称为滑动窗口。当以高概率检测到物体时，相关窗口位置定义相应边界框。该方法的一个明显缺点是，由于图像中潜在窗口位置数量巨大，计算成本可能非常高；此外为适应不同大小物体，可能必须使用各种尺度窗口重复该过程；一种节省成本的方法是使用大于一个像素的步幅，但小步幅的定位精度与较大步幅降低计算成本之间存在权衡。对于可能包含数百万参数的深度神经网络，朴素实现的成本可能高得令人望而却步。"
+        },
+        {
+            "id": 5,
+            "topic": "利用卷积结构高效实现滑动窗口",
+            "question": "根据 10.4.3 节 P8--P10，为什么滑动窗口在卷积网络中会产生大量冗余计算？如何利用卷积结构高效实现滑动窗口？",
+            "options": {
+            "A": "滑动窗口不存在冗余计算；必须重复应用完整网络",
+            "B": "卷积层本身就涉及以步幅在输入图像上滑动具有共享权重的特征检测器，因此使用滑动窗口生成多次前向传播时计算存在大量冗余（重叠区域计算被重复）；由于滑动窗口的计算结构与卷积相似，可以将滑动窗口自然地映射为卷积操作，共享计算；例如将网络从 $6 \\times 6$ 输入扩展到 $8 \\times 8$ 输入时，卷积层变为 $6 \\times 6$、池化层变为 $3 \\times 3$，得到四个共享权重的输出单元；全连接层也可视为卷积层，只需少量额外计算即可覆盖所有窗口位置，效率显著提高",
+            "C": "卷积结构与滑动窗口完全无关；全连接层无法卷积化",
+            "D": "高效实现需要为每个窗口位置单独训练网络"
+            },
+            "answer": "B",
+            "explanation": "神经网络的卷积结构允许效率的显著提升 (Sermanet et al., 2013)。卷积层本身就涉及以步幅在输入图像上滑动一个具有共享权重的特征检测器，因此当使用滑动窗口通过卷积网络生成多次前向传播时，计算中存在大量冗余。由于滑动窗口的计算结构与卷积相似，在卷积网络中高效实现滑动窗口非常简单。以简化网络为例：输入 $6 \\times 6$，卷积层 $3 \\times 3$ 步幅 1，最大池化 $2 \\times 2$ 步幅 1，全连接层可视为 $2 \\times 2$ 卷积层。将网络应用于 $8 \\times 8$ 图像时，卷积层变为 $6 \\times 6$，池化层变为 $3 \\times 3$，得到四个输出单元，进入这些单元的权重在四个单元之间共享。处理左上角窗口位置所需的计算与处理原始 $6 \\times 6$ 输入相同，其余窗口位置只需少量额外计算（蓝色区域），效率显著提高。注意全连接层本身现在也具有卷积结构。"
+        },
+        {
+            "id": 6,
+            "topic": "跨尺度检测的方法",
+            "question": "根据 10.4.4 节 P11，为什么需要跨尺度检测？如何使用固定输入窗口实现多尺度、多宽高比检测？",
+            "options": {
+            "A": "不需要跨尺度检测；所有物体尺寸相同",
+            "B": "物体在图像中可能以不同尺度出现，也可能具有不同宽高比（如猫直立与躺下时紧贴边界框的宽高比不同）；与其使用多个具有不同输入窗口大小和形状的检测器，一种更简单但等价的做法是使用固定输入窗口，并制作输入图像的多个副本，每个副本具有不同的水平和垂直缩放因子对；然后将输入窗口在每个图像副本上扫描以检测物体，随后使用相关缩放因子将边界框坐标变换回原始图像空间",
+            "C": "只需改变窗口大小，不需要缩放图像",
+            "D": "跨尺度检测只能通过训练多个独立网络实现"
+            },
+            "answer": "B",
+            "explanation": "除了在图像中不同位置寻找物体外，还需要在不同尺度和不同宽高比下寻找物体。例如围绕一只猫画出的紧密边界框，当猫直立坐着时与当它躺下时会有不同的宽高比。与其使用多个具有不同输入窗口大小和形状的检测器，一种更简单但等价的做法是使用固定输入窗口，并制作输入图像的多个副本，每个副本具有不同的水平和垂直缩放因子对。然后将输入窗口在每个图像副本上扫描以检测物体，随后使用相关的缩放因子将边界框坐标变换回原始图像空间。在缩放副本中检测到物体后，利用该副本的缩放因子将窗口坐标变换回原始图像空间，得到对应的边界框。"
+        },
+        {
+            "id": 7,
+            "topic": "非极大值抑制的流程",
+            "question": "根据 10.4.5 节 P12，为什么需要非极大值抑制？其基本流程是什么？涉及哪两个关键阈值？",
+            "options": {
+            "A": "因为滑动窗口不会产生重复检测；流程是直接输出所有框；不涉及阈值",
+            "B": "因为滑动窗口扫描图像时往往会对同一物体在相近位置产生多次检测；非极大值抑制对每个类别依次执行：在整个图像上运行滑动窗口并评估每个位置的类别概率，消除概率低于阈值（如 0.7）的边界框，选择概率最高的框作为成功检测并记录，丢弃与成功检测框 IoU 超过阈值（如 0.5）的其他框，然后在剩余框中重复上述步骤直到所有框被处理；两个关键阈值是概率阈值（过滤低置信度检测）和 IoU 阈值（判定重叠程度）",
+            "C": "因为检测框数量太少；流程是随机选择框",
+            "D": "非极大值抑制同时处理所有类别，不分类别独立处理"
+            },
+            "answer": "B",
+            "explanation": "通过在图像上扫描训练好的卷积网络，可以检测到同一类别物体的多个实例以及其他类别的物体实例。然而这往往也会对同一物体在相近位置产生多次检测。这可以通过非极大值抑制来解决。对每个物体类别依次执行如下操作：首先在整个图像上运行滑动窗口，并评估该类别物体出现在每个位置的概率；接着消除所有概率低于某个阈值（例如 0.7）的相关边界框；将概率最高的框视为一次成功检测，并记录相应边界框作为预测；然后丢弃任何与成功检测框的 IoU 超过某个阈值（例如 0.5）的其他框，目的是消除对同一物体的多个邻近检测；接着在剩余框中将概率最高的框宣布为另一次成功检测，并重复消除步骤；该过程持续进行直到所有边界框要么被丢弃要么被宣布为成功检测。非极大值抑制在消除同一物体冗余检测的同时，保留同一类别不同实例的检测。"
+        },
+        {
+            "id": 8,
+            "topic": "快速 R-CNN 与更快的 R-CNN",
+            "question": "根据 10.4.6 节 P13，快速 R-CNN 和更快的 R-CNN 的基本思想分别是什么？它们的区别是什么？",
+            "options": {
+            "A": "两者都使用完整网络扫描整个图像；没有区别",
+            "B": "快速 R-CNN 的思想是先应用某种计算成本更低的技术（如分割算法）识别图像中更可能找到物体的部分，然后仅对这些区域应用完整网络；更快的 R-CNN 使用区域提议卷积网络来识别最有希望的区域，允许区域提议网络以及检测和定位网络进行端到端训练；区别在于快速 R-CNN 使用外部低成本方法生成区域提议，而更快的 R-CNN 使用可训练的区域提议网络并实现端到端训练",
+            "C": "快速 R-CNN 只处理背景区域；更快的 R-CNN 不使用区域提议",
+            "D": "两者都必须使用滑动窗口扫描所有位置"
+            },
+            "answer": "B",
+            "explanation": "加快目标检测和定位的另一种方法是注意到扫描窗口方法会将深度卷积网络的完整能力应用于图像的所有区域，即使某些区域不太可能包含物体。相反可以应用某种计算成本更低的技术（例如分割算法）来识别图像中更可能找到物体的部分，然后仅对这些区域应用完整网络，从而产生诸如基于 CNN 的快速区域提议或快速 R-CNN (Girshick, 2015) 之类的技术。也可以使用区域提议卷积网络来识别最有希望的区域，从而产生更快的 R-CNN (Ren et al., 2015)，它允许对区域提议网络以及检测和定位网络进行端到端训练。两者的区别在于快速 R-CNN 使用外部低成本方法生成区域提议，而更快的 R-CNN 使用可训练的区域提议网络并实现端到端训练。"
+        },
+        {
+            "id": 9,
+            "topic": "滑动窗口与直接边界框预测的结合",
+            "question": "根据 10.4.6 节 P14，滑动窗口方法在追求精确定位时有什么缺点？如何通过结合直接边界框预测来改进？",
+            "options": {
+            "A": "滑动窗口追求精确定位时不需要考虑密集窗口；直接边界框预测与滑动窗口无关",
+            "B": "滑动窗口方法的一个缺点是，如果要非常精确地定位物体，需要考虑大量密集间隔的窗口位置，这在计算上变得昂贵；一种更高效的方法是将滑动窗口与直接边界框预测结合起来：连续输出预测边界框相对于窗口位置的位置，因此为预测位置提供了一些微调，从而在保持精度的同时提高效率",
+            "C": "精确定位与窗口数量无关；直接边界框预测只能用于分类",
+            "D": "滑动窗口与边界框预测不能结合使用"
+            },
+            "answer": "B",
+            "explanation": "滑动窗口方法的一个缺点是，如果我们想要非常精确地定位物体，那么需要考虑大量密集间隔的窗口位置，这在计算上变得昂贵。一种更高效的方法是将滑动窗口与本节开头讨论的直接边界框预测结合起来 (Sermanet et al., 2013)。在这种情况下，连续输出预测边界框相对于窗口位置的位置，因此为预测位置提供了一些微调。这样可以在保持精度的同时提高效率。"
+        },
+        {
+            "id": 10,
+            "topic": "目标检测的整体流程与迁移学习",
+            "question": "根据 10.4 节 P1 以及各小节内容，关于 CNN 在目标检测中的整体流程以及迁移学习的作用，下列哪项描述最准确？",
+            "options": {
+            "A": "目标检测只能使用专门训练的网络；迁移学习与目标检测无关",
+            "B": "在大型图像数据库上针对某一任务训练的 CNN 卷积层可以学到具有广泛适用性的内部表示，因此 CNN 可以针对各种具体任务进行微调（例如在 ImageNet 上训练的卷积网络通过迁移学习在皮肤病变分类上达到人类水平表现）；目标检测通常需要处理多个物体及其位置，典型流程包括：定义边界框表示物体位置、使用 IoU 衡量预测质量、通过滑动窗口或多尺度检测定位物体、利用卷积结构高效实现滑动窗口、最后用非极大值抑制消除重复检测，并可通过快速 R-CNN 或更快的 R-CNN 等方法提高效率",
+            "C": "目标检测只需定义边界框，不需要其他步骤",
+            "D": "迁移学习只能用于图像分类任务"
+            },
+            "answer": "B",
+            "explanation": "我们主要是通过图像分类问题来启发 CNN 的设计，但对于 ImageNet 这类数据集，每张图像由一个单一物体主导。然而 CNN 还有许多其他应用，能够利用其内在的归纳偏置；更一般地，在大型图像数据库上针对某一任务训练得到的 CNN 卷积层可以学到具有广泛适用性的内部表示，因此 CNN 可以针对各种具体任务进行微调（例如在 ImageNet 数据上训练的卷积网络通过迁移学习，能够在皮肤病变分类上达到人类水平的表现）。目标检测通常需要处理多个物体及其位置，典型流程包括：定义边界框 $(b_x, b_y, b_W, b_H)$ 表示物体位置；使用交并比 (IoU) 衡量预测框质量（IoU 超过阈值 0.5 认为预测正确，主要用作评估指标）；通过滑动窗口进行目标检测和定位；由于滑动窗口在卷积网络中会产生大量冗余计算，可利用卷积结构高效实现；通过多尺度图像缩放处理不同尺度和宽高比的物体；最后用非极大值抑制消除对同一物体的多次检测（概率阈值如 0.7、IoU 阈值如 0.5）；并可通过快速 R-CNN（使用低成本方法生成区域提议）或更快的 R-CNN（使用可训练区域提议网络实现端到端训练）等方法进一步提高效率。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

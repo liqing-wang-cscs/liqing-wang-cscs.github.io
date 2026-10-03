@@ -1,0 +1,266 @@
+<!-- 第10章：卷积网络 第1节：计算机视觉- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第1节：计算机视觉 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "非结构化数据与结构化数据",
+            "question": "根据第 1、2 段，关于非结构化数据与结构化数据的区别，下列哪项描述最准确？",
+            "options": {
+            "A": "结构化数据指数据元素之间没有任何关系；非结构化数据指数据元素之间存在空间或序列关系",
+            "B": "最简单的机器学习模型假设数据是非结构化的，即不知道各元素之间的关系，因此对变量顺序做一致的随机置换不会改变模型性能；而许多实际应用涉及结构化数据，如自然语言中单词构成序列、图像像素排列成二维网格，这些数据中变量之间存在额外的关联关系（如局部相关性）",
+            "C": "图像数据属于非结构化数据，随机置换像素不影响模型性能",
+            "D": "自然语言中的单词之间不存在任何依赖关系"
+            },
+            "answer": "B",
+            "explanation": "最简单的机器学习模型假设观测数据值是非结构化的，即数据向量 $\\mathbf{x} = (x_1, \\dots, x_D)$ 中的各元素被视为我们事先不知道它们之间可能存在的关联关系。如果对变量顺序进行随机置换并在所有训练和测试数据上一致地应用该固定置换，对于目前所考虑的模型来说性能不会有任何差异。然而机器学习的许多应用涉及结构化数据，其中输入变量之间存在额外的关联关系。例如自然语言中的单词构成序列，若将语言建模为自回归生成过程，则每个单词更强地依赖于紧邻的前几个单词；图像的像素之间具有明确的空间位置关系，输入变量排列成二维网格，邻近像素的值具有高度相关性。"
+        },
+        {
+            "id": 2,
+            "topic": "卷积神经网络的设计思想",
+            "question": "根据第 3 段，卷积神经网络 (CNN) 可以被视为什么样的网络？它被设计用来编码什么性质？",
+            "options": {
+            "A": "CNN 可视为全连接网络，被设计用来编码数据的随机性",
+            "B": "CNN 可视为具有参数共享的稀疏连接多层网络，被设计用于编码图像数据特有的不变性和等变性",
+            "C": "CNN 可视为循环网络，被设计用来处理序列数据",
+            "D": "CNN 不使用任何参数共享机制"
+            },
+            "answer": "B",
+            "explanation": "对特定数据模态结构的了解，可以通过在训练目标中向误差函数添加正则化项、通过数据增强，或通过修改模型架构来加以利用，这些方法有助于引导模型尊重某些性质，例如对输入数据变换的不变性和等变性。卷积神经网络 (CNN) 可被视为具有参数共享的稀疏连接多层网络，并且被设计用于编码图像数据特有的不变性和等变性。其中不变性指输出不随变换改变，等变性指输出随输入变换而相应变换。"
+        },
+        {
+            "id": 3,
+            "topic": "计算机视觉的历史演变与任务",
+            "question": "根据第 4、5 段，关于计算机视觉的历史演变以及常见的视觉任务，下列哪项描述最准确？",
+            "options": {
+            "A": "计算机视觉从未使用过手工设计特征；分割任务是指对整个图像赋予单一标签",
+            "B": "历史上计算机视觉主要基于三维射影几何，使用手工设计特征输入简单学习算法；它是深度革命最早被彻底改变的领域之一，主要归功于 CNN 架构；典型任务包括图像分类、目标检测、图像分割（每个像素单独分类）、字幕生成、图像合成、修复、风格迁移、超分辨率、深度预测和场景重建等",
+            "C": "CNN 只能用于图像分析，不能应用于序列数据分析",
+            "D": "基于 transformer 的架构完全无法与卷积网络竞争"
+            },
+            "answer": "B",
+            "explanation": "图像数据的自动分析和解释构成计算机视觉领域的核心。历史上计算机视觉主要基于三维射影几何，人们构造手工设计的特征并输入到简单学习算法中；然而它是深度革命最早被彻底改变的领域之一，主要归功于 CNN 架构。尽管该架构最初在图像分析背景下开发，也被应用于其他领域如序列数据分析。最近基于 transformer 的替代架构在某些应用中已能与卷积网络相抗衡。常见的计算机视觉任务包括：(1) 分类；(2) 检测（确定物体位置）；(3) 分割（对每个像素单独分类）；(4) 字幕生成；(5) 合成；(6) 修复；(7) 风格迁移；(8) 超分辨率；(9) 深度预测；(10) 场景重建。"
+        },
+        {
+            "id": 4,
+            "topic": "图像数据的表示",
+            "question": "根据第 6 段，关于图像数据的基本表示，下列哪项描述最准确？",
+            "options": {
+            "A": "图像中的像素只能是灰度值，不存在彩色通道",
+            "B": "图像由像素矩形阵列组成，每个像素具有灰度强度或红绿蓝三通道的强度三元组；强度为非负数且有最大值；实际中以有限精度表示（如 8 位整数 $0,\\dots,255$）；MRI 扫描由三维体素网格组成；视频由二维图像序列组成，可视为时间上堆叠连续帧的三维结构",
+            "C": "MRI 扫描是二维图像，视频是四维结构",
+            "D": "图像强度值可以是任意实数，不受硬件限制"
+            },
+            "answer": "B",
+            "explanation": "图像由像素的矩形阵列组成，其中每个像素要么具有灰度强度，或者更常见的是具有红色、绿色和蓝色通道的三元组，每个通道都有自己的强度值。这些强度是非负数，并且具有某个最大值，对应于用于捕获图像的相机或其他硬件设备的限制。在大多数情况下我们将这些强度视为连续变量，但在实际中它们以有限精度表示，例如用范围 $0,\\dots,255$ 内的整数表示的 8 位数字。某些图像（如用于医学诊断的 MRI 扫描）由三维体素网格组成。类似地，视频由二维图像序列组成，因此也可视为三维结构，其中连续帧在时间上堆叠。"
+        },
+        {
+            "id": 5,
+            "topic": "图像高维性与结构化先验的重要性",
+            "question": "根据第 7 段，为什么将图像数据视为非结构化是不可行的？局部相关性作为先验知识有什么作用？",
+            "options": {
+            "A": "图像维度低，非结构化处理不会带来任何问题；局部相关性没有实际价值",
+            "B": "图像通常具有高维性（典型相机捕获数千万像素），将其视为非结构化可能需要海量参数，模型不可行训练，且未能考虑图像高度结构化的特性；若对像素随机排列，结果不再像自然图像；若对每个像素独立随机生成强度值，几乎不可能生成自然图像；自然图像中邻近像素具有相似颜色和强度的概率远高于相距较远的像素；这种强大的先验知识可用于向神经网络编码强归纳偏置，从而产生参数少得多且泛化精度高得多的模型",
+            "C": "图像的结构化特性只体现在像素数量上，与空间位置无关",
+            "D": "随机置换像素不会改变图像的自然外观"
+            },
+            "answer": "B",
+            "explanation": "图像通常具有高维性，典型相机捕获的图像包含数千万像素。将图像数据视为非结构化可能需要具有海量参数的模型，这将不可行训练；更重要的是，这种方法未能考虑图像数据高度结构化的特性，其中不同像素的相对位置起着至关重要的作用。若对图像的像素进行随机排列，结果看起来就不再像自然图像；若通过为每个像素独立绘制随机强度值来生成合成图像，生成看起来像自然图像的东西的概率基本上为零。局部相关性很重要：在自然图像中，两个邻近像素具有相似颜色和强度的概率远高于两个相距很远的像素。这代表了强大的先验知识，可用于向神经网络编码强烈的归纳偏置，从而产生参数少得多且泛化精度高得多的模型。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

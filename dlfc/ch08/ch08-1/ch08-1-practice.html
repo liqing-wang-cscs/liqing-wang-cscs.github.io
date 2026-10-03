@@ -1,0 +1,331 @@
+<!-- 第8章：反向传播 第1节：梯度计算 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第8章：反向传播、第1节：梯度下降 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "单层网络的梯度计算",
+            "question": "根据 ch08-1-12.tex 第 8.1.1 节，对于线性模型 $y_k = \\sum_i w_{ki} x_i$ 和平方和误差函数 $E_n = \\frac{1}{2} \\sum_k (y_{nk} - t_{nk})^2$，误差函数关于权重 $w_{ji}$ 的梯度 $\\frac{\\partial E_n}{\\partial w_{ji}}$ 等于什么？",
+            "options": {
+            "A": "$(y_{nj} - t_{nj}) x_{ni}$",
+            "B": "$(y_{nj} + t_{nj}) x_{ni}$",
+            "C": "$(y_{ni} - t_{ni}) x_{nj}$",
+            "D": "$(y_{nj} - t_{nj}) / x_{ni}$"
+            },
+            "answer": "A",
+            "explanation": "对于线性模型，$\\frac{\\partial E_n}{\\partial w_{ji}} = (y_{nj} - t_{nj}) x_{ni}$。这可以解释为一个“局部”计算：涉及与连接 $w_{ji}$ 输出端相关的“误差信号” $y_{nj} - t_{nj}$ 和与连接输入端相关的变量 $x_{ni}$ 的乘积。"
+        },
+        {
+            "id": 2,
+            "topic": "一般前馈网络的反向传播",
+            "question": "根据 ch08-1-12.tex 第 8.1.2 节，在一般前馈网络中，反向传播公式 $\\delta_j = h'(a_j) \\sum_k w_{kj} \\delta_k$ 中的求和遍历的是什么？",
+            "options": {
+            "A": "遍历所有向单元 $j$ 发送连接的单元 $i$（对应 $w_{ji}$ 的第二个下标）",
+            "B": "遍历所有接收来自单元 $j$ 连接的单元 $k$（对应 $w_{kj}$ 的第一个下标），即信息在网络中反向传播的方向",
+            "C": "遍历所有输入单元",
+            "D": "遍历所有输出单元"
+            },
+            "answer": "B",
+            "explanation": "在反向传播公式 $\\delta_j = h'(a_j) \\sum_k w_{kj} \\delta_k$ 中，求和遍历所有接收来自单元 $j$ 连接的单元 $k$（对应 $w_{kj}$ 的第一个下标），对应信息在网络中反向传播的方向。而在前向传播公式 $a_j = \\sum_i w_{ji} z_i$ 中，求和遍历的是第二个下标。"
+        },
+        {
+            "id": 3,
+            "topic": "反向传播中的误差信号",
+            "question": "根据 ch08-1-12.tex 第 8.1.2 节，误差信号 $\\delta_j \\equiv \\frac{\\partial E_n}{\\partial a_j}$ 与梯度 $\\frac{\\partial E_n}{\\partial w_{ji}}$ 的关系是什么？对于输出单元，在使用典则链接作为输出激活函数时，$\\delta_k$ 等于什么？",
+            "options": {
+            "A": "$\\frac{\\partial E_n}{\\partial w_{ji}} = \\delta_j z_i$；输出单元 $\\delta_k = y_k - t_k$",
+            "B": "$\\frac{\\partial E_n}{\\partial w_{ji}} = \\delta_j / z_i$；输出单元 $\\delta_k = y_k + t_k$",
+            "C": "$\\frac{\\partial E_n}{\\partial w_{ji}} = \\delta_j + z_i$；输出单元 $\\delta_k = y_k t_k$",
+            "D": "$\\frac{\\partial E_n}{\\partial w_{ji}} = \\delta_i z_j$；输出单元 $\\delta_k = t_k - y_k$"
+            },
+            "answer": "A",
+            "explanation": "由链式法则可得 $\\frac{\\partial E_n}{\\partial w_{ji}} = \\delta_j z_i$，即所需导数等于权重输出端单元的 $\\delta$ 值乘以权重输入端单元的 $z$ 值（偏置时 $z = 1$）。对于输出单元，在使用典则链接作为输出激活函数时，$\\delta_k = y_k - t_k$。"
+        },
+        {
+            "id": 4,
+            "topic": "两层网络的反向传播示例",
+            "question": "根据 ch08-1-34.tex 第 8.1.3 节，对于隐藏单元使用 $\\tanh$ 激活函数的两层网络，隐藏单元的误差信号 $\\delta_j$ 的递推公式是什么？",
+            "options": {
+            "A": "$\\delta_j = (1 - z_j^2) \\sum_{k=1}^K w_{kj}^{(2)} \\delta_k$",
+            "B": "$\\delta_j = (1 + z_j^2) \\sum_{k=1}^K w_{kj}^{(2)} \\delta_k$",
+            "C": "$\\delta_j = z_j^2 \\sum_{k=1}^K w_{kj}^{(2)} \\delta_k$",
+            "D": "$\\delta_j = \\sum_{k=1}^K w_{kj}^{(2)} \\delta_k$"
+            },
+            "answer": "A",
+            "explanation": "由于 $\\tanh$ 激活函数的导数满足 $h'(a) = 1 - h(a)^2 = 1 - z_j^2$，由反向传播公式 (8.13) 可得 $\\delta_j = (1 - z_j^2) \\sum_{k=1}^K w_{kj}^{(2)} \\delta_k$。"
+        },
+        {
+            "id": 5,
+            "topic": "数值微分法",
+            "question": "根据 ch08-1-34.tex 第 8.1.4 节，关于有限差分法 (8.24) 与中心差分法 (8.25)，下列哪项描述是正确的？",
+            "options": {
+            "A": "有限差分法误差为 $\\mathcal{O}(\\epsilon^2)$，中心差分法误差为 $\\mathcal{O}(\\epsilon)$",
+            "B": "有限差分法误差为 $\\mathcal{O}(\\epsilon)$，中心差分法误差为 $\\mathcal{O}(\\epsilon^2)$，但中心差分法的计算步骤大约是有限差分法的两倍",
+            "C": "两者误差阶数相同，计算步骤也相同",
+            "D": "中心差分法的计算步骤比有限差分法少一半"
+            },
+            "answer": "B",
+            "explanation": "有限差分法 $\\frac{E_n(w_{ji} + \\epsilon) - E_n(w_{ji})}{\\epsilon} + \\mathcal{O}(\\epsilon)$ 的误差为 $\\mathcal{O}(\\epsilon)$；中心差分法 $\\frac{E_n(w_{ji} + \\epsilon) - E_n(w_{ji} - \\epsilon)}{2\\epsilon} + \\mathcal{O}(\\epsilon^2)$ 的误差为 $\\mathcal{O}(\\epsilon^2)$，因为 $\\mathcal{O}(\\epsilon)$ 修正项相互抵消。但中心差分法的计算步骤数量大约是有限差分法的两倍。"
+        },
+        {
+            "id": 6,
+            "topic": "数值微分的计算复杂度",
+            "question": "根据 ch08-1-34.tex 第 8.1.4 节，数值微分法的主要问题是什么？其总体计算成本为多少？",
+            "options": {
+            "A": "数值微分法保持了 $\\mathcal{O}(W)$ 的缩放特性，计算成本为 $\\mathcal{O}(W)$",
+            "B": "数值微分法失去了 $\\mathcal{O}(W)$ 的缩放特性，因为每个权重都必须单独扰动，总体计算成本为 $\\mathcal{O}(W^2)$",
+            "C": "数值微分法的计算成本为 $\\mathcal{O}(W^3)$",
+            "D": "数值微分法不需要前向传播"
+            },
+            "answer": "B",
+            "explanation": "数值微分法的主要问题是失去了极其理想的 $\\mathcal{O}(W)$ 缩放特性。每次前向传播需要 $\\mathcal{O}(W)$ 步，而网络中共有 $W$ 个权重，每一个都必须单独扰动，因此总体计算成本为 $\\mathcal{O}(W^2)$。不过数值微分在实践中仍有作用：将反向传播或自动微分计算的导数与中心差分法得到的导数进行比较，是检验软件正确性的有力手段。"
+        },
+        {
+            "id": 7,
+            "topic": "雅可比矩阵的定义与作用",
+            "question": "根据 ch08-1-5.tex 第 8.1.5 节，雅可比矩阵的元素 $J_{ki} \\equiv \\frac{\\partial y_k}{\\partial x_i}$ 的含义是什么？它在模块化系统中起什么作用？",
+            "options": {
+            "A": "表示误差函数对权重的导数；用于更新权重",
+            "B": "表示网络输出对输入的导数（其他输入固定）；衡量输出对输入的局部敏感度，可用于将误差信号从输出端反向传播至系统中较早的模块",
+            "C": "表示权重对输入的导数；用于初始化权重",
+            "D": "表示误差函数对输出的导数；用于计算学习率"
+            },
+            "answer": "B",
+            "explanation": "雅可比矩阵的元素 $J_{ki} \\equiv \\frac{\\partial y_k}{\\partial x_i}$ 表示网络输出关于输入的导数，每个导数都在保持所有其他输入固定的情况下计算。它衡量输出对各个输入变量变化的局部敏感度，在由多个不同模块构建的系统中，可用于将误差信号从输出端反向传播至系统中的早期模块，每个模块只要可微即可。"
+        },
+        {
+            "id": 8,
+            "topic": "雅可比矩阵的输入扰动传播",
+            "question": "根据 ch08-1-5.tex 第 P3 节，关系式 $\\Delta y_k \\approx \\sum_i \\frac{\\partial y_k}{\\partial x_i} \\Delta x_i$ 的适用条件是什么？为什么雅可比矩阵需要针对每个新输入向量重新计算？",
+            "options": {
+            "A": "适用于任意大小的输入扰动；因为雅可比矩阵是常数",
+            "B": "仅适用于输入发生微小扰动（$|\\Delta x_i|$ 足够小）的情况；因为训练好的神经网络映射通常是非线性的，雅可比矩阵的元素不是常数，而取决于所使用的特定输入向量",
+            "C": "仅适用于线性网络；因为非线性网络的雅可比矩阵不存在",
+            "D": "适用于所有情况；雅可比矩阵与输入无关"
+            },
+            "answer": "B",
+            "explanation": "关系式 $\\Delta y_k \\approx \\sum_i \\frac{\\partial y_k}{\\partial x_i} \\Delta x_i$ 的前提假设是 $|\\Delta x_i|$ 的值足够小。通常情况下，由训练好的神经网络所表示的网络映射是非线性的，因此雅可比矩阵的元素并非恒定常数，而是取决于所使用的特定输入向量。因此公式仅在输入发生微小扰动时有效，并且对于每一个新的输入向量，都必须重新计算雅可比矩阵。"
+        },
+        {
+            "id": 9,
+            "topic": "黑塞矩阵的定义与应用",
+            "question": "根据 ch08-1-6.tex 第 8.1.6 节，黑塞矩阵 (Hessian Matrix) 的元素 $H_{ij}$ 的定义是什么？它的计算复杂度以及求逆的复杂度分别是多少？",
+            "options": {
+            "A": "$H_{ij} = \\frac{\\partial E}{\\partial w_i}$；计算复杂度 $\\mathcal{O}(W)$，求逆复杂度 $\\mathcal{O}(W^2)$",
+            "B": "$H_{ij} = \\frac{\\partial^2 E}{\\partial w_i \\partial w_j}$；计算复杂度 $\\mathcal{O}(W^2)$，求逆复杂度 $\\mathcal{O}(W^3)$",
+            "C": "$H_{ij} = \\frac{\\partial^2 E}{\\partial w_i \\partial w_j}$；计算复杂度 $\\mathcal{O}(W)$，求逆复杂度 $\\mathcal{O}(W)$",
+            "D": "$H_{ij} = \\frac{\\partial E}{\\partial w_i \\partial w_j}$；计算复杂度 $\\mathcal{O}(W^3)$，求逆复杂度 $\\mathcal{O}(W^2)$"
+            },
+            "answer": "B",
+            "explanation": "黑塞矩阵的元素定义为 $H_{ij} = \\frac{\\partial^2 E}{\\partial w_i \\partial w_j}$，其中 $i, j \\in \\{1, \\ldots, W\\}$，$W$ 为权重和偏置的总数。计算黑塞矩阵的计算量按 $\\mathcal{O}(W^2)$ 的复杂度增长；计算其逆矩阵的复杂度更高，达到 $\\mathcal{O}(W^3)$。"
+        },
+        {
+            "id": 10,
+            "topic": "黑塞矩阵的外积近似",
+            "question": "根据 ch08-1-6.tex 第 P5、P6 节，外积近似（Levenberg--Marquardt 近似）的核心思想是什么？其适用前提是什么？",
+            "options": {
+            "A": "保留黑塞矩阵的所有二阶导数项；适用于任何训练阶段的网络",
+            "B": "忽略黑塞矩阵分解式中的第二项 $\\sum_n (y_n - t_n) \\nabla \\nabla y_n$，将黑塞矩阵近似为 $\\mathbf{H} \\simeq \\sum_{n=1}^N \\nabla a_n \\nabla a_n^T$；这种近似仅在网络经过充分且适当的训练后才可能成立",
+            "C": "仅保留黑塞矩阵的对角线元素；适用于任何网络",
+            "D": "将黑塞矩阵近似为单位矩阵；与训练阶段无关"
+            },
+            "answer": "B",
+            "explanation": "黑塞矩阵可分解为 $\\mathbf{H} = \\sum_{n=1}^N \\nabla y_n (\\nabla y_n)^T + \\sum_{n=1}^N (y_n - t_n) \\nabla \\nabla y_n$。如果网络已训练好且输出接近目标值，最后一项很小可忽略；更一般地，由于平方和损失的最优函数是目标数据的条件期望，$(y_n - t_n)$ 是均值为零的随机变量，若其值与二阶导数项不相关，则该项在求和时均值为零。忽略第二项后得到外积近似 $\\mathbf{H} \\simeq \\sum_{n=1}^N \\nabla a_n \\nabla a_n^T$（Levenberg--Marquardt 近似）。需要特别强调的是，这种近似可能仅在网络经过充分且适当的训练后才成立，对于一般的网络映射，二阶导数项通常不可忽略。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

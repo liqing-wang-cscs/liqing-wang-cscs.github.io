@@ -1,0 +1,266 @@
+<!-- 第9章：正则化 第3节：学习曲线- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第9章：正则化、第3节：学习曲线 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "学习曲线与早停法",
+            "question": "根据 9.3.1 节 P1--P2，关于学习曲线 (learning curves) 和早停法 (early stopping)，下列哪项描述最准确？",
+            "options": {
+            "A": "训练集误差和验证集误差都随迭代单调下降，因此训练越久越好",
+            "B": "学习曲线绘制训练集和验证集误差随迭代次数的变化；训练集误差通常广泛单调下降，而验证集误差常先下降后上升（网络开始过拟合）；为获得良好泛化性能，应在验证集误差最小处停止训练",
+            "C": "早停法是一种通过增加参数数量来控制模型复杂度的方法",
+            "D": "学习曲线只能用于线性模型"
+            },
+            "answer": "B",
+            "explanation": "学习曲线绘制训练集和验证集误差等性能指标随迭代学习过程（如 SGD）迭代次数的变化。虽然训练集上的误差函数通常随迭代次数广泛单调下降，但验证集上的误差往往先下降，随后随着网络开始过拟合而上升。为获得良好泛化性能，应在验证集误差最小处停止训练。这些曲线提供了训练进展的洞察，也提供了控制有效模型复杂度的实用方法。"
+        },
+        {
+            "id": 2,
+            "topic": "早停法与权重衰减的等价性",
+            "question": "根据 9.3.1 节 P3--P4，关于早停法与权重衰减的关系以及有效参数数量的变化，下列哪项描述最准确？",
+            "options": {
+            "A": "早停法与权重衰减完全无关；训练过程中有效参数数量保持不变",
+            "B": "对于二次误差函数可以证明早停法表现出与权重衰减类似的行为；若权重向量从原点出发沿局部负梯度方向移动，会先大致平行于 $w_2$ 轴移动（经过 $\\bar{\\mathbf{w}}$ 附近），再移向误差最小值 $\\mathbf{w}_{\\text{ML}}$；在 $\\bar{\\mathbf{w}}$ 附近停止类似于权重衰减，其中 $\\tau/\\eta$ 的作用类似于正则化参数 $\\lambda$ 的倒数，网络的有效参数数量在训练过程中不断增长",
+            "C": "早停法会增加有效参数数量，与权重衰减相反",
+            "D": "早停法只适用于线性回归"
+            },
+            "answer": "B",
+            "explanation": "学习曲线的这种行为有时用网络有效参数数量来解释：该数量开始时很小，训练过程中不断增长，对应模型有效复杂度的持续增加。在训练误差最小值到达之前停止训练是限制有效模型复杂度的一种方式。对于二次误差函数可以验证这一点：权重空间坐标轴已旋转至与 Hessian 特征向量平行；若无权重衰减，权重向量从原点出发沿局部负梯度方向移动，会先大致平行于 $w_2$ 轴经过 $\\bar{\\mathbf{w}}$ 附近，然后移向误差函数最小值 $\\mathbf{w}_{\\text{ML}}$（这源于误差曲面形状和 Hessian 特征值的显著差异）。在 $\\bar{\\mathbf{w}}$ 附近停止训练因此类似于权重衰减，表明量 $\\tau/\\eta$（$\\tau$ 为迭代索引，$\\eta$ 为学习率）的作用类似于正则化参数 $\\lambda$ 的倒数。网络的有效参数数量因此在训练过程中不断增长。"
+        },
+        {
+            "id": 3,
+            "topic": "双下降现象的发现",
+            "question": "根据 9.3.2 节 P5--P6，传统偏差-方差权衡的观点与现代深度学习中观察到的现象有何矛盾？",
+            "options": {
+            "A": "传统观点认为模型参数越多越好；现代深度学习认为参数越少越好",
+            "B": "传统观点（经典统计学中广泛存在）认为模型参数数量需根据数据集大小限制，对给定训练集而言，非常大的模型预期性能较差；但现代深度神经网络即使在参数量远超完美拟合训练数据所需时仍能表现出色，深度学习界的普遍看法是更大的模型更好，模型甚至可训练至零误差而仍在测试数据上有良好表现",
+            "C": "传统观点与现代深度学习观点完全一致",
+            "D": "现代深度学习中不存在过拟合问题"
+            },
+            "answer": "B",
+            "explanation": "偏差-方差权衡提供了关于可学习模型泛化性能随参数数量变化的洞察：参数太少的模型因表示能力有限（高偏差）会有较高的测试误差，随参数数量增加测试误差预期下降；但参数继续增加时，因过拟合（高方差）测试误差会再次上升。这导致经典统计学中广泛存在的传统看法：模型参数数量需根据数据集大小限制，对给定训练集而言非常大的模型预期性能较差。然而与这一预期相反，现代深度神经网络即使在参数量远超完美拟合训练数据所需时仍能表现出色（Zhang et al., 2016），深度学习界的普遍看法是更大的模型更好。虽然有时使用早停法，模型也可以训练至零误差而仍在测试数据上有良好表现。"
+        },
+        {
+            "id": 4,
+            "topic": "双下降现象及其机制",
+            "question": "根据 9.3.2 节 P7--P9，关于双下降 (double descent) 现象及其机制，下列哪项描述最准确？",
+            "options": {
+            "A": "双下降指训练误差随模型复杂度先下降后上升再下降",
+            "B": "双下降指测试误差随模型复杂度先下降、再上升、最后再次下降；训练误差则随复杂度单调下降。两个机制区域的过渡大致发生在参数量足够大使模型能精确拟合训练数据时；Nakkiran 等人将有效模型复杂度定义为模型能达到零训练误差的最大训练集规模，当有效模型复杂度超过训练集数据点数时出现双下降；用早停法控制复杂度时也观察到类似现象，说明 SGD 的隐式偏置带来了良好泛化性能",
+            "C": "双下降现象只在极小模型中出现",
+            "D": "双下降与随机梯度下降无关"
+            },
+            "answer": "B",
+            "explanation": "双下降 (Belkin et al., 2019) 指测试误差随模型复杂度（如可学习参数数量）先下降、再上升、最后再次下降的现象。以 ResNet18 为例，训练误差随复杂度单调下降，但测试误差先下降、再上升、最后再次下降；对于非常大的模型，测试误差的下降甚至在训练误差达到零后仍在继续。该行为比经典统计学的偏差-方差讨论更复杂，展示两个不同的模型拟合机制区域：小到中等复杂度对应经典偏差-方差权衡，之后进入非常大模型区域测试误差进一步下降。两区域的过渡大致发生在参数量足够大使模型能精确拟合训练数据时。Nakkiran 等人将有效模型复杂度定义为模型能达到零训练误差的最大训练集规模，因此当有效模型复杂度超过训练集数据点数时出现双下降。用早停法控制模型复杂度时也观察到类似行为：增加训练轮数会提高有效模型复杂度，对足够大的模型再次观察到双下降。对这类模型存在许多可能解（包括过拟合数据的解），因此这似乎是随机梯度下降的一个性质：它引入的隐式偏置带来了良好的泛化性能。"
+        },
+        {
+            "id": 5,
+            "topic": "双下降的反直觉后果",
+            "question": "根据 9.3.2 节 P10--P11，双下降现象带来的一个反直觉后果是什么？",
+            "options": {
+            "A": "增加训练数据量总是能提高模型性能",
+            "B": "有可能处于一种状态：增加训练数据集大小实际上会降低性能，这与“更多数据总是好事”的传统观点相反；对处于临界状态的模型，训练集规模增大会将插值阈值向右推，导致测试误差升高。以 transformer 模型为例，训练集从 4,000 增至 18,000 总体上使曲线更低，但在对应临界复杂度状态的嵌入维度范围内，增大数据集反而可能降低泛化性能",
+            "C": "双下降表明正则化完全无用",
+            "D": "双下降只与训练误差有关"
+            },
+            "answer": "B",
+            "explanation": "双下降的一个反直觉后果是：有可能处于一种状态，增加训练数据集大小实际上会降低性能，这与“更多数据总是好事”的传统观点相反。对处于临界状态的模型（如图 9.9 所示），训练集规模增大会将插值阈值向右推，导致更高的测试误差。这在 transformer 模型的实验中得到了证实：以嵌入维度（控制模型中参数数量）为横轴，将训练集从 4,000 增至 18,000 个数据点总体上使曲线低很多；但在对应临界复杂度状态的嵌入维度范围内，增大数据集规模实际上可能降低泛化性能（图 9.11 中红色竖直箭头所示）。此外，用误差函数中的正则化项控制复杂度时也得到类似结果：对训练至收敛的大模型，测试误差关于 $1/\\lambda$（逆正则化参数）呈现双下降，因为高 $\\lambda$ 对应低复杂度（Yilmaz and Heckel, 2022）。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

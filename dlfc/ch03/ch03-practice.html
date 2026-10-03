@@ -1,0 +1,331 @@
+<!-- 第3章：标准分布 - 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第3章：标准分布 - 自测题</h1>
+    <p class="practice-instructions">请回答以下10道单项选择题，以检验您对这一章的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "伯努利分布",
+            "question": "关于伯努利分布 $\\text{Bern}(x|\\mu) = \\mu^x (1-\\mu)^{1-x}$，下列哪项描述是正确的？",
+            "options": {
+            "A": "均值为 $\\mu(1-\\mu)$，方差为 $\\mu$",
+            "B": "均值为 $\\mu$，方差为 $\\mu(1-\\mu)$",
+            "C": "均值为 $1-\\mu$，方差为 $\\mu$",
+            "D": "均值为 $\\mu^2$，方差为 $\\mu(1-\\mu)$"
+            },
+            "answer": "B",
+            "explanation": "伯努利分布的均值为 $\\mathbb{E}[x] = \\mu$，方差为 $\\text{Var}[x] = \\mu(1-\\mu)$。"
+        },
+        {
+            "id": 2,
+            "topic": "二项分布与多项分布",
+            "question": "关于二项分布与多项分布的关系，下列哪项描述最准确？",
+            "options": {
+            "A": "二项分布是多项分布在 $K=2$ 时的特例",
+            "B": "多项分布是二项分布在 $N=1$ 时的特例",
+            "C": "当 $N=1$ 时，二项分布退化为伯努利分布；多项分布是二项分布向多类别的推广",
+            "D": "二项分布和多项分布完全等价"
+            },
+            "answer": "C",
+            "explanation": "当 $N=1$ 时，二项分布退化为伯努利分布；多项分布是二项分布向 $K$ 个互斥类别的推广。"
+        },
+        {
+            "id": 3,
+            "topic": "多元高斯分布",
+            "question": "多元高斯分布 $\\mathcal{N}(\\mathbf{x}|\\boldsymbol{\\mu}, \\boldsymbol{\\Sigma})$ 中，指数部分的二次型 $(\\mathbf{x}-\\boldsymbol{\\mu})^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{x}-\\boldsymbol{\\mu})$ 称为什么？",
+            "options": {
+            "A": "欧几里得距离",
+            "B": "曼哈顿距离",
+            "C": "马氏距离的平方",
+            "D": "余弦距离"
+            },
+            "answer": "C",
+            "explanation": "该二次型正是马氏距离 (Mahalanobis Distance) 的平方 $\\Delta^2$。当 $\\boldsymbol{\\Sigma} = \\mathbf{I}$ 时退化为欧几里得距离。"
+        },
+        {
+            "id": 4,
+            "topic": "多元高斯的条件分布与边缘分布",
+            "question": "关于多元高斯分布的条件分布与边缘分布，下列哪项描述是正确的？",
+            "options": {
+            "A": "边缘分布的协方差需要矩阵求逆，条件分布的协方差直接取子矩阵",
+            "B": "边缘分布的协方差直接取子矩阵，条件分布的协方差与 $\\mathbf{x}_b$ 的具体值无关",
+            "C": "条件分布的均值与 $\\mathbf{x}_b$ 无关",
+            "D": "边缘分布不再是高斯分布"
+            },
+            "answer": "B",
+            "explanation": "边缘分布的均值和协方差直接取对应部分的子向量和子矩阵；条件协方差 $\\boldsymbol{\\Sigma}_{a|b} = \\boldsymbol{\\Sigma}_{aa} - \\boldsymbol{\\Sigma}_{ab}\\boldsymbol{\\Sigma}_{bb}^{-1}\\boldsymbol{\\Sigma}_{ba}$ 与 $\\mathbf{x}_b$ 的具体值无关，而条件均值是 $\\mathbf{x}_b$ 的线性函数。"
+        },
+        {
+            "id": 5,
+            "topic": "线性高斯模型",
+            "question": "关于线性高斯模型 $p(\\mathbf{x}) = \\mathcal{N}(\\mathbf{x}|\\boldsymbol{\\mu}_x, \\boldsymbol{\\Lambda}^{-1})$ 和 $p(\\mathbf{y}|\\mathbf{x}) = \\mathcal{N}(\\mathbf{y}|\\mathbf{A}\\mathbf{x}+\\mathbf{b}, \\mathbf{L}^{-1})$，下列哪项描述是正确的？",
+            "options": {
+            "A": "边缘分布 $p(\\mathbf{y})$ 不是高斯分布",
+            "B": "后验分布 $p(\\mathbf{x}|\\mathbf{y})$ 不是高斯分布",
+            "C": "边缘分布和后验分布都是高斯分布，且都有解析解",
+            "D": "只有边缘分布有解析解，后验分布需数值近似"
+            },
+            "answer": "C",
+            "explanation": "线性高斯模型的一个重要性质是：边缘分布 $p(\\mathbf{y})$ 和后验分布 $p(\\mathbf{x}|\\mathbf{y})$ 都是高斯分布，且都有解析解。这是卡尔曼滤波的核心推导基础。"
+        },
+        {
+            "id": 6,
+            "topic": "高斯混合模型",
+            "question": "关于高斯混合模型 (GMM) $p(\\mathbf{x}) = \\sum_{k=1}^K \\pi_k \\mathcal{N}(\\mathbf{x}|\\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)$，下列哪项描述是正确的？",
+            "options": {
+            "A": "由于对数似然函数中包含求和的对数，没有解析解，通常使用 EM 算法求解",
+            "B": "对数似然函数有解析解，可直接求导得到闭式解",
+            "C": "混合系数 $\\pi_k$ 不需要满足任何约束",
+            "D": "GMM 只能拟合单峰分布"
+            },
+            "answer": "A",
+            "explanation": "GMM 的对数似然函数中包含 $\\ln \\sum$ 形式，没有解析解，通常使用 EM 算法迭代优化。混合系数需满足 $\\sum \\pi_k = 1, \\pi_k \\geq 0$。GMM 可以拟合多峰分布。"
+        },
+        {
+            "id": 7,
+            "topic": "指数族分布",
+            "question": "指数族分布的标准形式为 $p(\\mathbf{x}|\\boldsymbol{\\eta}) = h(\\mathbf{x}) g(\\boldsymbol{\\eta}) \\exp(\\boldsymbol{\\eta}^T \\mathbf{u}(\\mathbf{x}))$。其中 $\\mathbf{u}(\\mathbf{x})$ 和 $\\boldsymbol{\\eta}$ 分别称为什么？",
+            "options": {
+            "A": "自然参数和充分统计量",
+            "B": "充分统计量和自然参数",
+            "C": "基底测度和归一化系数",
+            "D": "归一化系数和基底测度"
+            },
+            "answer": "B",
+            "explanation": "$\\mathbf{u}(\\mathbf{x})$ 是充分统计量 (Sufficient Statistics)，$\\boldsymbol{\\eta}$ 是自然参数 (Natural Parameters)，$h(\\mathbf{x})$ 是基底测度，$g(\\boldsymbol{\\eta})$ 是归一化系数。"
+        },
+        {
+            "id": 8,
+            "topic": "非参数方法",
+            "question": "关于非参数方法，下列哪项描述是正确的？",
+            "options": {
+            "A": "非参数方法意味着模型没有任何参数",
+            "B": "非参数方法的参数数量固定，不随数据量增长",
+            "C": "非参数方法的参数数量通常随数据量 $N$ 的增长而增长，不假设数据服从特定参数化分布",
+            "D": "非参数方法预测阶段计算量通常很小"
+            },
+            "answer": "C",
+            "explanation": "非参数方法并非“没有参数”，而是参数数量不固定，通常随数据量增长。其不假设数据服从特定的参数化分布。预测阶段计算量通常较大（如 KNN 需计算所有距离）。"
+        },
+        {
+            "id": 9,
+            "topic": "核密度估计",
+            "question": "在核密度估计 (KDE) $p(\\mathbf{x}) = \\frac{1}{N} \\sum_{n=1}^N \\frac{1}{h^D} k\\left( \\frac{\\mathbf{x} - \\mathbf{x}_n}{h} \\right)$ 中，带宽 $h$ 的作用是什么？",
+            "options": {
+            "A": "$h$ 太小会导致过拟合，$h$ 太大会导致欠拟合",
+            "B": "$h$ 太小会导致欠拟合，$h$ 太大会导致过拟合",
+            "C": "$h$ 对结果没有影响",
+            "D": "$h$ 只影响计算速度，不影响密度估计结果"
+            },
+            "answer": "A",
+            "explanation": "带宽 $h$ 是平滑参数：$h$ 太小则过拟合，密度函数呈现尖锐峰值；$h$ 太大则欠拟合，密度函数过于平滑，掩盖数据结构。"
+        },
+        {
+            "id": 10,
+            "topic": "高斯分布的熵",
+            "question": "根据 ch03-slides-with-exercise.tex 习题 3.9，$D$ 维多元高斯分布 $\\mathcal{N}(\\mathbf{x}|\\boldsymbol{\\mu}, \\boldsymbol{\\Sigma})$ 的熵为多少？",
+            "options": {
+            "A": "$H[\\mathbf{x}] = \\frac{1}{2} \\ln |\\boldsymbol{\\Sigma}| + \\frac{D}{2} \\ln(2\\pi)$",
+            "B": "$H[\\mathbf{x}] = \\frac{1}{2} \\ln |\\boldsymbol{\\Sigma}| + \\frac{D}{2} (1 + \\ln(2\\pi))$",
+            "C": "$H[\\mathbf{x}] = \\ln |\\boldsymbol{\\Sigma}| + D \\ln(2\\pi)$",
+            "D": "$H[\\mathbf{x}] = \\frac{1}{2} \\ln |\\boldsymbol{\\Sigma}| + D \\ln(2\\pi e)$"
+            },
+            "answer": "B",
+            "explanation": "$D$ 维多元高斯分布的熵为 $H[\\mathbf{x}] = \\frac{1}{2} \\ln |\\boldsymbol{\\Sigma}| + \\frac{D}{2} (1 + \\ln(2\\pi))$。推导中利用了 $\\mathbb{E}[(\\mathbf{x}-\\boldsymbol{\\mu})^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{x}-\\boldsymbol{\\mu})] = D$ 的性质。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

@@ -1,0 +1,266 @@
+<!-- 第9章：正则化 第4节：参数共享- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第9章：正则化、第4节：参数共享 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "参数共享与硬约束",
+            "question": "根据 9.4 节 P1，关于参数共享 (parameter sharing / weight sharing / parameter tying)，下列哪项描述最准确？",
+            "options": {
+            "A": "参数共享通过将权重推向零来减少过拟合，与 $L_2$ 正则化完全相同",
+            "B": "参数共享是对权重施加硬约束：将权重分组并要求每组内所有权重共享同一数值（该数值从数据中学习），从而使自由度数量小于网络连接数；通常作为将归纳偏置编码进网络以表达已知不变性的方式；参数共享仅适用于约束形式可预先指定的特定问题",
+            "C": "参数共享不需要修改反向传播算法，因为它是通过增加自由度实现的",
+            "D": "参数共享只能用于循环神经网络"
+            },
+            "answer": "B",
+            "explanation": "像 $L_2$ 正则化器 $\\|\\mathbf{w}\\|^2$ 这样的正则化项通过促使权重值接近零来减少过拟合。另一种降低网络复杂度的方式是对权重施加硬约束：将其分组并要求每组内所有权重共享相同数值，共享值从数据中学习。这称为权重共享、参数共享或参数绑定，它意味着自由度数量小于网络中的连接数。通常这是作为将归纳偏置编码进网络以表达已知不变性的一种方式。对此类网络评估误差函数梯度可通过对反向传播做小修改完成（不过在自动微分中是隐式处理的）。参数共享只适用于约束形式可预先指定的特定问题。"
+        },
+        {
+            "id": 2,
+            "topic": "软权重共享的动机",
+            "question": "根据 9.4 节 P2--P3，Nowlan and Hinton (1992) 提出的“软权重共享 (soft weight sharing)”与硬约束参数共享有何区别？其概率模型基础是什么？",
+            "options": {
+            "A": "软权重共享仍强制每组权重严格相等；其概率基础是单个高斯分布",
+            "B": "软权重共享不使用强制参数相等的硬约束，而是用正则化项促使成组权重具有相似值；此外，权重如何分组、每组的均值以及组内值的散布都在学习过程中确定；其概率基础是高斯混合分布 $p(\\mathbf{w}) = \\prod_i \\{\\sum_{j=1}^K \\pi_j \\mathcal{N}(w_i|\\mu_j, \\sigma_j^2)\\}$，其负对数给出正则化函数 $\\Omega(\\mathbf{w}) = -\\sum_i \\ln(\\sum_{j=1}^K \\pi_j \\mathcal{N}(w_i|\\mu_j, \\sigma_j^2))$",
+            "C": "软权重共享不需要正则化系数 $\\lambda$",
+            "D": "软权重共享等价于简单权重衰减"
+            },
+            "answer": "B",
+            "explanation": "Nowlan and Hinton (1992) 提出了软权重共享，其中正则化项促使成组权重具有相似值，而不是用硬约束强制模型参数集合相等。此外，权重如何分组、每组的均值以及组内值的散布都在学习过程中确定。简单权重衰减可视为权重上高斯先验分布的负对数，促使所有权重收敛到单一值零；通过考虑高斯混合概率分布，可以促使权重值形成多个组而非仅一个组。高斯分量的均值 $\\{\\mu_j\\}$、方差 $\\{\\sigma_j^2\\}$ 以及混合系数 $\\{\\pi_j\\}$ 都作为可调参数在学习过程中确定，概率密度为 $p(\\mathbf{w}) = \\prod_i \\{\\sum_{j=1}^K \\pi_j \\mathcal{N}(w_i|\\mu_j, \\sigma_j^2)\\}$，取负对数得到正则化函数 $\\Omega(\\mathbf{w}) = -\\sum_i \\ln(\\sum_{j=1}^K \\pi_j \\mathcal{N}(w_i|\\mu_j, \\sigma_j^2))$，总误差函数为 $\\widetilde{E}(\\mathbf{w}) = E(\\mathbf{w}) + \\lambda\\Omega(\\mathbf{w})$。"
+        },
+        {
+            "id": 3,
+            "topic": "软权重共享中各参数的导数",
+            "question": "根据 9.4 节 P4--P5，软权重共享中误差函数对权重 $w_i$ 和高斯中心 $\\mu_j$ 的导数分别是什么？其直观效果是什么？",
+            "options": {
+            "A": "$\\frac{\\partial\\widetilde{E}}{\\partial w_i} = \\frac{\\partial E}{\\partial w_i} + \\lambda\\sum_j \\gamma_j(w_i)\\frac{(w_i - \\mu_j)}{\\sigma_j^2}$；效果是将每个权重拉向第 $j$ 个高斯的中心，拉力正比于该高斯对该权重的后验概率；$\\frac{\\partial\\widetilde{E}}{\\partial\\mu_j} = \\lambda\\sum_i \\gamma_j(w_i)\\frac{(\\mu_j - w_i)}{\\sigma_j^2}$；效果是将 $\\mu_j$ 推向权重值的平均值，并按后验概率加权",
+            "B": "$\\frac{\\partial\\widetilde{E}}{\\partial w_i} = \\frac{\\partial E}{\\partial w_i}$；正则化项不影响权重导数",
+            "C": "$\\frac{\\partial\\widetilde{E}}{\\partial \\mu_j} = 0$；高斯中心在训练中保持不变",
+            "D": "$\\frac{\\partial\\widetilde{E}}{\\partial w_i} = \\lambda\\sum_j \\gamma_j(w_i)(w_i - \\mu_j)$；与方差无关"
+            },
+            "answer": "A",
+            "explanation": "为计算导数，方便的做法是将 $\\{\\pi_j\\}$ 视为每个分量生成某个权重值的先验概率，并引入相应的后验概率（由贝叶斯定理给出）：$\\gamma_j(w_i) = \\frac{\\pi_j\\mathcal{N}(w_i|\\mu_j,\\sigma_j^2)}{\\sum_k \\pi_k\\mathcal{N}(w_i|\\mu_k,\\sigma_k^2)}$。总误差函数对权重的导数为 $\\frac{\\partial\\widetilde{E}}{\\partial w_i} = \\frac{\\partial E}{\\partial w_i} + \\lambda\\sum_j \\gamma_j(w_i)\\frac{(w_i - \\mu_j)}{\\sigma_j^2}$，效果是将每个权重拉向第 $j$ 个高斯的中心，拉力正比于该高斯对给定权重的后验概率。误差对高斯中心的导数为 $\\frac{\\partial\\widetilde{E}}{\\partial\\mu_j} = \\lambda\\sum_i \\gamma_j(w_i)\\frac{(\\mu_j - w_i)}{\\sigma_j^2}$，直观解释是它将 $\\mu_j$ 推向权重值的平均值，并按各权重参数由分量 $j$ 生成的后验概率加权。"
+        },
+        {
+            "id": 4,
+            "topic": "方差与混合系数的参数化",
+            "question": "根据 9.4 节 P6--P7，为确保方差 $\\sigma_j^2$ 保持正值以及混合系数 $\\pi_j$ 满足约束 $\\sum_j \\pi_j = 1, 0 \\leq \\pi_j \\leq 1$，软权重共享分别采用了什么参数化方式？",
+            "options": {
+            "A": "方差直接使用 $\\sigma_j^2$，混合系数直接使用 $\\pi_j$",
+            "B": "引入新变量 $\\xi_j$ 定义 $\\sigma_j^2 = \\exp(\\xi_j)$，对 $\\{\\xi_j\\}$ 进行无约束最小化；将混合系数用辅助变量 $\\{\\eta_j\\}$ 和 softmax 函数表示：$\\pi_j = \\frac{\\exp(\\eta_j)}{\\sum_k \\exp(\\eta_k)}$，此时 $\\frac{\\partial\\widetilde{E}}{\\partial\\eta_j} = \\lambda\\sum_i(\\pi_j - \\gamma_j(w_i))$，即 $\\pi_j$ 被推向混合分量 $j$ 的平均后验概率",
+            "C": "方差通过取绝对值保证正值，混合系数通过归一化保证和为 1",
+            "D": "方差和混合系数都不需要参数化处理"
+            },
+            "answer": "B",
+            "explanation": "为确保方差 $\\{\\sigma_j^2\\}$ 保持正值，引入新变量 $\\{\\xi_j\\}$ 定义为 $\\sigma_j^2 = \\exp(\\xi_j)$，并对 $\\{\\xi_j\\}$ 进行无约束最小化；相应的导数为 $\\frac{\\partial\\widetilde{E}}{\\partial\\xi_j} = \\frac{\\lambda}{2}\\sum_i\\gamma_j(w_i)(1 - \\frac{(w_i-\\mu_j)^2}{\\sigma_j^2})$，这一过程驱动 $\\sigma_j$ 趋向权重围绕相应中心 $\\mu_j$ 的平方偏差的加权平均，加权系数同样是每个权重由分量 $j$ 生成的后验概率。对于混合系数 $\\pi_j$ 的导数，需考虑约束 $\\sum_j\\pi_j = 1, 0 \\leq \\pi_j \\leq 1$（这源于将 $\\pi_j$ 解释为先验概率）。可以通过 softmax 函数用辅助变量 $\\{\\eta_j\\}$ 表示：$\\pi_j = \\frac{\\exp(\\eta_j)}{\\sum_k\\exp(\\eta_k)}$，此时 $\\frac{\\partial\\widetilde{E}}{\\partial\\eta_j} = \\lambda\\sum_i(\\pi_j - \\gamma_j(w_i))$，即 $\\pi_j$ 被推向混合分量 $j$ 的平均后验概率。"
+        },
+        {
+            "id": 5,
+            "topic": "软权重共享在生成式与判别式模型结合中的应用",
+            "question": "根据 9.4 节 P8，Lasserre, Bishop, and Minka (2006) 提出的软权重共享的不同应用是什么？它适用于什么场景，有什么优势？",
+            "options": {
+            "A": "将生成式模型与判别式模型完全独立训练，不使用软绑定",
+            "B": "将无监督训练生成式模型与有监督训练相应判别式模型相结合：生成式模型的优势在于所有数据都可用于确定其参数，而只有带标签样本直接为判别式模型提供信息；判别式模型在模型误设定（模型未精确描述真实数据生成分布）时能获得更好的泛化性能；通过对两个模型的参数引入软绑定，可获得生成式与判别式方法的良好混合，既能对模型误设定具有鲁棒性，又能受益于在无标签数据上训练；适用于有大量无标签数据但带标签数据短缺的情形",
+            "C": "该应用只适用于图像分类任务",
+            "D": "该方法要求所有数据都必须带标签"
+            },
+            "answer": "B",
+            "explanation": "Lasserre, Bishop, and Minka (2006) 提出了一种软权重共享的不同应用，引入了一种原则性方法，将生成式模型的无监督训练与相应判别式模型的有监督训练相结合。这在我们有大量无标签数据但带标签数据短缺的情形中很有用。生成式模型的优势在于所有数据都可用于确定其参数，而只有带标签样本直接为判别式模型提供信息。然而，当存在模型误设定（模型未精确描述生成数据的真实分布，这通常是常态）时，判别式模型能获得更好的泛化性能。通过对两个模型的参数引入软绑定，我们获得了生成式与判别式方法的一种良好混合形式，既能对模型误设定具有鲁棒性，又能受益于在无标签数据上进行训练。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

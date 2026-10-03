@@ -1,0 +1,396 @@
+<!-- 第10章：卷积网络 第2节：卷积滤波器- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第10章：卷积网络、第2节：卷积滤波器 - 自测题</h1>
+    <p class="practice-instructions">请回答以下15道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "全连接网络的参数灾难",
+            "question": "根据 10.2 节 P1，对于一张 $10^3 \\times 10^3$ 像素的彩色图像，若第一个隐藏层有 1,000 个隐藏单元，第一层的权重数量约为多少？这说明了什么？",
+            "options": {
+            "A": "约 $10^6$ 个权重；说明全连接网络参数很少",
+            "B": "约 $3 \\times 10^9$ 个权重；说明对于高维图像数据，标准全连接架构需要极其庞大的参数数量，且必须通过样本来学习不变性和等变性，需要极其庞大的数据集",
+            "C": "约 $10^3$ 个权重；与图像大小无关",
+            "D": "约 $3 \\times 10^3$ 个权重；说明参数数量可控"
+            },
+            "answer": "B",
+            "explanation": "考虑一张 $10^3 \\times 10^3$ 像素的彩色图像，每个像素对应红、绿、蓝三个强度值，如果第一个隐藏层有 1,000 个隐藏单元，则第一层已有 $3 \\times 10^9$ 个权重。此外，这样的网络必须通过样本来学习任何不变性和等变性，需要极其庞大的数据集。通过设计一种架构将我们对图像结构的归纳偏置融入其中，可以大幅降低数据集需求，并同时改善关于图像空间对称性的泛化能力。"
+        },
+        {
+            "id": 2,
+            "topic": "CNN 的四大核心概念",
+            "question": "根据 10.2 节 P2，为了利用图像数据的二维结构创建归纳偏置，可以使用哪四个相互关联的概念？关于层级结构的细节应如何处理？",
+            "options": {
+            "A": "层级性、局部性、等变性、不变性；层级的细节（包括每一层提取的特征类型）应硬编码",
+            "B": "层级性、局部性、等变性、不变性；虽然希望将层级性的通用概念构建到模型中，但希望层级的细节（包括每一层提取的特征类型）是从数据中学习的，而不是硬编码的",
+            "C": "稀疏性、共享性、平移性、旋转性；层级细节应硬编码",
+            "D": "层级性、随机性、独立性、对称性；层级细节无需学习"
+            },
+            "answer": "B",
+            "explanation": "为了利用图像数据的二维结构创建归纳偏置，可以使用四个相互关联的概念：层级性 (hierarchy)、局部性 (locality)、等变性 (equivariance) 和不变性 (invariance)。以检测人脸为例，存在自然的层级结构：图像包含人脸，人脸包含眼睛，眼睛包含虹膜，虹膜包含边缘。在层级最底层，节点可利用图像小区域的局部信息检测边缘等特征；更高层结构可通过组合前一层特征检测。关键点是：虽然希望将层级性的通用概念构建到模型中，但希望层级的细节（包括每一层提取的特征类型）是从数据中学习的，而不是硬编码的。层级模型天然适合深度学习框架，允许通过一连串处理层从原始数据中提取复杂概念，整个系统端到端训练。"
+        },
+        {
+            "id": 3,
+            "topic": "感受野与滤波器的定义",
+            "question": "根据 10.2.1 节 P3，在卷积网络中，“感受野 (receptive field)”和“滤波器 (filter/kernel)”分别指什么？",
+            "options": {
+            "A": "感受野指整个图像，滤波器指输出特征图",
+            "B": "感受野指神经网络中某单元所接收输入的图像小矩形区域（图像块），体现局部性概念；滤波器指与该单元相关联的权重值所形成的小二维网格，本身可可视化为图像",
+            "C": "感受野指权重矩阵，滤波器指输入图像块",
+            "D": "感受野和滤波器是同一个概念"
+            },
+            "answer": "B",
+            "explanation": "以灰度图像为例，考虑神经网络第一层中的一个单元，它只接受来自图像中一个小矩形区域（图像块）的像素值作为输入，该图像块称为该单元的感受野，它体现了局部性的概念。该单元输出为 $z = \\text{ReLU}(\\mathbf{w}^T\\mathbf{x} + w_0)$，其中 $\\mathbf{x}$ 是感受野的像素值向量。由于每个输入像素对应一个权重，这些权重本身形成一个小二维网格，称为滤波器（有时也叫核），本身可可视化为图像。"
+        },
+        {
+            "id": 4,
+            "topic": "滤波器作为模板匹配器",
+            "question": "根据 10.2.1 节 P4，假设 $\\mathbf{w}$ 和 $w_0$ 固定且 $\\|\\mathbf{x}\\|^2$ 固定，使隐藏单元输出响应最大的输入图像块 $\\mathbf{x}$ 具有什么形式？这说明滤波器具有什么性质？",
+            "options": {
+            "A": "$\\mathbf{x} = \\alpha\\mathbf{w}$（$\\alpha$ 为某系数）；说明最大输出响应出现在检测到图像块（在整体缩放范围内）看起来像滤波器图像时，滤波器充当特征检测器，当找到与其核足够好匹配时发出信号",
+            "B": "$\\mathbf{x} = \\mathbf{0}$；说明滤波器对所有输入响应相同",
+            "C": "$\\mathbf{x} = -\\alpha\\mathbf{w}$；说明滤波器总是检测与自身相反的图案",
+            "D": "$\\mathbf{x}$ 与 $\\mathbf{w}$ 无关；说明滤波器没有模板匹配性质"
+            },
+            "answer": "A",
+            "explanation": "假设 $\\mathbf{w}$ 和 $w_0$ 固定且输入图像块范数 $\\|\\mathbf{x}\\|^2$ 固定，使 $\\mathbf{w}^T\\mathbf{x}$ 最大化（从而隐藏单元响应最大化）的解为 $\\mathbf{x} = \\alpha\\mathbf{w}$（$\\alpha$ 为某系数）。这说明最大输出响应出现在检测到的图像块（在整体缩放范围内）看起来像滤波器图像时。ReLU 仅在 $\\mathbf{w}^T\\mathbf{x}$ 超过阈值 $-w_0$ 时产生非零输出，因此该单元充当特征检测器，当发现与其核足够好匹配时发出信号。"
+        },
+        {
+            "id": 5,
+            "topic": "权重复制与平移等变性",
+            "question": "根据 10.2.2 节 P5--P6，如何实现网络对特征位置的泛化？什么是特征图？卷积的两大核心特性是什么？",
+            "options": {
+            "A": "为图像中每个位置单独学习一组权重；特征图是输入图像；核心特性是稠密连接和独立参数",
+            "B": "在图像中多个位置复制相同的隐藏单元权重值；隐藏层的单元构成特征图，其中所有单元共享相同权重，图像某局部块在单元中产生特定响应，不同位置的相同像素值集合会在特征图相应平移位置产生相同响应（等变性）；卷积的两大核心特性是稀疏连接和参数共享",
+            "C": "使用随机权重初始化；特征图是随机噪声图",
+            "D": "仅在图像中心应用滤波器；不存在参数共享"
+            },
+            "answer": "B",
+            "explanation": "如果人脸图像中的小块表示某位置的眼睛，则图像另一位置的相同像素值集合必然表示新位置的眼睛。为实现位置泛化，只需在图像中多个位置复制相同的隐藏单元权重值。隐藏层的单元构成特征图 (feature map)，其中所有单元共享相同权重。因此若图像某局部块在其连接的单元中产生特定响应，不同位置的相同像素值集合会在特征图相应平移位置产生相同响应，这就是等变性 (equivariance)。该网络连接是稀疏的（大多数连接不存在），权重值由所有隐藏单元共享，这种变换就是卷积 (convolution) 的一个实例。"
+        },
+        {
+            "id": 6,
+            "topic": "二维卷积的数学定义与批归一化",
+            "question": "根据 10.2.2 节 P7，二维卷积的定义 $C(j,k) = \\sum_l\\sum_m I(j+l, k+m)K(l,m)$ 严格来说称为什么？在卷积网络中使用批归一化时，对特征图内不同空间位置的均值和方差有什么要求？",
+            "options": {
+            "A": "称为真正的卷积；每个空间位置使用不同的均值和方差",
+            "B": "严格来说称为互相关 (cross-correlation)，与数学定义的卷积略有不同，但机器学习文献中通常称为卷积；批归一化时必须在特征图内每个空间位置使用相同的均值和方差值，以确保特征图统计特性与位置无关",
+            "C": "称为傅里叶变换；批归一化与空间位置无关",
+            "D": "称为池化；批归一化不需要均值方差"
+            },
+            "answer": "B",
+            "explanation": "二维卷积定义为 $C(j,k) = \\sum_l\\sum_m I(j+l, k+m)K(l,m)$，有时表示为 $\\mathbf{C} = \\mathbf{I} * \\mathbf{K}$。严格来说该式称为互相关 (cross-correlation)，与传统数学定义的卷积略有不同，但此处遵循机器学习文献惯例将其称为卷积。重要的是，当在卷积网络中使用批归一化时，在归一化单元状态时必须在特征图内每个空间位置上使用相同的均值和方差值，以确保特征图的统计特性与位置无关。"
+        },
+        {
+            "id": 7,
+            "topic": "手工设计的边缘检测滤波器",
+            "question": "根据 10.2.2 节 P8--P9，滤波器 $\\begin{bmatrix}-1&0&1\\\\-1&0&1\\\\-1&0&1\\end{bmatrix}$ 和其转置分别检测什么？特征图上的正负值分别代表什么？",
+            "options": {
+            "A": "第一个检测水平边缘，转置检测垂直边缘；正负值与边缘方向无关",
+            "B": "第一个滤波器检测垂直边缘（水平方向强度变化），其转置检测水平边缘（垂直方向强度变化）；垂直边缘对应像素强度增加时特征图相应点为正（亮色），强度减小时为负（暗色）",
+            "C": "两个滤波器都检测对角线边缘",
+            "D": "滤波器只能检测颜色，不能检测边缘"
+            },
+            "answer": "B",
+            "explanation": "直观上，当我们水平扫过图像时，如果像素之间强度发生显著局部变化，就认为存在垂直边缘；可通过与滤波器 $\\begin{bmatrix}-1&0&1\\\\-1&0&1\\\\-1&0&1\\end{bmatrix}$ 卷积来度量这种变化。类似地，可通过与该滤波器的转置 $\\begin{bmatrix}-1&-1&-1\\\\0&0&0\\\\1&1&1\\end{bmatrix}$ 卷积来检测水平边缘。在图 10.4(b) 中，若垂直边缘对应像素强度增加，则特征图相应点为正（亮色）；若垂直边缘对应强度减小，则为负（暗色）；图 10.4(c) 对水平边缘有类似性质。"
+        },
+        {
+            "id": 8,
+            "topic": "卷积结构的三大优势",
+            "question": "根据 10.2.2 节 P10，与标准全连接网络相比，卷积结构有哪三大优势？关于输入尺寸变化，有什么重要性质？",
+            "options": {
+            "A": "连接稠密、参数独立、输入尺寸固定；改变输入尺寸需重新训练",
+            "B": "(i) 连接稀疏，即使大图像也能大幅减少权重数量；(ii) 权重值共享，大幅减少独立参数数量，从而降低学习这些参数所需训练集大小；(iii) 同一网络可应用于不同尺寸图像而无需重新训练；改变输入图像尺寸只改变特征图大小，不改变权重数量或独立可学习参数数量",
+            "C": "只减少计算量，不减少参数量；输入尺寸变化会改变参数数量",
+            "D": "三大优势是速度快、精度高、内存小"
+            },
+            "answer": "B",
+            "explanation": "将卷积结构与标准全连接网络比较可见三个优势：(i) 连接是稀疏的，即使在大图像上也能大大减少权重数量；(ii) 权重值是共享的，大幅减少了独立参数的数量，从而降低了学习这些参数所需的训练集大小；(iii) 相同的网络可应用于不同尺寸的图像而无需重新训练。改变输入图像尺寸只会改变特征图的大小，而不会改变模型中的权重数量或独立可学习参数的数量。此外，通过利用 GPU 的大规模并行性，卷积可以非常高效地实现。"
+        },
+        {
+            "id": 9,
+            "topic": "填充的目的与类型",
+            "question": "根据 10.2.3 节 P11，对于 $J \\times K$ 像素的图像和 $M \\times M$ 的核，无填充时特征图维度是多少？填充 $P$ 像素后呢？“有效卷积”和“相同卷积”分别指什么？",
+            "options": {
+            "A": "无填充时 $(J-M+1) \\times (K-M+1)$；填充 $P$ 后 $(J+2P-M+1) \\times (K+2P-M+1)$；$P=0$ 称有效卷积，$P=(M-1)/2$ 时输出与输入同尺寸称相同卷积",
+            "B": "无填充时 $(J+M+1) \\times (K+M+1)$；填充后尺寸不变",
+            "C": "无填充时与输入相同；填充会使输出变大",
+            "D": "填充与输出尺寸无关"
+            },
+            "answer": "A",
+            "explanation": "若图像维度为 $J \\times K$ 像素，使用维度为 $M \\times M$ 的核卷积，所得特征图维度为 $(J-M+1) \\times (K-M+1)$。若填充 $P$ 个像素，输出映射图维度为 $(J+2P-M+1) \\times (K+2P-M+1)$。若没有填充（$P=0$），称为有效 (valid) 卷积；当 $P=(M-1)/2$ 使输出数组与输入具有相同大小时，称为相同 (same) 卷积。计算机视觉中滤波器通常使用奇数 $M$，使填充可在图像所有边上对称，并存在明确定义的中心像素。填充值典型选择是设为零，不过首先需从每幅图像中减去均值使零代表像素强度平均值。"
+        },
+        {
+            "id": 10,
+            "topic": "跨步卷积",
+            "question": "根据 10.2.4 节 P12，跨步卷积 (strided convolutions) 的作用是什么？步长为 $S$ 时特征图元素数量的计算公式是什么？",
+            "options": {
+            "A": "作用是增大特征图；公式为 $(J+2P-M+S) \\times (K+2P-M+S)$",
+            "B": "作用是使特征图显著小于原始图像（下采样），为卷积网络架构设计提供灵活性；公式为 $\\lfloor \\frac{J+2P-M}{S} - 1 \\rfloor \\times \\lfloor \\frac{K+2P-M}{S} - 1 \\rfloor$",
+            "C": "作用是增加参数量；公式与步长无关",
+            "D": "作用是减少通道数；公式为 $J \\times K / S$"
+            },
+            "answer": "B",
+            "explanation": "典型图像处理应用中图像可能具有非常大的像素数量，由于核通常相对较小（$M \\ll J, K$），卷积特征图大小与原始图像相近，若使用相同填充则尺寸完全相同。有时希望特征图显著小于原始图像，为卷积网络架构设计提供灵活性。一种方法是使用跨步卷积，即滤波器以更大步长 $S$（称为步长 stride）移动。若水平和垂直方向使用相同步长，特征图元素数量为 $\\lfloor \\frac{J+2P-M}{S} - 1 \\rfloor \\times \\lfloor \\frac{K+2P-M}{S} - 1 \\rfloor$，其中 $\\lfloor x \\rfloor$ 表示向下取整。对大图像和小滤波器，特征图大致比原始图像小 $1/S$ 倍。"
+        },
+        {
+            "id": 11,
+            "topic": "多通道卷积与多输出通道",
+            "question": "根据 10.2.5 节 P13--P14，对于 $J \\times K$ 像素、$C$ 个通道的图像，滤波器张量维度是多少？引入 $C_{\\text{OUT}}$ 个输出通道后，滤波器张量维度和总参数数量分别是什么？",
+            "options": {
+            "A": "滤波器张量维度 $M \\times M$；引入多输出后为 $M \\times M \\times C$，参数量为 $M^2 C$",
+            "B": "滤波器张量维度 $M \\times M \\times C$；引入 $C_{\\text{OUT}}$ 个输出通道后为 $M \\times M \\times C \\times C_{\\text{OUT}}$，总参数量为 $(M^2 C + 1)C_{\\text{OUT}}$（含每个输出通道的偏置）",
+            "C": "滤波器张量维度 $J \\times K \\times C$；参数数量与图像大小成正比",
+            "D": "多通道卷积不需要滤波器张量"
+            },
+            "answer": "B",
+            "explanation": "彩色图像有红、绿、蓝三个通道。$J \\times K$ 像素、$C$ 个通道的图像由维度为 $J \\times K \\times C$ 的张量描述。引入维度为 $M \\times M \\times C$ 的滤波器张量，包含针对 $C$ 个通道中每个通道的单独 $M \\times M$ 滤波器。假设无填充且步长为 1，得到大小为 $(J-M+1) \\times (K-M+1)$ 的特征图。这种滤波器类似全连接网络中单个隐藏节点，只能学习检测一种特征，因此非常受限。为构建更灵活的模型，可包含多个这样的滤波器，每个滤波器拥有独立参数并产生独立特征图。此时滤波器张量维度为 $M \\times M \\times C \\times C_{\\text{OUT}}$，每个输出通道有自己关联的偏置参数，总参数数量为 $(M^2 C + 1)C_{\\text{OUT}}$。"
+        },
+        {
+            "id": 12,
+            "topic": "$1 \\times 1$ 卷积",
+            "question": "根据 10.2.5 节 P15，$1 \\times 1$ 卷积的本质是什么？其典型应用是什么？",
+            "options": {
+            "A": "本质是池化操作；用于增大特征图空间尺寸",
+            "B": "本质是滤波器尺寸为单个像素的卷积层，滤波器有 $C$ 个权重（每个输入通道一个）外加偏置；一个应用是通过将输出通道数设为与输入通道数不同，在不改变特征图空间尺寸的情况下改变通道数量（通常用于减少通道数）；因此它与步长卷积或池化相辅相成，减少的是通道数而非空间维度",
+            "C": "本质是全连接层；用于替换所有卷积层",
+            "D": "本质是恒等变换；不改变任何维度"
+            },
+            "answer": "B",
+            "explanation": "在设计卷积网络时，$1 \\times 1$ 卷积是一个有用的概念 (Lin, Chen, and Yan, 2013)，它本质上是一个滤波器尺寸为单个像素的卷积层。该滤波器有 $C$ 个权重（每个输入通道一个）外加偏置。$1 \\times 1$ 卷积的一个应用是，通过将输出通道数设置为与输入通道数不同的值，在不改变特征图空间尺寸的情况下改变通道数量（通常用于减少通道数）。因此它与步长卷积或池化相辅相成，因为它减少的是通道数而非通道的空间维度。"
+        },
+        {
+            "id": 13,
+            "topic": "池化的动机与机制",
+            "question": "根据 10.2.6 节 P16--P18，池化的动机是什么？最大池化如何工作？池化层与卷积层的关键区别是什么？",
+            "options": {
+            "A": "动机是增加参数；最大池化输出输入值的最小值；池化层有大量可学习参数",
+            "B": "动机是：卷积层编码平移等变性，但图像分类等任务希望输出对平移具有不变性，同时需对单个特征的微小平移不变；最大池化中每个单元输出其输入值的最大值；池化层与卷积层结构类似（单元按网格排列，各取感受野输入，需选择滤波器尺寸和步长），但池化单元输出是输入的简单固定函数，因此池化层没有可学习参数；池化还可用于下采样特征图降低表示维度",
+            "C": "动机是减少通道数；最大池化输出平均值；池化层参数多于卷积层",
+            "D": "池化只用于灰度图像；与平移不变性无关"
+            },
+            "answer": "B",
+            "explanation": "卷积层编码平移等变性：若代表隐单元感受野的小块像素移动到不同位置，特征图对应输出也随之移动到相应位置。这对寻找物体位置等任务有用。但对图像分类等任务，希望输出对输入平移具有不变性。此外，希望网络学习层次化结构，其中某层复杂特征由前一层简单特征组合而成，简单特征间的空间关系很重要（如眼睛、鼻子、嘴巴的相对位置决定人脸存在），但相对位置的微小变化不影响分类，因此希望对这些单个特征的微小平移具有不变性，可通过池化实现。池化与卷积层结构类似：单元按网格排列，各取感受野输入，需选择滤波器尺寸和步长。区别是池化单元输出是输入的简单固定函数，因此没有可学习参数。最大池化中每个单元输出输入值的最大值。池化还可用于通过下采样特征图降低表示维度；使用大于 1 的卷积步长也有下采样效果。"
+        },
+        {
+            "id": 14,
+            "topic": "多层卷积与感受野增长",
+            "question": "根据 10.2.7 节 P23--P25，多层卷积网络中“有效感受野”如何变化？为什么通常在网络最后阶段引入全连接层？",
+            "options": {
+            "A": "有效感受野随深度减小；全连接层用于减少参数",
+            "B": "由于局部性，某层单元仅从上一层的小斑块（感受野）获取信息；当构建每层都是卷积的深层网络时，较后层单元的有效感受野比较早层大得多；在许多应用中网络输出单元需要对整张图像做出预测（如分类），因此需整合来自整个输入图像的信息，通常通过在网络最后阶段引入一两个标准全连接层实现，其中每个单元与上一层每个单元相连；由于中间池化层，最终卷积层维度通常远低于输入层，因此参数数量可管理",
+            "C": "有效感受野保持不变；全连接层用于增加通道数",
+            "D": "多层卷积不存在感受野概念"
+            },
+            "answer": "B",
+            "explanation": "卷积框架的关键属性是局部性 (locality)，即特征图中某单元仅从上一层的一个小斑块（感受野）获取信息。当构建每层都是卷积的深度神经网络时，网络中较后层单元的有效感受野比较早层大得多。在许多应用中，网络输出单元需要对整张图像做出预测（如分类任务），因此需要整合来自整个输入图像的信息。这通常通过在网络最后阶段引入一两个标准全连接层实现，其中每个单元与上一层每个单元相连。这种架构中的参数数量可管理，因为由于中间池化层，最终卷积层维度通常远低于输入层。然而，即使网络中（共享）连接的数量在卷积层中更多，最终的全连接层仍可能包含网络中大部分独立自由度。"
+        },
+        {
+            "id": 15,
+            "topic": "VGG-16 架构与设计原则",
+            "question": "根据 10.2.8 节 P29--P30，VGG-16 的主要设计原则是什么？为什么多层小卷积核优于单层大卷积核（如 AlexNet 的 $11 \\times 11$）？VGG-16 的参数量分布有何特点？",
+            "options": {
+            "A": "VGG-16 使用多种不同尺寸的卷积核；大卷积核参数量更少；参数量均匀分布在各层",
+            "B": "VGG-16 设计原则是使用相对统一的架构以最小化超参数选择：所有卷积层使用 $3 \\times 3$ 滤波器、步长 1、相同填充和 ReLU；最大池化均使用步长 2、$2 \\times 2$ 滤波器；小卷积核堆叠的优势是参数显著更少，实质上对较大滤波器施加了归纳偏置（必须由卷积子滤波器组合而成）；VGG-16 总共有约 1.38 亿个独立可学习参数，其中绝大多数（近 1.03 亿）在第一个全连接层，而大部分连接在第一个卷积层",
+            "C": "VGG-16 只包含卷积层，不含全连接层；参数量约 100 万",
+            "D": "VGG-16 使用 $11 \\times 11$ 卷积核；参数量主要集中在卷积层"
+            },
+            "answer": "B",
+            "explanation": "VGG-16 (Simonyan and Zisserman, 2014) 遵循简单设计原则，形成相对统一的架构，最小化需选择的超参数数量。它接收 $224 \\times 224$ 像素、3 个颜色通道的输入，所有卷积层均使用 $3 \\times 3$ 滤波器、步长 1、相同填充和 ReLU 激活函数，所有最大池化操作使用步长 2 和 $2 \\times 2$ 滤波器，将单元数量下采样 4 倍。通道数随下采样倍增（64→128→256→512），以平衡各层表示容量。最后三个层是全连接层，输出层使用 softmax。早期 CNN（如 AlexNet）通常有较大感受野（$11 \\times 11$，步长 4）；较大感受野可通过多层较小感受野隐式实现，后者优势是参数显著更少，实质上对较大滤波器施加了归纳偏置，因为它们必须由卷积子滤波器组合而成。VGG-16 总共有约 1.38 亿个独立可学习参数，其中绝大多数（近 1.03 亿）在第一个全连接层，而大部分连接在第一个卷积层。尽管架构高度复杂，只有网络函数本身需显式编码，因为代价函数导数可通过自动微分计算，代价函数可用随机梯度下降优化。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>

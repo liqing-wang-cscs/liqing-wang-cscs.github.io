@@ -1,0 +1,266 @@
+<!-- 第9章：正则化 第6节：模型平均- 自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">第9章：正则化、第6节：模型平均 - 自测题</h1>
+    <p class="practice-instructions">请回答以下5道单项选择题，以检验您对这一节的理解。</p>
+
+    <div id="questions-container">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    /* 只作用于本练习页内部，使用 .practice-container 限定作用域 */
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-subtitle {
+        text-align: center;
+        color: blueviolet;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<!-- 引入MathJax -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    // ===== 注意：这里把原来的 questions / renderQuestions / selectOption 等逻辑保留 =====
+    // 但要去掉 window.onload = renderQuestions;，改为立即执行或由父页面触发
+    // 因为这段 HTML 是被 fetch 进来后插入到 #content-area 的，window.onload 不会再触发
+
+    (function() {
+        // 转换后的题目数据
+        const questions = [
+        {
+            "id": 1,
+            "topic": "模型平均与集成",
+            "question": "根据 9.6 节 P1--P3，关于模型平均 (model averaging) 以及集成中如何引入模型间差异，下列哪项描述最准确？",
+            "options": {
+            "A": "模型平均指从多个模型中挑选单个最好的模型；集成的模型必须使用相同架构",
+            "B": "对于产生概率输出的模型，集成预测分布为各模型预测的平均 $p(\\mathbf{y}|\\mathbf{x}) = \\frac{1}{L}\\sum_{l=1}^{L} p_l(\\mathbf{y}|\\mathbf{x})$；实践中只有一个数据集，可通过 bootstrap 数据集引入差异：从原始数据集中有放回地随机抽取 $N$ 个点构成新数据集，重复 $L$ 次生成 $L$ 个数据集，各训练一个模型并平均预测，此过程称为 bagging；另一种方法是使用原始数据集训练多个不同架构的模型",
+            "C": "bootstrap 数据集是通过无放回抽样得到的",
+            "D": "模型平均只能用于回归问题"
+            },
+            "answer": "B",
+            "explanation": "若有多个模型解决同一问题，不必只挑选单个最佳模型，而可通过平均各模型的预测来改善泛化，这种模型组合有时称为委员会 (committees) 或集成 (ensembles)。对产生概率输出的模型，预测分布为各模型预测的平均：$p(\\mathbf{y}|\\mathbf{x}) = \\frac{1}{L}\\sum_{l=1}^{L} p_l(\\mathbf{y}|\\mathbf{x})$。实践中只有一个数据集，因此必须找到引入模型间差异的方法。一种方式是使用 bootstrap 数据集：设原始数据集包含 $N$ 个点，有放回地随机抽取 $N$ 个点创建新数据集，某些点可能被重复，另一些点可能缺失；重复 $L$ 次生成 $L$ 个大小为 $N$ 的数据集，各训练一个模型并平均预测。这一过程称为 bootstrap aggregation 或 bagging (Breiman, 1996)。另一种形成集成的方式是使用原始数据集训练多个不同架构的模型。"
+        },
+        {
+            "id": 2,
+            "topic": "集成误差的数学分析",
+            "question": "根据 9.6 节 P4，在误差零均值且互不相关的假设下，集成预测的期望误差 $E_{\\text{COM}}$ 与各模型单独的平均误差 $E_{\\text{AV}}$ 之间是什么关系？这一结果的前提假设在实践中的情况如何？",
+            "options": {
+            "A": "$E_{\\text{COM}} = M \\cdot E_{\\text{AV}}$；实践中该关系总是成立",
+            "B": "$E_{\\text{COM}} = \\frac{1}{M} E_{\\text{AV}}$，即模型平均误差可降低 $M$ 倍；但这依赖于各模型误差互不相关的关键假设，实践中误差通常高度相关，整体误差的实际降低幅度要小得多；不过可以证明集成误差不会超过组成模型的误差，即 $E_{\\text{COM}} \\leqslant E_{\\text{AV}}$",
+            "C": "$E_{\\text{COM}} = E_{\\text{AV}}$；集成不会带来任何改善",
+            "D": "集成误差一定大于组成模型的误差"
+            },
+            "answer": "B",
+            "explanation": "分析集成预测收益时，设真实函数为 $h(\\mathbf{x})$，各模型输出可写为真值加误差 $y_m(\\mathbf{x}) = h(\\mathbf{x}) + \\epsilon_m(\\mathbf{x})$。各模型单独作用的平均误差为 $E_{\\text{AV}} = \\frac{1}{M}\\sum_{m=1}^{M}\\mathbb{E}_{\\mathbf{x}}[\\epsilon_m(\\mathbf{x})^2]$；集成误差为 $E_{\\text{COM}} = \\mathbb{E}_{\\mathbf{x}}[\\{\\frac{1}{M}\\sum_{m=1}^{M}\\epsilon_m(\\mathbf{x})\\}^2]$。若假设误差零均值且互不相关，则 $E_{\\text{COM}} = \\frac{1}{M}E_{\\text{AV}}$。这一看似显著的结果表明平均 $M$ 个模型可将平均误差降低 $M$ 倍，但它依赖于各模型误差互不相关的关键假设。实践中误差通常高度相关，整体误差的降低幅度一般要小得多。不过可以证明集成误差不会超过组成模型的误差，即 $E_{\\text{COM}} \\leqslant E_{\\text{AV}}$。"
+        },
+        {
+            "id": 3,
+            "topic": "Boosting 与 Bagging 的区别",
+            "question": "根据 9.6 节 P5，Boosting 与 Bagging 等委员会方法的主要区别是什么？",
+            "options": {
+            "A": "Boosting 中基分类器并行训练；Bagging 中基分类器顺序训练",
+            "B": "Boosting 中基分类器顺序训练，每个基分类器使用数据的加权形式训练，其权重系数取决于之前分类器的性能；被前一个分类器误分类的点在训练下一个分类器时获得更大权重；所有分类器训练完成后通过加权多数投票方案组合预测。即使基分类器仅略优于随机，Boosting 也能给出好结果",
+            "C": "Boosting 不使用加权投票，而是简单平均",
+            "D": "Boosting 与 Bagging 完全相同"
+            },
+            "answer": "B",
+            "explanation": "Boosting (Freund and Schapire, 1996) 组合多个“基”分类器产生委员会形式，其性能可显著优于任一基分类器。即使基分类器仅略优于随机，Boosting 也能给出好结果。Boosting 与 bagging 等委员会方法的主要区别在于：基分类器顺序训练，每个基分类器使用数据的加权形式训练，其中与每个数据点关联的权重系数取决于之前分类器的性能。特别是被某个基分类器误分类的点在训练序列中下一个分类器时获得更大权重。所有分类器训练完成后，通过加权多数投票方案组合其预测。"
+        },
+        {
+            "id": 4,
+            "topic": "Dropout 的基本机制",
+            "question": "根据 9.6 节 P7--P10，关于 Dropout 的基本机制及与常规集成方法的区别，下列哪项描述最准确？",
+            "options": {
+            "A": "Dropout 通过训练多个独立模型并平均预测来实现；每个模型都独立训练至收敛",
+            "B": "Dropout 可视为一种隐式地在指数多个模型上执行近似模型平均的方式，无需分别训练多个模型；其核心思想是在训练时随机删除网络中的节点及其连接，每个数据点呈现给网络时都重新随机选择要省略的节点；Dropout 应用于隐藏节点和输入节点但不应用于输出；对 $M$ 个非输出节点存在 $2^M$ 个剪枝网络，训练中只会考虑其中一小部分；与常规集成方法的区别在于这些被隐式训练的指数多个网络并非相互独立，而是与完整网络（以及彼此之间）共享参数值",
+            "C": "Dropout 只应用于输出节点",
+            "D": "Dropout 中各网络完全独立、不共享参数"
+            },
+            "answer": "B",
+            "explanation": "Dropout (Srivastava et al., 2014) 可视为一种隐式地在指数多个模型上执行近似模型平均的方式，无需分别训练多个模型，具有广泛适用性且计算代价低。其核心思想是训练时随机删除网络中的节点及其连接：每次数据点呈现给网络时，重新随机选择要省略的节点。Dropout 应用于隐藏节点和输入节点但不应用于输出，等价于将丢弃节点的输出设为零。可通过定义掩码向量 $R_i \\in \\{0,1\\}$ 实现，其值以概率 $\\rho$ 设为 1；对隐藏节点 $\\rho = 0.5$ 效果较好，对输入通常取 $\\rho = 0.8$。对 $M$ 个非输出节点的网络存在 $2^M$ 个剪枝网络，训练中只会考虑其中一小部分。这与每个网络独立训练至收敛的常规集成方法不同；另一区别是这些被隐式训练的指数多个网络并非相互独立，而是与完整网络（以及彼此之间）共享参数值。"
+        },
+        {
+            "id": 5,
+            "topic": "Dropout 的测试与贝叶斯解释",
+            "question": "根据 9.6 节 P11--P14，关于 Dropout 测试阶段的处理方式及其贝叶斯解释和减少过拟合的直觉，下列哪项描述最准确？",
+            "options": {
+            "A": "测试时只能通过精确计算 (9.51) 的求和来预测；Dropout 与贝叶斯模型平均无关",
+            "B": "原则上可按集成规则 $p(\\mathbf{y}|\\mathbf{x}) = \\sum_{\\mathbf{R}} p(\\mathbf{R})p(\\mathbf{y}|\\mathbf{x},\\mathbf{R})$ 预测，但由于该求和不可行，可通过采样少量掩码近似（实践中 10 或 20 个掩码即可），称 Monte Carlo dropout；更简单的方法是不屏蔽任何节点并使用训练好的网络，同时重新缩放权重使每个节点的期望输入在测试时与训练时大致相同（若节点以概率 $\\rho$ 存在，则测试时将输出权重乘以 $\\rho$）。贝叶斯视角下，Dropout 通过给每个可能模型相等权重来近似模型平均；减少过拟合的直觉是 Dropout 使每个节点不能依赖其他特定节点的存在，必须在广泛情境中做出有用贡献，从而减少共适应和特化",
+            "C": "Dropout 的贝叶斯解释是通过给每个模型赋予其后验概率的权重来实现模型平均",
+            "D": "Dropout 会增加节点间的共适应"
+            },
+            "answer": "B",
+            "explanation": "训练完成后，原则上可按集成规则 (9.42) 预测，此时形式为 $p(\\mathbf{y}|\\mathbf{x}) = \\sum_{\\mathbf{R}}p(\\mathbf{R})p(\\mathbf{y}|\\mathbf{x},\\mathbf{R})$，求和遍历指数大的掩码空间，其中 $p(\\mathbf{y}|\\mathbf{x},\\mathbf{R})$ 是掩码为 $\\mathbf{R}$ 的网络给出的预测分布。由于该求和不可行，可通过采样少量掩码近似，实践中 10 或 20 个掩码即可获得良好结果，此过程称为 Monte Carlo dropout。更简单的方法是不屏蔽任何节点直接使用训练好的网络，并重新缩放权重使每个节点的期望输入在测试时与训练时大致相同，以补偿训练时有部分节点缺失：若节点训练时以概率 $\\rho$ 存在，则测试时该节点的输出权重应乘以 $\\rho$。Dropout 的另一种动机来自贝叶斯视角：完全贝叶斯处理会对所有 $2^M$ 个网络模型按后验概率加权平均，计算上代价极高；Dropout 通过给每个可能模型相等权重来近似这一模型平均。进一步直觉来自 Dropout 减少过拟合的作用：标准网络中参数可能被调至拟合个别数据点的噪声，隐藏节点过度特化，各节点根据其他节点输出调整权重，导致共适应；而 Dropout 下每个节点不能依赖其他特定节点的存在，必须在广泛情境中做出有用贡献，从而减少共适应和特化。对使用最小二乘训练的简单线性回归模型，Dropout 正则化等价于一种修改形式的二次正则化。"
+        }
+    ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            // 避免重复渲染
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option-${index}-${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}" onclick="selectOption(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            // 渲染 MathJax
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        // 暴露给全局，因为 onclick 里用到
+        window.selectOption = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        // 立即渲染（因为这段 HTML 插入到 DOM 后，window.onload 不会再触发）
+        renderQuestions();
+    })();
+</script>
