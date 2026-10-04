@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
+\geometry{a4paper, margin=1.5cm}
+\usepackage{titling}\setlength{\droptitle}{-2cm}
+
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=3pt}
+\setlist[enumerate]{itemsep=0pt, parsep=0pt, topsep=3pt}
+
+\author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
+\title{市场有效性与 Itô 引理}
+\date{2026年10月14日}
+\begin{document}
+\maketitle
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+
+\item  {\bf{【判断有效市场的三种形式】}} %题目 1. 
+
+根据哈里·罗伯茨对有效市场假设的分类，回答以下问题：
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 弱有效市场、半强有效市场、强有效市场分别使用哪些信息？
+    \item 如果某投资者仅通过分析股票过去的历史价格和收益率，就能持续获得超额收益，这说明市场至少不满足哪一种有效性？
+    \item 如果某投资者利用公司尚未公开的内部信息进行交易并获得超额收益，这说明市场不满足哪一种有效性？
+\end{enumerate}
+
+
+\item  {\bf{【计算基本维纳过程的均值、方差与标准差】}} %题目 2. 
+
+设 \(Z = Z(t)\) 为基本维纳过程，即满足：
+\(
+\Delta z_t = \varepsilon \sqrt{\Delta t}, 
+\)
+其中 \(\varepsilon \sim N(0,1)\)，且不同时间间隔的 \(\Delta z_t\) 相互独立。
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 求 \(\Delta z_t\) 的期望值、方差和标准差；
+    \item 设时间间隔 \(T = 4\) 年，求 \(Z(T) - Z(0)\) 的期望值、方差和标准差；
+    \item 若 \(T = 9\) 年，重新计算 \(Z(T) - Z(0)\) 的标准差，并说明标准差与时间长度之间的关系。
+\end{enumerate}
+
+
+
+\item  {\bf{【计算一般维纳过程的均值、方差与标准差】}} %题目 3. 
+
+设变量 \(x\) 遵循一般维纳过程：
+\(
+dx = a \, dt + b \, dz, 
+\)
+其中 \(a = 3\)，\(b = 2\)，\(dz\) 为基本维纳过程。
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出 \(\Delta x\) 的表达式；
+    \item 求 \(\Delta x\) 的期望值、方差和标准差；
+    \item 设时间间隔 \(T = 5\)，求 \(x(T) - x(0)\) 的期望值、方差和标准差。
+\end{enumerate}
+
+
+
+\item  {\bf{【运用 Itô 引理求函数 \(G = \ln S\) 的随机过程】}} %题目 4. 
+
+设股票价格 \(S\) 遵循如下 Itô 过程：
+
+\[
+dS = \mu S \, dt + \sigma S \, dz
+\]
+
+其中 \(\mu\) 为股票期望收益率，\(\sigma\) 为股票价格波动率，\(dz\) 为基本维纳过程。
+
+令 \(G = \ln S\)。请利用 Itô 引理：
+
+\[
+dG = \left( \frac{\partial G}{\partial S} \mu S + \frac{\partial G}{\partial t} + \frac{1}{2} \frac{\partial^2 G}{\partial S^2} \sigma^2 S^2 \right) dt + \frac{\partial G}{\partial S} \sigma S \, dz
+\]
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 计算 \(\frac{\partial G}{\partial S}\)、\(\frac{\partial^2 G}{\partial S^2}\) 和 \(\frac{\partial G}{\partial t}\)；
+    \item 求出 \(dG\) 的表达式；
+    \item 说明 \(G = \ln S\) 服从什么过程，并写出其漂移率和方差率。
+\end{enumerate}
+
+
+
+\item  {\bf{【计算股票价格对数变化的期望与方差】}} %题目 5. 
+
+设某不支付红利的股票价格 \(S\) 遵循几何布朗运动：
+
+\[
+dS = \mu S \, dt + \sigma S \, dz
+\]
+
+已知当前股票价格 \(S = 50\) 元，期望收益率 \(\mu = 0.12\)，波动率 \(\sigma = 0.20\)，时间间隔 \(T - t = 1\) 年。
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 求 \(\ln S_T - \ln S\) 的期望值和标准差；
+    \item 求 \(S_T\) 的期望值 \(E(S_T)\)；
+    \item 求 \(S_T\) 的方差 \(\text{Var}(S_T)\)。
+\end{enumerate}
+
+
+
+\item  {\bf{【计算连续复利年收益的分布参数】}} %题目 6. 
+
+设某股票价格 \(S\) 遵循几何布朗运动：
+
+\[
+dS = \mu S \, dt + \sigma S \, dz
+\]
+
+已知 \(\mu = 0.15\)，\(\sigma = 0.25\)，时间间隔 \(T - t = 4\) 年。
+
+设 \(\eta\) 为 \(t\) 与 \(T\) 之间的连续复利年收益：
+
+\[
+\eta = \frac{1}{T-t} \ln \frac{S_T}{S}
+\]
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出 \(\eta\) 服从的正态分布的均值；
+    \item 写出 \(\eta\) 服从的正态分布的标准差；
+    \item 若 \(\sigma = 0.40\)，时间间隔 \(T - t = 1\) 年，重新计算 \(\eta\) 的均值和标准差。
+\end{enumerate}
+
+
+
+\item  {\bf{【判断随机过程类型】}} %题目 7. 
+
+判断下列随机过程分别属于哪一类，并简要说明理由：
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \(dZ = \varepsilon \sqrt{dt}\)，其中 \(\varepsilon \sim N(0,1)\)；
+    \item \(dx = 5 \, dt + 3 \, dz\)；
+    \item \(dx = a(x,t) \, dt + b(x,t) \, dz\)；
+    \item \(dS = \mu S \, dt + \sigma S \, dz\)。
+\end{enumerate}
+
+备选项：基本维纳过程、一般维纳过程、Itô 过程、几何布朗运动。
+
+
+
+
+\item  {\bf{【利用 Itô 引理推导期权价格遵循的随机过程】}} %题目 8. 
+
+设股票价格 \(S\) 遵循几何布朗运动：
+
+\[
+dS = \mu S \, dt + \sigma S \, dz
+\]
+
+设某衍生证券的价格为 \(V(S,t)\)，且 \(V\) 二次连续可微。
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 写出 Itô 引理的一般形式；
+    \item 将 \(dx = \mu S \, dt + \sigma S \, dz\) 代入 Itô 引理，推导 \(dV\) 的表达式；
+    \item 指出 \(dV\) 的漂移率和方差率。
+\end{enumerate}
+
+
+
+\item  {\bf{【计算股票价格超过某一水平的概率】}} %题目 9. 
+
+设某股票当前价格 \(S = 100\) 元，期望收益率 \(\mu = 0.10\)，波动率 \(\sigma = 0.30\)，时间间隔 \(T - t = 1\) 年。
+
+已知：
+
+\[
+\ln S_T \sim \phi \left[ \ln S + \left( \mu - \frac{\sigma^2}{2} \right)(T-t), \; \sigma \sqrt{T-t} \right]
+\]
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 求 \(\ln S_T\) 的均值和标准差；
+    \item 求 \(S_T > 110\) 的概率（用标准正态分布表示即可，不必查表）。
+\end{enumerate}
+
+
+
+\item  {\bf{【市场有效性与马尔可夫性质的关系】}} %题目 10. 
+
+回答以下概念题：
+
+\begin{enumerate}[label=(\arabic*)]
+    \item 什么是马尔可夫过程？它与股票价格变动的马尔可夫性质有什么关系？
+    \item 股票价格变动的马尔可夫性质与弱有效市场假设之间有什么联系？
+    \item 为什么人们通常假设股票价格遵循马尔可夫过程？
+    \item 维纳过程与马尔可夫过程之间是什么关系？
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}
