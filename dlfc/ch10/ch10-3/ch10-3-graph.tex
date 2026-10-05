@@ -1,0 +1,161 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {可视化训练好的 \\ 卷积网络 \\ Visualizing CNNs};
+
+    % ================= 2. 上方分支：视觉皮层 (红) =================
+    \node[branchTitle, fill=red!15, above=of center, xshift=4.0cm, yshift=2.0cm] (cortex) {视觉皮层 \\ Visual Cortex};
+
+    \node[subNode, above left=of cortex, xshift=-1.0cm] (simple) {简单细胞 \\ 边缘/方向};
+    \node[subNode, above=of cortex] (gabor) {Gabor 滤波器 \\ 式(10.6)-(10.8)};
+    \node[subNode, above right=of cortex, xshift=1.0cm] (complex) {复杂细胞 \\ 池化/不变性};
+
+    \node[leafNode, above=of simple, yshift=0.0cm] (hubel) {Hubel \& Wiesel \\ 1959};
+    \node[leafNode, above=of gabor, yshift=0.0cm] (params) {$\theta$ 方向 / $\omega$ 频率 \\ $\phi$ 相位 / $(x_0,y_0)$ 位置};
+    \node[leafNode, right=of complex, yshift=0.0cm] (grandmother) {祖母细胞 \\ 深层不变性};
+    \node[leafNode, right=of cortex, xshift=0.8cm] (neocognitron) {Neocognitron \\ CNN 前身};
+
+    % ================= 3. 右侧分支：可视化滤波器 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (filters) {可视化滤波器 \\ Visualizing Filters};
+
+    \node[subNode, above right=of filters, yshift=0.3cm] (firstlayer) {第一层可视化 \\ 直接看权重};
+    \node[subNode, right=of filters, yshift=1.0cm] (gabor_sim) {与 Gabor 相似 \\ 自然图像统计};
+    \node[subNode, right=of filters, yshift=-1.0cm] (maxpatch) {最大激活图像块 \\ 层次结构};
+    \node[subNode, below right=of filters, yshift=-0.3cm] (optimize) {数值优化 \\ 生成代表图像};
+
+    \node[leafNode, right=of firstlayer, xshift=0.0cm] (innerprod) {内积幅度大 \\ 激活强};
+    \node[leafNode, right=of maxpatch, xshift=0.0cm] (hierarchy) {边缘→纹理 \\ →部件→物体};
+    \node[leafNode, right=of optimize, xshift=0.0cm] (regularize) {正则化 \\ 平方和/模糊/裁剪};
+
+    % ================= 4. 下方分支：显著图 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (saliency) {显著图 \\ Saliency Maps};
+
+    \node[subNode, below left=of saliency, xshift=-0.8cm] (lastconv) {选择最后卷积层 \\ 空间+语义};
+    \node[subNode, below=of saliency] (gradcam) {Grad-CAM \\ 式(10.9)-(10.10)};
+    \node[subNode, below right=of saliency, xshift=0.8cm] (heatmap) {热力图叠加 \\ 高亮重要区域};
+
+    \node[leafNode, below=of gradcam, yshift=0.0cm] (alpha) {$\alpha_k$ 通道权重 \\ 导数平均};
+    \node[leafNode, right=of heatmap, xshift=0.8cm] (example) {狗/猫示例 \\ 图10.15};
+
+    % ================= 5. 左侧分支：对抗攻击 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (adversarial) {对抗攻击 \\ Adversarial Attacks};
+
+    \node[subNode, above left=of adversarial, yshift=0.3cm] (definition) {微小修改 \\ 人类不可察觉};
+    \node[subNode, left=of adversarial, yshift=0.5cm] (fgsm) {快速梯度符号法 \\ 式(10.11)};
+    \node[subNode, left=of adversarial, yshift=-1.5cm] (transfer) {迁移性 \\ 欺骗多个网络};
+    \node[subNode, below=of adversarial, yshift=-0.3cm] (physical) {物理对抗 \\ 图10.17};
+
+    \node[leafNode, left=of fgsm, xshift=-0.0cm] (epsilon) {$\epsilon$ 控制幅度 \\ sign(梯度)方向};
+    \node[leafNode, left=of transfer, xshift=-0.0cm] (notoverfit) {非过拟合 \\ 线性模型也可};
+    \node[leafNode, below left=of physical, yshift=-0.0cm] (security) {安全隐患 \\ 开放研究方向};
+
+    % ================= 6. 左上分支：合成图像 (橙) =================
+    \node[branchTitle, fill=orange!15, above=of center, xshift=-5.0cm, yshift=2.0cm] (deepdream) {合成图像 \\ DeepDream};
+
+    \node[leafNode, left=of deepdream, xshift=-3.0cm] (goal) {夸张特征 \\ 放大响应};
+    \node[leafNode, above left=of deepdream, xshift=-4.0cm, yshift=-0.0cm] (delta) {$\delta$=预激活 \\ 反向传播};
+    \node[leafNode, above left=of deepdream, xshift=0.4cm] (objective) {目标函数 \\ 式(10.12) 平方和};
+    \node[leafNode, above=of deepdream, xshift=0.0cm] (art) {艺术生成 \\ 照片/随机噪声};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 各分支标题
+    \draw[arrowStyle, red] (center) -- (cortex);
+    \draw[arrowStyle, blue] (center) -- (filters);
+    \draw[arrowStyle, green!60!black] (center) -- (saliency);
+    \draw[arrowStyle, purple] (center) -- (adversarial);
+    \draw[arrowStyle, orange] (center) -- (deepdream);
+
+    % 分支标题 -> 子节点 (上方：视觉皮层)
+    \draw[arrowStyle, red!60] (cortex) -- (simple);
+    \draw[arrowStyle, red!60] (cortex) -- (gabor);
+    \draw[arrowStyle, red!60] (cortex) -- (complex);
+    \draw[arrowStyle, red!60] (cortex) -- (neocognitron);
+    \draw[arrowStyle, red!60] (simple) -- (hubel);
+    \draw[arrowStyle, red!60] (gabor) -- (params);
+    \draw[arrowStyle, red!60] (complex) -- (grandmother);
+
+    % 分支标题 -> 子节点 (右侧：可视化滤波器)
+    \draw[arrowStyle, blue!60] (filters) -- (firstlayer);
+    \draw[arrowStyle, blue!60] (filters) -- (gabor_sim);
+    \draw[arrowStyle, blue!60] (filters) -- (maxpatch);
+    \draw[arrowStyle, blue!60] (filters) -- (optimize);
+    \draw[arrowStyle, blue!60] (firstlayer) -- (innerprod);
+    \draw[arrowStyle, blue!60] (maxpatch) -- (hierarchy);
+    \draw[arrowStyle, blue!60] (optimize) -- (regularize);
+
+    % 分支标题 -> 子节点 (下方：显著图)
+    \draw[arrowStyle, green!60!black] (saliency) -- (lastconv);
+    \draw[arrowStyle, green!60!black] (saliency) -- (gradcam);
+    \draw[arrowStyle, green!60!black] (saliency) -- (heatmap);
+    \draw[arrowStyle, green!60!black] (gradcam) -- (alpha);
+    \draw[arrowStyle, green!60!black] (heatmap) -- (example);
+
+    % 分支标题 -> 子节点 (左侧：对抗攻击)
+    \draw[arrowStyle, purple!60] (adversarial) -- (definition);
+    \draw[arrowStyle, purple!60] (adversarial) -- (fgsm);
+    \draw[arrowStyle, purple!60] (adversarial) -- (transfer);
+    \draw[arrowStyle, purple!60] (adversarial) -- (physical);
+    \draw[arrowStyle, purple!60] (fgsm) -- (epsilon);
+    \draw[arrowStyle, purple!60] (transfer) -- (notoverfit);
+    \draw[arrowStyle, purple!60] (physical) -- (security);
+
+    % 分支标题 -> 子节点 (左上：合成图像)
+    \draw[arrowStyle, orange!60] (deepdream) -- (goal);
+    \draw[arrowStyle, orange!60] (deepdream) -- (delta);
+    \draw[arrowStyle, orange!60] (deepdream) -- (objective);
+    \draw[arrowStyle, orange!60] (deepdream) -- (art);
+
+\end{tikzpicture}
+
+\end{document}

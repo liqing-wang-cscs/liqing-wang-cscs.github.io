@@ -1,0 +1,178 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {卷积网络 \\ 10.2 卷积滤波器 \\ Convolutional Filters};
+
+    % ================= 2. 上方分支：动机与核心概念 (红) =================
+    \node[branchTitle, fill=red!15, above=of center, yshift=1cm] (motivation) {动机与核心概念 \\ Motivation \& Concepts};
+
+    \node[subNode, above left=of motivation, xshift=1.5cm] (params) {参数灾难 \\ $3 \times 10^9$ 权重};
+    \node[subNode, above=of motivation] (fourconcepts) {四大概念 \\ 层级/局部/等变/不变};
+    \node[subNode, above right=of motivation, xshift=-1.5cm] (inductive) {归纳偏置 \\ 减少数据需求};
+
+    % ================= 3. 右侧分支：特征检测器 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (detector) {特征检测器 \\ Feature Detectors};
+
+    \node[subNode, above right=of detector, yshift=0.0cm] (receptive) {感受野 \\ Receptive Field};
+    \node[subNode, right=of detector, yshift=1.0cm] (filter) {滤波器/核 \\ Filter / Kernel};
+    \node[subNode, right=of detector, yshift=-1.0cm] (template) {模板匹配 \\ 最大响应 $\mathbf{x}=\alpha\mathbf{w}$};
+    \node[subNode, below right=of detector, yshift=-0.0cm] (relu) {ReLU 阈值 \\ 特征检测器};
+
+    % ================= 4. 下方分支：卷积运算与变体 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center, yshift=-1cm] (convolution) {卷积运算与变体 \\ Convolution Variants};
+
+    \node[subNode, below left=of convolution, xshift=0.3cm] (equivariance) {平移等变性 \\ 权重复制};
+    \node[subNode, below=of convolution, xshift=-1.5cm] (featuremap) {特征图 \\ 稀疏连接 \\ 参数共享};
+    \node[subNode, below=of convolution, xshift=1.0cm] (twodim) {二维卷积 \\ 互相关};
+    \node[subNode, below right=of convolution, xshift=-1.0cm] (batch) {批归一化 \\ 位置无关统计};
+
+    % ================= 5. 左侧分支：填充与跨步 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (padding) {填充与跨步 \\ Padding \& Stride};
+
+    \node[subNode, above left=of padding, yshift=-0.3cm] (valid) {有效卷积 \\ $P=0$，输出缩小};
+    \node[subNode, left=of padding, yshift=0.5cm] (same) {相同卷积 \\ $P=(M-1)/2$};
+    \node[subNode, left=of padding, yshift=-1.0cm] (zero) {零填充 \\ 需零均值化};
+    \node[subNode, below left=of padding, yshift=-0.3cm] (strided) {跨步卷积 \\ 下采样 $1/S$};
+
+    % ================= 6. 左下分支：多维卷积 (橙) =================
+    \node[branchTitle, fill=orange!15, below left=of center, xshift=-1.5cm, yshift=-2.0cm] (multidim) {多维卷积 \\ Multi-dim Conv};
+
+    \node[leafNode, left=of multidim, xshift=-1.0cm] (multichannel) {多通道输入 \\ $M \times M \times C$};
+    \node[leafNode, below left=of multidim] (multioutput) {多输出通道 \\ $(M^2C+1)C_{\textrm{OUT}}$};
+    \node[leafNode, below=of multidim, xshift=-1.0cm] (onebyone) {$1 \times 1$ 卷积 \\ 通道变换};
+
+    % ================= 7. 右下分支：池化 (青) =================
+    \node[branchTitle, fill=cyan!15, below right=of center, xshift=1.5cm, yshift=-2.0cm] (pooling) {池化 \\ Pooling};
+
+    \node[leafNode, below=of pooling, xshift=1.0cm] (maxpool) {最大池化 \\ 无参数};
+    \node[leafNode, below=of pooling, xshift=4.0cm, yshift=0.5cm] (downsample) {下采样 \\ 降维};
+    \node[leafNode, below right=of pooling, xshift=0.5cm, yshift=2.5cm] (avgpool) {平均池化 \\ 局部平移不变};
+    \node[leafNode, right=of pooling, xshift=0.5cm, yshift=1cm] (crosschannel) {跨通道池化 \\ 学习更广不变性};
+
+    % ================= 8. 右上分支：多层卷积与架构 (深蓝) =================
+    \node[branchTitle, fill=blue!25, above right=of center, xshift=1.5cm, yshift=2.0cm] (multilayer) {多层卷积与架构 \\ Multilayer \& Architecture};
+
+    \node[leafNode, above=of multilayer, xshift=-0.0cm] (layerstack) {多层堆叠 \\ 层次化结构};
+    \node[leafNode, above=of multilayer, xshift=3.0cm] (receptive_grow) {感受野增长 \\ 图10.9};
+    \node[leafNode, above right=of multilayer, yshift=-1.2cm] (fc) {全连接层 \\ 输出阶段};
+    \node[leafNode, right=of multilayer, xshift=0cm] (design) {超参数设计 \\ 层数/通道/滤波器};
+
+    % ================= 9. 左上分支：经典架构 (棕) =================
+    \node[branchTitle, fill=brown!15, above left=of center, xshift=-1.5cm, yshift=2.0cm] (arch) {经典架构 \\ Classic Architectures};
+
+    \node[leafNode, left=of arch, xshift=0.0cm] (lenet) {LeNet \\ 手写数字};
+    \node[leafNode, above left =of arch, xshift=0.0cm, yshift=-1.5cm] (imagenet) {ImageNet \\ 1400万图像};
+    \node[leafNode, above=of arch, xshift=-3.0cm] (alexnet) {AlexNet \\ ReLU/GPU/Dropout};
+    \node[leafNode, above=of arch, xshift=0.0cm] (vgg) {VGG-16 \\ 3×3卷积堆叠};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 各分支标题
+    \draw[arrowStyle, red] (center) -- (motivation);
+    \draw[arrowStyle, blue] (center) -- (detector);
+    \draw[arrowStyle, green!60!black] (center) -- (convolution);
+    \draw[arrowStyle, purple] (center) -- (padding);
+    \draw[arrowStyle, orange] (center) -- (multidim);
+    \draw[arrowStyle, cyan!70!black] (center) -- (pooling);
+    \draw[arrowStyle, blue!70!black] (center) -- (multilayer);
+    \draw[arrowStyle, brown!70!black] (center) -- (arch);
+
+    % 分支标题 -> 子节点 (上方：动机)
+    \draw[arrowStyle, red!60] (motivation) -- (params);
+    \draw[arrowStyle, red!60] (motivation) -- (fourconcepts);
+    \draw[arrowStyle, red!60] (motivation) -- (inductive);
+
+    % 分支标题 -> 子节点 (右侧：特征检测器)
+    \draw[arrowStyle, blue!60] (detector) -- (receptive);
+    \draw[arrowStyle, blue!60] (detector) -- (filter);
+    \draw[arrowStyle, blue!60] (detector) -- (template);
+    \draw[arrowStyle, blue!60] (detector) -- (relu);
+
+    % 分支标题 -> 子节点 (下方：卷积运算)
+    \draw[arrowStyle, green!60!black] (convolution) -- (equivariance);
+    \draw[arrowStyle, green!60!black] (convolution) -- (featuremap);
+    \draw[arrowStyle, green!60!black] (convolution) -- (twodim);
+    \draw[arrowStyle, green!60!black] (convolution) -- (batch);
+
+    % 分支标题 -> 子节点 (左侧：填充与跨步)
+    \draw[arrowStyle, purple!60] (padding) -- (valid);
+    \draw[arrowStyle, purple!60] (padding) -- (same);
+    \draw[arrowStyle, purple!60] (padding) -- (zero);
+    \draw[arrowStyle, purple!60] (padding) -- (strided);
+
+    % 分支标题 -> 子节点 (左下：多维卷积)
+    \draw[arrowStyle, orange!60] (multidim) -- (multichannel);
+    \draw[arrowStyle, orange!60] (multidim) -- (multioutput);
+    \draw[arrowStyle, orange!60] (multidim) -- (onebyone);
+
+    % 分支标题 -> 子节点 (右下：池化)
+    \draw[arrowStyle, cyan!70!black] (pooling) -- (maxpool);
+    \draw[arrowStyle, cyan!70!black] (pooling) -- (downsample);
+    \draw[arrowStyle, cyan!70!black] (pooling) -- (avgpool);
+    \draw[arrowStyle, cyan!70!black] (pooling) -- (crosschannel);
+
+    % 分支标题 -> 子节点 (右上：多层卷积与架构)
+    \draw[arrowStyle, blue!70!black] (multilayer) -- (layerstack);
+    \draw[arrowStyle, blue!70!black] (multilayer) -- (receptive_grow);
+    \draw[arrowStyle, blue!70!black] (multilayer) -- (fc);
+    \draw[arrowStyle, blue!70!black] (multilayer) -- (design);
+
+    % 分支标题 -> 子节点 (左上：经典架构)
+    \draw[arrowStyle, brown!70!black] (arch) -- (lenet);
+    \draw[arrowStyle, brown!70!black] (arch) -- (imagenet);
+    \draw[arrowStyle, brown!70!black] (arch) -- (alexnet);
+    \draw[arrowStyle, brown!70!black] (arch) -- (vgg);
+
+\end{tikzpicture}
+
+\end{document}

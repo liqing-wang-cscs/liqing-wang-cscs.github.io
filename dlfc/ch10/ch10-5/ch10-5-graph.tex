@@ -1,0 +1,161 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {图像分割 \\ Image Segmentation \\ 10.5};
+
+    % ================= 2. 上方分支：语义分割基础 (红) =================
+    \node[branchTitle, fill=red!15, above left=of center] (semantic) {语义分割基础 \\ Semantic Segmentation};
+
+    \node[subNode, left=of semantic, xshift=0.0cm] (definition) {逐像素分类 \\ 输出同维度};
+    \node[subNode, above left=of semantic] (output) {输出 $C$ 通道 \\ 类别概率};
+    \node[subNode, above=of semantic, xshift=0.0cm] (colorize) {彩色分割图 \\ 最高概率着色};
+
+    \node[leafNode, left=of definition, yshift=0.0cm] (vsclass) {与分类区别 \\ 整图 vs 像素};
+    \node[leafNode, above left=of output, yshift=0.0cm] (vsdetect) {与检测区别 \\ 边界框 vs 像素};
+    \node[leafNode, above=of colorize, yshift=0.0cm] (example) {汽车/行人/交通灯 \\ 图10.26};
+
+    % ================= 3. 右侧分支：卷积分割与上采样 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (convseg) {卷积分割与上采样 \\ Conv Seg \& Up-sampling};
+
+    \node[subNode, above right=of convseg, yshift=-0.5cm] (naive) {逐像素CNN \\ 冗余计算};
+    \node[subNode, right=of convseg, yshift=0.0cm] (convimpl) {卷积化实现 \\ 共享计算};
+    \node[subNode, below right=of convseg, yshift=0.0cm] (samedim) {保持维度 \\ 步幅1+相同填充+无池化};
+    \node[subNode, below=of convseg, yshift=0.0cm] (upsample) {上采样 \\ 恢复分辨率};
+
+    \node[leafNode, right=of convimpl, xshift=0.0cm] (fcasconv) {全连接层 \\ 卷积化};
+    \node[leafNode, below right=of upsample, xshift=0.0cm] (unpool) {反池化 \\ 平均/最大};
+    \node[leafNode, below=of upsample, yshift=0.0cm] (maxunpool) {最大反池化 \\ 记录最大值位置};
+
+    % ================= 4. 下方分支：转置卷积与FCN (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (transpose) {转置卷积与FCN \\ Transpose Conv \& FCN};
+
+    \node[subNode, below left=of transpose, xshift=1.0cm] (transposedef) {转置卷积 \\ 可学习上采样};
+    \node[subNode, below=of transpose] (fractional) {分数步幅卷积 \\ 输出/输入步长比};
+    \node[subNode, below right=of transpose, xshift=-1.0cm] (fcn) {全卷积网络 \\ 无池化};
+
+    \node[leafNode, below=of transposedef, yshift=-0.2cm] (matrix) {矩阵转置解释 \\ 名称来源};
+    \node[leafNode, below=of fractional, yshift=-0.2cm] (overlap) {重叠输出 \\ 求和/平均};
+    \node[leafNode, below=of fcn, yshift=-0.2cm] (arbitrary) {任意尺寸输入 \\ 同尺寸输出};
+
+    % ================= 5. 左侧分支：U-net架构 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (unet) {U-net 架构 \\ U-net Architecture};
+
+    \node[subNode, above left=of unet, yshift=-0.5cm] (problem) {空间信息丢失 \\ 分割需逐像素};
+    \node[subNode, left=of unet, yshift=0.0cm] (ushape) {U形对称结构 \\ 下采样+上采样};
+    \node[subNode, below left=of unet, yshift=0.0cm] (concat) {跳连拼接 \\ 高分辨率信息};
+    \node[subNode, below=of unet, yshift=0.0cm] (final) {最后一层 \\ $1\times1$卷积+softmax};
+
+    \node[leafNode, left=of ushape, xshift=0.0cm] (correspond) {下采样层 \\ 对应上采样层};
+    \node[leafNode, below left=of concat, xshift=0.0cm] (channelconcat) {通道拼接 \\ 非逐元素相加};
+    \node[leafNode, below=of final, yshift=0.0cm] (classnum) {通道数→类别数 \\ 图10.31};
+
+    % ================= 6. 右上分支：转置卷积细节 (橙) =================
+    \node[branchTitle, fill=orange!15, above right=of center, xshift=0.0cm, yshift=0.0cm] (transposedetail) {转置卷积细节 \\ Transpose Conv Details};
+
+    \node[leafNode, above left=of transposedetail, xshift=0.0cm] (kernel) {$3\times3$滤波器 \\ 输出步幅2};
+    \node[leafNode, above=of transposedetail, yshift=0.0cm] (redblue) {红/蓝输出块 \\ 图10.30};
+    \node[leafNode, above right=of transposedetail, yshift=0.0cm] (deconv) {避免“反卷积” \\ 术语辨析};
+    \node[leafNode, right=of transposedetail, xshift=0.0cm] (learnable) {可学习上采样 \\ 对比固定函数};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 各分支标题
+    \draw[arrowStyle, red] (center) -- (semantic);
+    \draw[arrowStyle, blue] (center) -- (convseg);
+    \draw[arrowStyle, green!60!black] (center) -- (transpose);
+    \draw[arrowStyle, purple] (center) -- (unet);
+    \draw[arrowStyle, orange] (center) -- (transposedetail);
+
+    % 分支标题 -> 子节点 (上方：语义分割基础)
+    \draw[arrowStyle, red!60] (semantic) -- (definition);
+    \draw[arrowStyle, red!60] (semantic) -- (output);
+    \draw[arrowStyle, red!60] (semantic) -- (colorize);
+    \draw[arrowStyle, red!60] (definition) -- (vsclass);
+    \draw[arrowStyle, red!60] (output) -- (vsdetect);
+    \draw[arrowStyle, red!60] (colorize) -- (example);
+
+    % 分支标题 -> 子节点 (右侧：卷积分割与上采样)
+    \draw[arrowStyle, blue!60] (convseg) -- (naive);
+    \draw[arrowStyle, blue!60] (convseg) -- (convimpl);
+    \draw[arrowStyle, blue!60] (convseg) -- (samedim);
+    \draw[arrowStyle, blue!60] (convseg) -- (upsample);
+    \draw[arrowStyle, blue!60] (convimpl) -- (fcasconv);
+    \draw[arrowStyle, blue!60] (upsample) -- (unpool);
+    \draw[arrowStyle, blue!60] (upsample) -- (maxunpool);
+
+    % 分支标题 -> 子节点 (下方：转置卷积与FCN)
+    \draw[arrowStyle, green!60!black] (transpose) -- (transposedef);
+    \draw[arrowStyle, green!60!black] (transpose) -- (fractional);
+    \draw[arrowStyle, green!60!black] (transpose) -- (fcn);
+    \draw[arrowStyle, green!60!black] (transposedef) -- (matrix);
+    \draw[arrowStyle, green!60!black] (fractional) -- (overlap);
+    \draw[arrowStyle, green!60!black] (fcn) -- (arbitrary);
+
+    % 分支标题 -> 子节点 (左侧：U-net)
+    \draw[arrowStyle, purple!60] (unet) -- (problem);
+    \draw[arrowStyle, purple!60] (unet) -- (ushape);
+    \draw[arrowStyle, purple!60] (unet) -- (concat);
+    \draw[arrowStyle, purple!60] (unet) -- (final);
+    \draw[arrowStyle, purple!60] (ushape) -- (correspond);
+    \draw[arrowStyle, purple!60] (concat) -- (channelconcat);
+    \draw[arrowStyle, purple!60] (final) -- (classnum);
+
+    % 分支标题 -> 子节点 (右上：转置卷积细节)
+    \draw[arrowStyle, orange!60] (transposedetail) -- (kernel);
+    \draw[arrowStyle, orange!60] (transposedetail) -- (redblue);
+    \draw[arrowStyle, orange!60] (transposedetail) -- (deconv);
+    \draw[arrowStyle, orange!60] (transposedetail) -- (learnable);
+
+\end{tikzpicture}
+
+\end{document}

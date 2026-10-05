@@ -1,0 +1,133 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta, shadows.blur}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {卷积网络 \\ CNN \\ 知识图谱};
+
+    % ================= 2. 上方分支：结构化数据动机 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (motivation) {结构化数据动机 \\ Structured Data};
+
+    \node[subNode, above left=of motivation, xshift=-0.5cm] (unstruct) {非结构化假设 \\ 随机置换不变};
+    \node[subNode, above=of motivation] (struct) {结构化数据 \\ 局部相关性};
+    \node[subNode, above right=of motivation, xshift=0.5cm] (prior) {结构先验利用 \\ 正则/增强/架构};
+
+    % ================= 3. 右侧分支：计算机视觉 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (cv) {计算机视觉 \\ Computer Vision};
+
+    \node[subNode, above right=of cv, yshift=0.0cm] (cvhistory) {历史演变 \\ 几何→手工特征→CNN};
+    \node[leafNode, right=of cv, yshift=0.8cm] (cvclass) {图像分类};
+    \node[leafNode, right=of cv, yshift=-0.8cm] (cvdetect) {目标检测};
+    \node[subNode, below right=of cv, yshift=-0.3cm] (cvseg) {图像分割};
+    \node[leafNode, below=of cv, yshift=-0.0cm] (cvgen) {生成类任务 \\ 合成/修复/风格迁移/超分};
+
+    % ================= 4. 下方分支：图像数据 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (imgdata) {图像数据 \\ Image Data};
+
+    \node[subNode, below left=of imgdata, xshift=-0.5cm] (representation) {数据表示 \\ 像素/通道/体素/视频};
+    \node[subNode, below=of imgdata] (highdim) {高维性挑战 \\ 参数爆炸};
+    \node[subNode, below right=of imgdata, xshift=0.5cm] (localcorr) {局部相关性 \\ 归纳偏置};
+
+    % ================= 5. 左侧分支：CNN核心思想 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (cnncore) {CNN核心思想 \\ Core Ideas};
+
+    \node[subNode, above left=of cnncore, yshift=0.3cm] (sparse) {稀疏连接 \\ Sparse Connectivity};
+    \node[subNode, left=of cnncore, yshift=1.0cm] (share) {参数共享 \\ Parameter Sharing};
+    \node[subNode, left=of cnncore, yshift=-1.0cm] (invariance) {不变性 \\ Invariance};
+    \node[subNode, below left=of cnncore, yshift=-0.3cm] (equivariance) {等变性 \\ Equivariance};
+
+    % ================= 6. 右上分支：典型任务补充 (橙) =================
+    \node[branchTitle, fill=orange!15, above right=of center, xshift=0.5cm, yshift=1.2cm] (tasks) {典型视觉任务 \\ Vision Tasks};
+
+    \node[leafNode, below=of tasks, yshift=0.2cm] (caption) {字幕生成};
+    \node[leafNode, above right=of tasks] (depth) {深度预测};
+    \node[leafNode, right=of tasks] (scene) {场景重建};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 五大分支标题
+    \draw[arrowStyle, red] (center) -- (motivation);
+    \draw[arrowStyle, blue] (center) -- (cv);
+    \draw[arrowStyle, green!60!black] (center) -- (imgdata);
+    \draw[arrowStyle, purple] (center) -- (cnncore);
+    \draw[arrowStyle, orange] (center) -- (tasks);
+
+    % 分支标题 -> 子节点 (上方：动机)
+    \draw[arrowStyle, red!60] (motivation) -- (unstruct);
+    \draw[arrowStyle, red!60] (motivation) -- (struct);
+    \draw[arrowStyle, red!60] (motivation) -- (prior);
+
+    % 分支标题 -> 子节点 (右侧：计算机视觉)
+    \draw[arrowStyle, blue!60] (cv) -- (cvhistory);
+    \draw[arrowStyle, blue!60] (cv) -- (cvclass);
+    \draw[arrowStyle, blue!60] (cv) -- (cvdetect);
+    \draw[arrowStyle, blue!60] (cv) -- (cvseg);
+    \draw[arrowStyle, blue!60] (cv) -- (cvgen);
+
+    % 分支标题 -> 子节点 (下方：图像数据)
+    \draw[arrowStyle, green!60!black] (imgdata) -- (representation);
+    \draw[arrowStyle, green!60!black] (imgdata) -- (highdim);
+    \draw[arrowStyle, green!60!black] (imgdata) -- (localcorr);
+
+    % 分支标题 -> 子节点 (左侧：CNN核心)
+    \draw[arrowStyle, purple!60] (cnncore) -- (sparse);
+    \draw[arrowStyle, purple!60] (cnncore) -- (share);
+    \draw[arrowStyle, purple!60] (cnncore) -- (invariance);
+    \draw[arrowStyle, purple!60] (cnncore) -- (equivariance);
+
+    % 分支标题 -> 子节点 (右上：典型任务)
+    \draw[arrowStyle, orange!60] (tasks) -- (caption);
+    \draw[arrowStyle, orange!60] (tasks) -- (depth);
+    \draw[arrowStyle, orange!60] (tasks) -- (scene);
+
+\end{tikzpicture}
+
+\end{document}

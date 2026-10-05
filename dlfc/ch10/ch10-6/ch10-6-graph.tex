@@ -1,0 +1,155 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {风格迁移 \\ Style Transfer \\ 10.6};
+
+    % ================= 2. 上方分支：基本思想 (红) =================
+    \node[branchTitle, fill=red!15, above left=of center] (idea) {基本思想 \\ Basic Idea};
+
+    \node[subNode, left=of idea, xshift=0.0cm] (layers) {浅层检测边缘纹理 \\ 深层检测复杂物体};
+    \node[subNode, above left=of idea] (goal) {生成图像 $\mathbf{G}$ \\ 内容$\mathbf{C}$+风格$\mathbf{S}$};
+    \node[subNode, above=of idea, xshift=0.0cm] (gradient) {梯度下降 \\ 最小化 $E(\mathbf{G})$};
+
+    \node[leafNode, left=of layers, yshift=0.0cm] (cnnprop) {CNN 层级特性 \\ 图10.32};
+    \node[leafNode, above left=of goal, yshift=0.0cm] (errfunc) {误差函数 \\ 式(10.13)};
+    \node[leafNode, above=of gradient, yshift=0.0cm] (randominit) {随机初始化 \\ 迭代优化};
+
+    % ================= 3. 右侧分支：内容误差 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (content) {内容误差 \\ Content Error};
+
+    \node[subNode, right=of content, yshift=0.0cm] (contentsel) {选择卷积层 \\ 比较预激活};
+    \node[subNode, below right=of content, yshift=0.0cm] (contentsse) {平方和误差 \\ 式(10.14)};
+    \node[subNode, below=of content, yshift=0.0cm] (contentlayer) {层选择影响 \\ 浅层/深层};
+
+    \node[leafNode, right=of contentsse, xshift=0.0cm] (positionmatch) {位置匹配 \\ 同位置特征};
+    \node[leafNode, below right=of contentlayer, xshift=0.0cm] (lowhigh) {低层特征 \\ vs 复杂结构};
+
+    % ================= 4. 下方分支：风格误差与风格矩阵 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (style) {风格误差与风格矩阵 \\ Style Error \& Matrix};
+
+    \node[subNode, below left=of style, xshift=1.0cm] (cooccur) {特征共现 \\ 跨通道统计};
+    \node[subNode, below=of style] (gram) {风格矩阵 $F_{kk'}$ \\ 式(10.15)};
+    \node[subNode, below right=of style, xshift=-1.0cm] (styleerr) {风格误差 \\ 式(10.16)};
+
+    \node[leafNode, below left=of cooccur, yshift=0.0cm] (example) {垂直边缘+橙色 \\ 任意位置};
+    \node[leafNode, below=of gram, yshift=0.0cm] (gramdetail) {$K\times K$ 矩阵 \\ 互相关};
+    \node[leafNode, below right=of styleerr, yshift=0.0cm] (normalize) {归一化因子 \\ $\frac{1}{(2IJK)^2}$};
+
+    % ================= 5. 左侧分支：多层加权 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (multi) {多层加权 \\ Multi-layer Weighting};
+
+    \node[subNode, left=of multi, yshift=0.0cm] (multilayer) {多层贡献 \\ 式(10.17)};
+    \node[subNode, below left=of multi, yshift=0.0cm] (lambda) {系数 $\lambda_l$ \\ 层间权重};
+    \node[subNode, below left=of multi, yshift=-3.0cm] (empirical) {经验调整 \\ 主观判断};
+    \node[subNode, below =of multi, yshift=0.0cm] (relative) {相对内容误差 \\ 权重平衡};
+
+    \node[leafNode, left=of lambda, xshift=0.0cm] (layerweight) {不同层 \\ 不同权重};
+    \node[leafNode, below left=of empirical, xshift=1.5cm, yshift=-0.0cm] (subjective) {粗细风格 \\ 效果控制};
+
+    % ================= 6. 右上分支：应用与示例 (橙) =================
+    \node[branchTitle, fill=orange!15, above right=of center, xshift=0.0cm, yshift=0.0cm] (application) {应用与示例 \\ Application \& Examples};
+
+    \node[leafNode, above left=of application, xshift=0.0cm] (canal) {运河场景 \\ 图10.32};
+    \node[leafNode, above=of application, xshift=0.0cm] (turner) {Turner风格 \\ 运输船残骸};
+    \node[leafNode, above right=of application, xshift=0.0cm] (vangogh) {Van Gogh风格 \\ 星夜};
+    \node[leafNode, right=of application, xshift=0.0cm] (render) {重新渲染 \\ 合成图像};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 各分支标题
+    \draw[arrowStyle, red] (center) -- (idea);
+    \draw[arrowStyle, blue] (center) -- (content);
+    \draw[arrowStyle, green!60!black] (center) -- (style);
+    \draw[arrowStyle, purple] (center) -- (multi);
+    \draw[arrowStyle, orange] (center) -- (application);
+
+    % 分支标题 -> 子节点 (上方：基本思想)
+    \draw[arrowStyle, red!60] (idea) -- (layers);
+    \draw[arrowStyle, red!60] (idea) -- (goal);
+    \draw[arrowStyle, red!60] (idea) -- (gradient);
+    \draw[arrowStyle, red!60] (layers) -- (cnnprop);
+    \draw[arrowStyle, red!60] (goal) -- (errfunc);
+    \draw[arrowStyle, red!60] (gradient) -- (randominit);
+
+    % 分支标题 -> 子节点 (右侧：内容误差)
+    \draw[arrowStyle, blue!60] (content) -- (contentsel);
+    \draw[arrowStyle, blue!60] (content) -- (contentsse);
+    \draw[arrowStyle, blue!60] (content) -- (contentlayer);
+    \draw[arrowStyle, blue!60] (contentsse) -- (positionmatch);
+    \draw[arrowStyle, blue!60] (contentlayer) -- (lowhigh);
+
+    % 分支标题 -> 子节点 (下方：风格误差与风格矩阵)
+    \draw[arrowStyle, green!60!black] (style) -- (cooccur);
+    \draw[arrowStyle, green!60!black] (style) -- (gram);
+    \draw[arrowStyle, green!60!black] (style) -- (styleerr);
+    \draw[arrowStyle, green!60!black] (cooccur) -- (example);
+    \draw[arrowStyle, green!60!black] (gram) -- (gramdetail);
+    \draw[arrowStyle, green!60!black] (styleerr) -- (normalize);
+
+    % 分支标题 -> 子节点 (左侧：多层加权)
+    \draw[arrowStyle, purple!60] (multi) -- (multilayer);
+    \draw[arrowStyle, purple!60] (multi) -- (lambda);
+    \draw[arrowStyle, purple!60] (multi) -- (empirical);
+    \draw[arrowStyle, purple!60] (multi) -- (relative);
+    \draw[arrowStyle, purple!60] (lambda) -- (layerweight);
+    \draw[arrowStyle, purple!60] (empirical) -- (subjective);
+
+    % 分支标题 -> 子节点 (右上：应用与示例)
+    \draw[arrowStyle, orange!60] (application) -- (canal);
+    \draw[arrowStyle, orange!60] (application) -- (turner);
+    \draw[arrowStyle, orange!60] (application) -- (vangogh);
+    \draw[arrowStyle, orange!60] (application) -- (render);
+
+\end{tikzpicture}
+
+\end{document}

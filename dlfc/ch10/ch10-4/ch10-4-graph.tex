@@ -1,0 +1,157 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.8cm and 1.6cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.4cm,
+        minimum height = 1.0cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt,
+        minimum width = 2.8cm,
+        minimum height = 1.0cm
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {目标检测 \\ Object Detection \\ 10.4};
+
+    % ================= 2. 上方分支：边界框与IoU (红) =================
+    \node[branchTitle, fill=red!15, above left=of center, xshift=0.5cm, yshift=1cm] (bbox) {边界框与IoU \\ BBox \& IoU};
+
+    \node[subNode, left=of bbox, xshift=-1.0cm] (bboxdef) {边界框定义 \\ $\mathbf{b}=(b_x,b_y,b_W,b_H)$};
+    \node[subNode, above left=of bbox] (bboxcoord) {坐标表示 \\ 像素/归一化};
+    \node[subNode, above=of bbox, xshift=0.0cm] (iou) {交并比 IoU \\ 式(10.20)};
+
+    \node[leafNode, left=of bboxdef, yshift=0.2cm] (singleobj) {单物体定位 \\ $C$+4 输出};
+    \node[leafNode, above left=of bboxcoord, yshift=0.2cm] (loss) {平方和误差 \\ 连续坐标};
+    \node[leafNode, above=of iou, yshift=0.0cm] (iouthreshold) {阈值 0.5 \\ 评估指标};
+    \node[leafNode, above right=of iou, xshift=0.0cm] (yolo) {YOLO \\ $7\times7$ 网格};
+
+    % ================= 3. 右侧分支：滑动窗口 (蓝) =================
+    \node[branchTitle, fill=blue!15, right=of center] (sliding) {滑动窗口 \\ Sliding Windows};
+
+    \node[subNode, above right=of sliding, yshift=0.0cm] (slidingidea) {扫描窗口 \\ 逐位置分类};
+    \node[subNode, right=of sliding, yshift=0.5cm] (slidingcost) {计算成本高 \\ 多尺度/步幅权衡};
+    \node[subNode, right=of sliding, yshift=-1.5cm] (redundancy) {计算冗余 \\ 图10.21};
+    \node[subNode, below right=of sliding, yshift=-1.0cm] (convimpl) {卷积化实现 \\ 图10.22-10.23};
+
+    \node[leafNode, right=of convimpl, xshift=0.0cm] (fcasconv) {全连接层 \\ 视为卷积层};
+    \node[leafNode, below right=of convimpl, yshift=0.0cm] (sharedcalc) {共享计算 \\ 少量额外计算};
+
+    % ================= 4. 下方分支：跨尺度检测 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (scale) {跨尺度检测 \\ Detection across Scales};
+
+    \node[subNode, below left=of scale, xshift=-0.8cm] (multiscale) {多尺度/多宽高比 \\ 必要性};
+    \node[subNode, below=of scale] (fixedwindow) {固定窗口+图像缩放 \\ 等价多尺度};
+    \node[subNode, below right=of scale, xshift=0.8cm] (coordtransform) {坐标变换 \\ 缩放因子反投影};
+
+    \node[leafNode, below=of fixedwindow, yshift=0.0cm] (replicate) {图像副本 \\ 水平/垂直缩放};
+    \node[leafNode, below right=of coordtransform, yshift=0.0cm] (projectback) {投影回原图 \\ 图10.24};
+
+    % ================= 5. 左侧分支：非极大值抑制 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (nms) {非极大值抑制 \\ NMS};
+
+    \node[subNode, above left=of nms, yshift=-0.5cm] (multipledetect) {多次检测问题 \\ 同一物体冗余};
+    \node[subNode, left=of nms, yshift=0.0cm] (nmsflow) {迭代流程 \\ 选最大→抑制重叠};
+    \node[subNode, below left=of nms, yshift=-0.0cm] (thresholds) {两个阈值 \\ 概率/IoU};
+    \node[subNode, below=of nms, yshift=-0.0cm] (perclass) {按类别独立 \\ 保留不同实例};
+
+    \node[leafNode, left=of nmsflow, xshift=0.0cm] (record) {记录成功检测 \\ 丢弃IoU超阈值框};
+    \node[leafNode, below left=of thresholds, xshift=0.0cm] (probthreshold) {概率阈值 0.7 \\ IoU阈值 0.5};
+
+    % ================= 6. 右上分支：Fast R-CNN (橙) =================
+    \node[branchTitle, fill=orange!15, above right=of center, xshift=-1.0cm, yshift=1.5cm] (fastrcnn) {Fast R-CNN \\ 区域提议};
+
+    \node[leafNode, above=of fastrcnn, xshift=0.0cm] (regionproposal) {区域提议 \\ 低成本筛选};
+    \node[leafNode, right=of fastrcnn, yshift=3.0cm] (fastrcnn_detail) {Fast R-CNN \\ 仅处理候选区};
+    \node[leafNode, right=of fastrcnn, yshift=1.4cm] (fasterrcnn) {Faster R-CNN \\ 端到端训练};
+    \node[leafNode, right=of fastrcnn, xshift=0.0cm] (bboxrefine) {边界框预测 \\ 微调位置};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 各分支标题
+    \draw[arrowStyle, red] (center) -- (bbox);
+    \draw[arrowStyle, blue] (center) -- (sliding);
+    \draw[arrowStyle, green!60!black] (center) -- (scale);
+    \draw[arrowStyle, purple] (center) -- (nms);
+    \draw[arrowStyle, orange] (center) -- (fastrcnn);
+
+    % 分支标题 -> 子节点 (上方：边界框与IoU)
+    \draw[arrowStyle, red!60] (bbox) -- (bboxdef);
+    \draw[arrowStyle, red!60] (bbox) -- (bboxcoord);
+    \draw[arrowStyle, red!60] (bbox) -- (iou);
+    \draw[arrowStyle, red!60] (bboxdef) -- (singleobj);
+    \draw[arrowStyle, red!60] (bboxcoord) -- (loss);
+    \draw[arrowStyle, red!60] (iou) -- (iouthreshold);
+    \draw[arrowStyle, red!60] (iou) -- (yolo);
+
+    % 分支标题 -> 子节点 (右侧：滑动窗口)
+    \draw[arrowStyle, blue!60] (sliding) -- (slidingidea);
+    \draw[arrowStyle, blue!60] (sliding) -- (slidingcost);
+    \draw[arrowStyle, blue!60] (sliding) -- (redundancy);
+    \draw[arrowStyle, blue!60] (sliding) -- (convimpl);
+    \draw[arrowStyle, blue!60] (convimpl) -- (fcasconv);
+    \draw[arrowStyle, blue!60] (convimpl) -- (sharedcalc);
+
+    % 分支标题 -> 子节点 (下方：跨尺度检测)
+    \draw[arrowStyle, green!60!black] (scale) -- (multiscale);
+    \draw[arrowStyle, green!60!black] (scale) -- (fixedwindow);
+    \draw[arrowStyle, green!60!black] (scale) -- (coordtransform);
+    \draw[arrowStyle, green!60!black] (fixedwindow) -- (replicate);
+    \draw[arrowStyle, green!60!black] (coordtransform) -- (projectback);
+
+    % 分支标题 -> 子节点 (左侧：非极大值抑制)
+    \draw[arrowStyle, purple!60] (nms) -- (multipledetect);
+    \draw[arrowStyle, purple!60] (nms) -- (nmsflow);
+    \draw[arrowStyle, purple!60] (nms) -- (thresholds);
+    \draw[arrowStyle, purple!60] (nms) -- (perclass);
+    \draw[arrowStyle, purple!60] (nmsflow) -- (record);
+    \draw[arrowStyle, purple!60] (thresholds) -- (probthreshold);
+
+    % 分支标题 -> 子节点 (右上：Fast R-CNN)
+    \draw[arrowStyle, orange!60] (fastrcnn) -- (regionproposal);
+    \draw[arrowStyle, orange!60] (fastrcnn) -- (fastrcnn_detail);
+    \draw[arrowStyle, orange!60] (fastrcnn) -- (fasterrcnn);
+    \draw[arrowStyle, orange!60] (fastrcnn) -- (bboxrefine);
+
+\end{tikzpicture}
+
+\end{document}
