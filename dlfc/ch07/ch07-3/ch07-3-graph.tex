@@ -1,0 +1,124 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {收敛性 \\ Convergence};
+
+    % ================= 2. 上方分支：学习率与曲率 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (lr) {学习率与曲率 \\ Learning Rate \& Curvature};
+
+    \node[subNode, above=of lr, xshift=-6cm] (valley) {狭长山谷 \\ Narrow Valley};
+    \node[subNode, above=of lr, xshift=-2cm] (oscillate) {振荡发散 \\ Oscillation};
+    \node[subNode, above=of lr, xshift=2cm] (eigen) {特征值分解 \\ Eigenvalues};
+    \node[subNode, above=of lr, xshift=6cm] (condition) {条件数 \\ Condition Number};
+
+    % ================= 3. 右侧分支：线性收敛分析 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (linear) {线性收敛分析 \\ Linear Convergence};
+
+    \node[subNode, right=of linear, yshift=3cm] (decouple) {方向解耦 \\ Decoupled Directions};
+    \node[subNode, right=of linear, yshift=1cm] (factor) {收敛因子 \\ Convergence Factor};
+    \node[subNode, right=of linear, yshift=-1cm] (bound) {上界 $\eta < 2/\lambda_{\max}$ \\ Upper Bound};
+    \node[subNode, right=of linear, yshift=-3cm] (slow) {最慢方向 \\ Slowest Direction};
+
+    % ================= 4. 下方分支：动量法 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (momentum) {动量法 \\ Momentum};
+
+    \node[subNode, below=of momentum, xshift=-6cm] (inertia) {惯性项 \\ Inertia};
+    \node[subNode, below=of momentum, xshift=-3cm] (smooth) {平滑振荡 \\ Smooth Oscillations};
+    \node[subNode, below=of momentum, xshift=0cm] (effective) {有效学习率 \\ Effective LR};
+    \node[subNode, below=of momentum, xshift=3cm] (mu) {动量参数 $\mu$ \\ Momentum Parameter};
+    \node[subNode, below=of momentum, xshift=7cm] (nesterov) {Nesterov 动量 \\ Nesterov Momentum};
+
+    % ================= 5. 左侧分支：自适应学习率 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (adaptive) {自适应学习率 \\ Adaptive Learning Rates};
+
+    \node[subNode, left=of adaptive, yshift=4cm] (schedule) {学习率调度 \\ LR Schedule};
+    \node[subNode, left=of adaptive, yshift=2cm] (adagrad) {AdaGrad \\ 累积平方梯度};
+    \node[subNode, left=of adaptive, yshift=0cm] (rmsprop) {RMSProp \\ 指数加权平均};
+    \node[subNode, left=of adaptive, yshift=-2cm] (adam) {Adam \\ 自适应矩估计};
+    \node[subNode, left=of adaptive, yshift=-4cm] (bias) {偏差校正 \\ Bias Correction};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (lr);
+    \draw[arrowStyle, blue] (center) -- (linear);
+    \draw[arrowStyle, green!60!black] (center) -- (momentum);
+    \draw[arrowStyle, purple] (center) -- (adaptive);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (lr) -- (valley);
+    \draw[arrowStyle, red!60] (lr) -- (oscillate);
+    \draw[arrowStyle, red!60] (lr) -- (eigen);
+    \draw[arrowStyle, red!60] (lr) -- (condition);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (linear) -- (decouple);
+    \draw[arrowStyle, blue!60] (linear) -- (factor);
+    \draw[arrowStyle, blue!60] (linear) -- (bound);
+    \draw[arrowStyle, blue!60] (linear) -- (slow);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (momentum) -- (inertia);
+    \draw[arrowStyle, green!60!black] (momentum) -- (smooth);
+    \draw[arrowStyle, green!60!black] (momentum) -- (effective);
+    \draw[arrowStyle, green!60!black] (momentum) -- (mu);
+    \draw[arrowStyle, green!60!black] (momentum) -- (nesterov);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (adaptive) -- (schedule);
+    \draw[arrowStyle, purple!60] (adaptive) -- (adagrad);
+    \draw[arrowStyle, purple!60] (adaptive) -- (rmsprop);
+    \draw[arrowStyle, purple!60] (adaptive) -- (adam);
+    \draw[arrowStyle, purple!60] (adaptive) -- (bias);
+
+\end{tikzpicture}
+
+\end{document}

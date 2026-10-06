@@ -1,0 +1,120 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {权重衰减 \\ Weight Decay};
+
+    % ================= 2. 上方分支：基本概念 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (basic) {基本概念 \\ Basics};
+
+    \node[subNode, above left=of basic] (l2) {平方和正则化 \\ Sum-of-Squares};
+    \node[subNode, above=of basic] (grad) {梯度形式 \\ Gradient};
+    \node[subNode, above right=of basic] (gauss) {高斯先验 \\ Gaussian Prior};
+    \node[subNode, left=of basic, yshift=0cm] (eff) {有效参数量 \\ Effective Parameters};
+
+    % ================= 3. 右侧分支：一致性正则化 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (consist) {一致性正则化 \\ Consistent Regularizers};
+
+    \node[subNode, above=of consist] (trans) {线性变换 \\ Linear Transform};
+    \node[subNode, above right=of consist] (scale) {权重重缩放 \\ Weight Rescaling};
+    \node[subNode, right=of consist] (bias-shift) {偏置平移 \\ Bias Shift};
+    \node[subNode, below right=of consist, yshift=0cm] (improper) {非正常先验 \\ Improper Prior};
+    \node[subNode, below=of consist] (hyper) {四个超参数 \\ Four Hyperparameters};
+
+    % ================= 4. 下方分支：广义权重衰减 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (general) {广义权重衰减 \\ Generalized Weight Decay};
+
+    \node[subNode, below left=of general] (q) {幂次 $q$ \\ $\Omega(w)=\frac{\lambda}{2}\sum_{j=1}^{M}|w_j|^q$};
+    \node[subNode, below=of general] (lasso) {Lasso \\ $q=1$};
+    \node[subNode, below right=of general] (sparse) {稀疏性 \\ Sparsity};
+    \node[subNode, left=of general, yshift=0cm] (constraint) {约束形式 \\ Constraint};
+
+    % ================= 5. 左侧分支：模型复杂度 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (complex) {模型复杂度 \\ Model Complexity};
+
+    \node[subNode, above left=of complex] (overfit) {控制过拟合 \\ Over-fitting};
+    \node[subNode, left=of complex] (lambda) {正则系数 $\lambda$ \\ Regularization};
+    \node[subNode, below left=of complex] (shift) {复杂度转移 \\ Complexity Shift};
+    
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (basic);
+    \draw[arrowStyle, blue] (center) -- (consist);
+    \draw[arrowStyle, green!60!black] (center) -- (general);
+    \draw[arrowStyle, purple] (center) -- (complex);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (basic) -- (l2);
+    \draw[arrowStyle, red!60] (basic) -- (grad);
+    \draw[arrowStyle, red!60] (basic) -- (gauss);
+    \draw[arrowStyle, red!60] (basic) -- (eff);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (consist) -- (trans);
+    \draw[arrowStyle, blue!60] (consist) -- (scale);
+    \draw[arrowStyle, blue!60] (consist) -- (bias-shift);
+    \draw[arrowStyle, blue!60] (consist) -- (improper);
+    \draw[arrowStyle, blue!60] (consist) -- (hyper);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (general) -- (q);
+    \draw[arrowStyle, green!60!black] (general) -- (lasso);
+    \draw[arrowStyle, green!60!black] (general) -- (sparse);
+    \draw[arrowStyle, green!60!black] (general) -- (constraint);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (complex) -- (overfit);
+    \draw[arrowStyle, purple!60] (complex) -- (lambda);
+    \draw[arrowStyle, purple!60] (complex) -- (shift);
+    
+\end{tikzpicture}
+
+\end{document}

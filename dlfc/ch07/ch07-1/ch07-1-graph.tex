@@ -1,0 +1,124 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {误差曲面 \\ Error Surfaces};
+
+    % ================= 2. 上方分支：优化基础 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (basics) {优化基础 \\ Optimization Basics};
+
+    \node[subNode, above=of basics, xshift=-6cm] (approx) {函数逼近 \\ Function Approximation};
+    \node[subNode, above=of basics, xshift=-2cm] (error) {误差函数 \\ Error Function};
+    \node[subNode, above=of basics, xshift=2cm] (gradient) {梯度信息 \\ Gradient Information};
+    \node[subNode, above=of basics, xshift=6cm] (backprop) {反向传播 \\ Backpropagation};
+
+    % ================= 3. 右侧分支：驻点与分类 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (stationary) {驻点与分类 \\ Stationary Points};
+
+    \node[subNode, right=of stationary, yshift=4cm] (vanish) {梯度为零 \\ Gradient Vanishes};
+    \node[subNode, right=of stationary, yshift=2cm] (minimum) {局部极小值 \\ Local Minimum};
+    \node[subNode, right=of stationary] (maximum) {局部极大值 \\ Local Maximum};
+    \node[subNode, right=of stationary, yshift=-2cm] (saddle) {鞍点 \\ Saddle Point};
+    \node[subNode, right=of stationary, yshift=-4cm] (global) {全局极小值 \\ Global Minimum};
+
+    % ================= 4. 下方分支：局部二次近似 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (quadratic) {局部二次近似 \\ Local Quadratic Approximation};
+
+    \node[subNode, below=of quadratic, xshift=-7cm] (taylor) {泰勒展开 \\ Taylor Expansion};
+    \node[subNode, below=of quadratic, xshift=-4cm] (hessian) {海森矩阵 \\ Hessian Matrix};
+    \node[subNode, below=of quadratic, xshift=0cm] (eigen) {特征值分解 \\ Eigenvalue Decomposition};
+    \node[subNode, below=of quadratic, xshift=4cm] (positive) {正定矩阵 \\ Positive Definite};
+    \node[subNode, below=of quadratic, xshift=7cm] (contour) {等高线椭圆 \\ Contour Ellipses};
+
+    % ================= 5. 左侧分支：实践启示 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (practice) {实践启示 \\ Practical Insights};
+
+    \node[subNode, left=of practice, yshift=3cm] (equiv) {等效极小值 \\ Equivalent Minima};
+    \node[subNode, left=of practice, yshift=1cm] (flat) {平坦极小值 \\ Flat Minima};
+    \node[subNode, left=of practice, yshift=-1cm] (general) {泛化能力 \\ Generalization};
+    \node[subNode, left=of practice, yshift=-3cm] (regular) {正则化 \\ Regularization};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (basics);
+    \draw[arrowStyle, blue] (center) -- (stationary);
+    \draw[arrowStyle, green!60!black] (center) -- (quadratic);
+    \draw[arrowStyle, purple] (center) -- (practice);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (basics) -- (approx);
+    \draw[arrowStyle, red!60] (basics) -- (error);
+    \draw[arrowStyle, red!60] (basics) -- (gradient);
+    \draw[arrowStyle, red!60] (basics) -- (backprop);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (stationary) -- (vanish);
+    \draw[arrowStyle, blue!60] (stationary) -- (minimum);
+    \draw[arrowStyle, blue!60] (stationary) -- (maximum);
+    \draw[arrowStyle, blue!60] (stationary) -- (saddle);
+    \draw[arrowStyle, blue!60] (stationary) -- (global);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (quadratic) -- (taylor);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (hessian);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (eigen);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (positive);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (contour);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (practice) -- (equiv);
+    \draw[arrowStyle, purple!60] (practice) -- (flat);
+    \draw[arrowStyle, purple!60] (practice) -- (general);
+    \draw[arrowStyle, purple!60] (practice) -- (regular);
+
+\end{tikzpicture}
+
+\end{document}

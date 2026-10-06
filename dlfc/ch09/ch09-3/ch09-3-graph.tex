@@ -1,0 +1,122 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {学习曲线 \\ Learning Curves};
+
+    % ================= 2. 上方分支：基本概念 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (basic) {基本概念 \\ Basics};
+
+    \node[subNode, above left=of basic] (train) {训练误差 \\ Training Error};
+    \node[subNode, above=of basic] (valid) {验证误差 \\ Validation Error};
+    \node[subNode, above right=of basic] (trade) {偏差--方差权衡 \\ Bias--Variance};
+    \node[subNode, right=of basic, yshift=0cm] (iter) {迭代次数 \\ Iterations};
+
+    % ================= 3. 右侧分支：早停法 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (early) {早停法 \\ Early Stopping};
+
+    \node[subNode, above=of early] (stop) {停止准则 \\ Stop Criterion};
+    \node[subNode, above right=of early] (complex) {有效复杂度 \\ Effective Complexity};
+    \node[subNode, right=of early] (weight) {类似权重衰减 \\ Like Weight Decay};
+    \node[subNode, below right=of early, yshift=0cm] (path) {权重路径 \\ Weight Path};
+    \node[subNode, below=of early] (recip) {倒数关系 \\ $\tau/\eta \sim 1/\lambda$};
+
+    % ================= 4. 下方分支：双下降 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (double) {双下降 \\ Double Descent};
+
+    \node[subNode, below left=of double] (interp) {插值阈值 \\ Interpolation Threshold};
+    \node[subNode, below right=of double] (modern) {现代深度学习 \\ Modern DL};
+    \node[subNode, left=of double, yshift=0cm] (epoch) {训练轮数 \\ Epochs};
+    \node[subNode, below=of double] (data) {数据量影响 \\ Data Size Effect};
+
+    % ================= 5. 左侧分支：实践启示 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (practice) {实践启示 \\ Practical Insights};
+
+    \node[subNode, above left=of practice] (bigger) {更大模型 \\ Bigger Models};
+    \node[subNode, left=of practice] (implicit) {隐式偏置 \\ Implicit Bias};
+    \node[subNode, below left=of practice] (sgt) {随机梯度下降 \\ SGD};
+    \node[subNode, above=of practice, yshift=-0.3cm] (ironic) {更多数据 \\ More Data};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (basic);
+    \draw[arrowStyle, blue] (center) -- (early);
+    \draw[arrowStyle, green!60!black] (center) -- (double);
+    \draw[arrowStyle, purple] (center) -- (practice);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (basic) -- (train);
+    \draw[arrowStyle, red!60] (basic) -- (valid);
+    \draw[arrowStyle, red!60] (basic) -- (trade);
+    \draw[arrowStyle, red!60] (basic) -- (iter);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (early) -- (stop);
+    \draw[arrowStyle, blue!60] (early) -- (complex);
+    \draw[arrowStyle, blue!60] (early) -- (weight);
+    \draw[arrowStyle, blue!60] (early) -- (path);
+    \draw[arrowStyle, blue!60] (early) -- (recip);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (double) -- (interp);
+    \draw[arrowStyle, green!60!black] (double) -- (modern);
+    \draw[arrowStyle, green!60!black] (double) -- (epoch);
+    \draw[arrowStyle, green!60!black] (double) -- (data);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (practice) -- (bigger);
+    \draw[arrowStyle, purple!60] (practice) -- (implicit);
+    \draw[arrowStyle, purple!60] (practice) -- (sgt);
+    \draw[arrowStyle, purple!60] (practice) -- (ironic);
+
+\end{tikzpicture}
+
+\end{document}

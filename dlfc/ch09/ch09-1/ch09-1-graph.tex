@@ -1,0 +1,122 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {正则化 \\ Regularization};
+
+    % ================= 2. 上方分支：核心思想 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (core) {核心思想 \\ Core Ideas};
+
+    \node[subNode, above left=of core] (bias) {归纳偏置 \\ Inductive Bias};
+    \node[subNode, above=of core] (bvt) {偏差--方差权衡 \\ Bias--Variance};
+    \node[subNode, above right=of core] (gen) {泛化与过拟合 \\ Generalization};
+    \node[subNode, left=of core, yshift=0cm] (prior) {先验知识 \\ Prior Knowledge};
+
+    % ================= 3. 右侧分支：正则化方法 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (methods) {正则化方法 \\ Methods};
+
+    \node[subNode, above=of methods] (l2) {L2 正则化 \\ Weight Decay};
+    \node[subNode, above right=of methods] (early) {早停 \\ Early Stopping};
+    \node[subNode, right=of methods] (dropout) {Dropout \\ 模型平均};
+    \node[subNode, below right=of methods, yshift=0cm] (aug) {数据增强 \\ Data Augmentation};
+    \node[subNode, below=of methods] (share) {参数共享 \\ Parameter Sharing};
+
+    % ================= 4. 下方分支：不变性与等变性 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (invar) {不变性与等变性 \\ Invariance \& Equivariance};
+
+    \node[subNode, below left=of invar] (trans) {平移不变性 \\ Translation Invariance};
+    \node[subNode, below=of invar] (scale) {尺度不变性 \\ Scale Invariance};
+    \node[subNode, below right=of invar] (equi) {等变性 \\ Equivariance};
+    \node[subNode, left=of invar, yshift=0cm] (group) {群论 \\ Group Theory};
+
+    % ================= 5. 左侧分支：实现途径 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (impl) {实现途径 \\ Approaches};
+
+    \node[subNode, above left=of impl] (pre) {预处理 \\ Pre-processing};
+    \node[subNode, left=of impl] (reg) {正则化误差 \\ Regularized Error};
+    \node[subNode, below left=of impl] (arch) {网络结构 \\ Architecture};
+    \node[subNode, above=of impl, yshift=-0.3cm] (nfl) {没有免费午餐 \\ No Free Lunch};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (core);
+    \draw[arrowStyle, blue] (center) -- (methods);
+    \draw[arrowStyle, green!60!black] (center) -- (invar);
+    \draw[arrowStyle, purple] (center) -- (impl);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (core) -- (bias);
+    \draw[arrowStyle, red!60] (core) -- (bvt);
+    \draw[arrowStyle, red!60] (core) -- (gen);
+    \draw[arrowStyle, red!60] (core) -- (prior);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (methods) -- (l2);
+    \draw[arrowStyle, blue!60] (methods) -- (early);
+    \draw[arrowStyle, blue!60] (methods) -- (dropout);
+    \draw[arrowStyle, blue!60] (methods) -- (aug);
+    \draw[arrowStyle, blue!60] (methods) -- (share);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (invar) -- (trans);
+    \draw[arrowStyle, green!60!black] (invar) -- (scale);
+    \draw[arrowStyle, green!60!black] (invar) -- (equi);
+    \draw[arrowStyle, green!60!black] (invar) -- (group);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (impl) -- (pre);
+    \draw[arrowStyle, purple!60] (impl) -- (reg);
+    \draw[arrowStyle, purple!60] (impl) -- (arch);
+    \draw[arrowStyle, purple!60] (impl) -- (nfl);
+
+\end{tikzpicture}
+
+\end{document}

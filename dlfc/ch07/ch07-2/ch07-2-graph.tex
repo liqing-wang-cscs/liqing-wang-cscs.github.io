@@ -1,0 +1,124 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {梯度下降优化 \\ Gradient Descent};
+
+    % ================= 2. 上方分支：梯度信息价值 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (value) {梯度信息价值 \\ Value of Gradient};
+
+    \node[subNode, above=of value, xshift=-6cm] (iterative) {迭代数值方法 \\ Iterative Methods};
+    \node[subNode, above=of value, xshift=-2cm] (info) {信息效率 \\ Information Efficiency};
+    \node[subNode, above=of value, xshift=2cm] (complexity) {复杂度对比 \\ Complexity Comparison};
+    \node[subNode, above=of value, xshift=6cm] (backprop) {反向传播 \\ Backpropagation};
+
+    % ================= 3. 右侧分支：批量梯度下降 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (batch) {批量梯度下降 \\ Batch Gradient Descent};
+
+    \node[subNode, right=of batch, yshift=3cm] (fullbatch) {全数据集 \\ Full Data Set};
+    \node[subNode, right=of batch, yshift=1cm] (lr) {学习率 $\eta$ \\ Learning Rate};
+    \node[subNode, right=of batch, yshift=-1cm] (steepest) {最速下降 \\ Steepest Descent};
+    \node[subNode, right=of batch, yshift=-3cm] (inefficient) {大数据集低效 \\ Inefficient for Big Data};
+
+    % ================= 4. 下方分支：随机梯度下降 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (sgd) {随机梯度下降 \\ SGD};
+
+    \node[subNode, below=of sgd, xshift=-6cm] (single) {单样本更新 \\ Single Sample};
+    \node[subNode, below=of sgd, xshift=-3cm] (epoch) {训练轮次 \\ Training Epoch};
+    \node[subNode, below=of sgd, xshift=0cm] (online) {在线梯度下降 \\ Online GD};
+    \node[subNode, below=of sgd, xshift=3cm] (redundancy) {冗余数据高效 \\ Handles Redundancy};
+    \node[subNode, below=of sgd, xshift=7cm] (escape) {逃离局部极小 \\ Escape Local Minima};
+
+    % ================= 5. 左侧分支：小批量与初始化 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (mini) {小批量与初始化 \\ Mini-batch \& Init};
+
+    \node[subNode, left=of mini, yshift=4cm] (minibatch) {小批量 \\ Mini-batch};
+    \node[subNode, left=of mini, yshift=2cm] (noise) {噪声梯度 \\ Noisy Gradient};
+    \node[subNode, left=of mini, yshift=0cm] (shuffle) {数据打乱 \\ Data Shuffling};
+    \node[subNode, left=of mini, yshift=-2cm] (symmetry) {对称性破缺 \\ Symmetry Breaking};
+    \node[subNode, left=of mini, yshift=-4cm] (he) {He 初始化 \\ He Initialization};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (value);
+    \draw[arrowStyle, blue] (center) -- (batch);
+    \draw[arrowStyle, green!60!black] (center) -- (sgd);
+    \draw[arrowStyle, purple] (center) -- (mini);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (value) -- (iterative);
+    \draw[arrowStyle, red!60] (value) -- (info);
+    \draw[arrowStyle, red!60] (value) -- (complexity);
+    \draw[arrowStyle, red!60] (value) -- (backprop);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (batch) -- (fullbatch);
+    \draw[arrowStyle, blue!60] (batch) -- (lr);
+    \draw[arrowStyle, blue!60] (batch) -- (steepest);
+    \draw[arrowStyle, blue!60] (batch) -- (inefficient);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (sgd) -- (single);
+    \draw[arrowStyle, green!60!black] (sgd) -- (epoch);
+    \draw[arrowStyle, green!60!black] (sgd) -- (online);
+    \draw[arrowStyle, green!60!black] (sgd) -- (redundancy);
+    \draw[arrowStyle, green!60!black] (sgd) -- (escape);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (mini) -- (minibatch);
+    \draw[arrowStyle, purple!60] (mini) -- (noise);
+    \draw[arrowStyle, purple!60] (mini) -- (shuffle);
+    \draw[arrowStyle, purple!60] (mini) -- (symmetry);
+    \draw[arrowStyle, purple!60] (mini) -- (he);
+
+\end{tikzpicture}
+
+\end{document}

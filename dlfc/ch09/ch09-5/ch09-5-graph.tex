@@ -1,0 +1,122 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {残差连接 \\ Residual Connections};
+
+    % ================= 2. 上方分支：深度网络问题 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (problem) {深度网络问题 \\ Deep Network Issues};
+
+    \node[subNode, above left=of problem] (vanish) {梯度消失/爆炸 \\ Vanishing/Exploding};
+    \node[subNode, above=of problem] (shatter) {破碎梯度 \\ Shattered Gradients};
+    \node[subNode, above right=of problem] (deep) {深度训练困难 \\ Hard to Train Deep};
+    \node[subNode, right=of problem, yshift=0cm] (bn) {批归一化 \\ Batch Normalization};
+
+    % ================= 3. 右侧分支：残差块结构 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (block) {残差块结构 \\ Residual Block};
+
+    \node[subNode, above=of block] (identity) {恒等映射 \\ Identity Mapping};
+    \node[subNode, above right=of block] (skip) {跳跃连接 \\ Skip Connection};
+    \node[subNode, right=of block] (residual) {学习残差 \\ Learn Residual};
+    \node[subNode, below right=of block, yshift=0cm] (dim) {维度匹配 \\ Dimension Match};
+    \node[subNode, below=of block] (nonlin) {非线性函数 \\ Nonlinear $\mathbf{F}_i$};
+
+    % ================= 4. 下方分支：残差网络特性 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (resnet) {残差网络特性 \\ ResNet Properties};
+
+    \node[subNode, below left=of resnet] (smooth) {平滑误差面 \\ Smooth Error Surface};
+    \node[subNode, below=of resnet] (parallel) {多子网络并行 \\ Parallel Sub-networks};
+    \node[subNode, below right=of resnet] (hundreds) {数百层可训练 \\ Hundreds of Layers};
+    \node[subNode, left=of resnet, yshift=0cm] (grad) {梯度更稳定 \\ Stable Gradients};
+
+    % ================= 5. 左侧分支：实现细节 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (impl) {实现细节 \\ Implementation};
+
+    \node[subNode, above left=of impl] (order) {连接位置 \\ Connection Order};
+    \node[subNode, left=of impl] (relu) {ReLU 之后 \\ After ReLU};
+    \node[subNode, below left=of impl] (preact) {预激活变体 \\ Pre-activation};
+    \node[subNode, above=of impl, yshift=-0.3cm] (batchnorm) {批归一化 \\ Batch Norm};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (problem);
+    \draw[arrowStyle, blue] (center) -- (block);
+    \draw[arrowStyle, green!60!black] (center) -- (resnet);
+    \draw[arrowStyle, purple] (center) -- (impl);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (problem) -- (vanish);
+    \draw[arrowStyle, red!60] (problem) -- (shatter);
+    \draw[arrowStyle, red!60] (problem) -- (deep);
+    \draw[arrowStyle, red!60] (problem) -- (bn);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (block) -- (identity);
+    \draw[arrowStyle, blue!60] (block) -- (skip);
+    \draw[arrowStyle, blue!60] (block) -- (residual);
+    \draw[arrowStyle, blue!60] (block) -- (dim);
+    \draw[arrowStyle, blue!60] (block) -- (nonlin);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (resnet) -- (smooth);
+    \draw[arrowStyle, green!60!black] (resnet) -- (parallel);
+    \draw[arrowStyle, green!60!black] (resnet) -- (hundreds);
+    \draw[arrowStyle, green!60!black] (resnet) -- (grad);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (impl) -- (order);
+    \draw[arrowStyle, purple!60] (impl) -- (relu);
+    \draw[arrowStyle, purple!60] (impl) -- (preact);
+    \draw[arrowStyle, purple!60] (impl) -- (batchnorm);
+
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,124 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.5cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.8cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {归一化 \\ Normalization};
+
+    % ================= 2. 上方分支：输入数据归一化 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (data) {输入数据归一化 \\ Data Normalization};
+
+    \node[subNode, above=of data, xshift=-6cm] (range) {量纲差异 \\ Different Ranges};
+    \node[subNode, above=of data, xshift=-2cm] (mean) {均值 $\mu_i$ \\ Mean};
+    \node[subNode, above=of data, xshift=2cm] (var) {方差 $\sigma_i^2$ \\ Variance};
+    \node[subNode, above=of data, xshift=6cm] (rescale) {零均值单位方差 \\ Zero Mean Unit Var};
+
+    % ================= 3. 右侧分支：批归一化 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (batch) {批归一化 \\ Batch Normalization};
+
+    \node[subNode, right=of batch, yshift=4cm] (mini) {小批量统计 \\ Mini-batch Stats};
+    \node[subNode, right=of batch, yshift=2cm] (preact) {预激活归一化 \\ Pre-activation Norm};
+    \node[subNode, right=of batch, yshift=0cm] (gamma) {缩放参数 $\gamma_i$ \\ Scale};
+    \node[subNode, right=of batch, yshift=-2cm] (beta) {平移参数 $\beta_i$ \\ Shift};
+    \node[subNode, right=of batch, yshift=-4cm] (moving) {移动平均 \\ Moving Averages};
+
+    % ================= 4. 下方分支：层归一化 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (layer) {层归一化 \\ Layer Normalization};
+
+    \node[subNode, below=of layer, xshift=-6cm] (hidden) {跨隐藏单元 \\ Across Hidden Units};
+    \node[subNode, below=of layer, xshift=-2cm] (perdata) {每数据点归一化 \\ Per Data Point};
+    \node[subNode, below=of layer, xshift=2cm] (rnn) {RNN 与 Transformer \\ RNN \& Transformer};
+    \node[subNode, below=of layer, xshift=6cm] (noavg) {无需移动平均 \\ No Moving Average};
+
+    % ================= 5. 左侧分支：梯度问题与理论 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (theory) {梯度问题与理论 \\ Gradient Issues \& Theory};
+
+    \node[subNode, left=of theory, yshift=4cm] (vanish) {梯度消失 \\ Vanishing Gradients};
+    \node[subNode, left=of theory, yshift=2cm] (explode) {梯度爆炸 \\ Exploding Gradients};
+    \node[subNode, left=of theory, yshift=0cm] (smooth) {误差曲面平滑 \\ Smooth Error Surface};
+    \node[subNode, left=of theory, yshift=-2cm] (covariate) {内部协变量偏移 \\ Internal Covariate Shift};
+    \node[subNode, left=of theory, yshift=-4cm] (santurkar) {Santurkar 研究 \\ Santurkar et al.};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (data);
+    \draw[arrowStyle, blue] (center) -- (batch);
+    \draw[arrowStyle, green!60!black] (center) -- (layer);
+    \draw[arrowStyle, purple] (center) -- (theory);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (data) -- (range);
+    \draw[arrowStyle, red!60] (data) -- (mean);
+    \draw[arrowStyle, red!60] (data) -- (var);
+    \draw[arrowStyle, red!60] (data) -- (rescale);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (batch) -- (mini);
+    \draw[arrowStyle, blue!60] (batch) -- (preact);
+    \draw[arrowStyle, blue!60] (batch) -- (gamma);
+    \draw[arrowStyle, blue!60] (batch) -- (beta);
+    \draw[arrowStyle, blue!60] (batch) -- (moving);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (layer) -- (hidden);
+    \draw[arrowStyle, green!60!black] (layer) -- (perdata);
+    \draw[arrowStyle, green!60!black] (layer) -- (rnn);
+    \draw[arrowStyle, green!60!black] (layer) -- (noavg);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (theory) -- (vanish);
+    \draw[arrowStyle, purple!60] (theory) -- (explode);
+    \draw[arrowStyle, purple!60] (theory) -- (smooth);
+    \draw[arrowStyle, purple!60] (theory) -- (covariate);
+    \draw[arrowStyle, purple!60] (theory) -- (santurkar);
+
+\end{tikzpicture}
+
+\end{document}
