@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,41 +50,41 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {自动微分 \\ Automatic Differentiation};
+    \node[centerStyle] (center) {8.2.自动微分 \\ Automatic Differentiation};
 
     % ================= 2. 上方分支：四种求导方法 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (methods) {四种求导方法 \\ Four Approaches};
 
-    \node[subNode, above left=of methods] (manual) {手动反向传播 \\ Manual Backprop};
-    \node[subNode, above=of methods] (numeric) {数值微分 \\ Numerical Diff};
-    \node[subNode, above right=of methods] (symbolic) {符号微分 \\ Symbolic Diff};
-    \node[subNode, right=of methods, yshift=0cm] (autodiff) {自动微分 \\ Autodiff};
+    \node[subNode, above=of methods, xshift=-6cm] (manual) {手动反向传播 \\ Manual Backprop};
+    \node[subNode, above=of methods, xshift=-2cm] (numeric) {数值微分 \\ Numerical Diff};
+    \node[subNode, above=of methods, xshift=2cm] (symbolic) {符号微分 \\ Symbolic Diff};
+    \node[subNode, above=of methods, xshift=6cm] (autodiff) {自动微分 \\ Autodiff};
 
     % ================= 3. 右侧分支：前向模式 (蓝) =================
     \node[branchTitle, fill=orange!15, right=of center] (forward) {前向模式 \\ Forward Mode};
 
-    \node[subNode, above=of forward] (primal) {主变量 $v_i$ \\ Primal Variables};
-    \node[subNode, above right=of forward] (tangent) {切线变量 $\dot{v}_i$ \\ Tangent Variables};
-    \node[subNode, right=of forward] (trace) {求值轨迹 \\ Evaluation Trace};
-    \node[subNode, below right=of forward, yshift=0cm] (jvp) {雅可比--向量积 \\ JVP};
-    \node[subNode, below=of forward] (column) {雅可比一列 \\ One Jacobian Column};
+    \node[subNode, right=of forward, yshift=4cm] (primal) {主变量 $v_i$ \\ Primal Variables};
+    \node[subNode, right=of forward, yshift=2cm] (tangent) {切线变量 $\dot{v}_i$ \\ Tangent Variables};
+    \node[subNode, right=of forward, yshift=0cm] (trace) {求值轨迹 \\ Evaluation Trace};
+    \node[subNode, right=of forward, yshift=-2cm] (jvp) {雅可比--向量积 \\ JVP};
+    \node[subNode, right=of forward, yshift=-4cm] (column) {雅可比一列 \\ One Jacobian Column};
 
     % ================= 4. 下方分支：反向模式 (绿) =================
     \node[branchTitle, fill=green!15, below=of center] (reverse) {反向模式 \\ Reverse Mode};
 
-    \node[subNode, below left=of reverse] (adjoint) {伴随变量 $\bar{v}_i$ \\ Adjoint Variables};
-    \node[subNode, below=of reverse] (backward) {反向传播 \\ Backward Pass};
-    \node[subNode, below right=of reverse] (row) {雅可比一行 \\ One Jacobian Row};
-    \node[subNode, left=of reverse, yshift=0cm] (memory) {内存开销大 \\ High Memory};
-    \node[subNode, right=of reverse] (vjp) {向量--雅可比积 \\ VJP};
+    \node[subNode, below=of reverse, xshift=-7cm] (adjoint) {伴随变量 $\bar{v}_i$ \\ Adjoint Variables};
+    \node[subNode, below=of reverse, xshift=-3.5cm] (backward) {反向传播 \\ Backward Pass};
+    \node[subNode, below=of reverse, xshift=0cm] (row) {雅可比一行 \\ One Jacobian Row};
+    \node[subNode, below=of reverse, xshift=3.5cm] (memory) {内存开销大 \\ High Memory};
+    \node[subNode, below=of reverse, xshift=7cm] (vjp) {向量--雅可比积 \\ VJP};
 
     % ================= 5. 左侧分支：对比与应用 (紫) =================
     \node[branchTitle, fill=purple!15, left=of center] (compare) {对比与应用 \\ Comparison \& Applications};
 
-    \node[subNode, above left=of compare] (complexity) {复杂度对比 \\ Complexity};
-    \node[subNode, left=of compare] (hybrid) {混合模式 \\ Hybrid Mode};
-    \node[subNode, below left=of compare] (hessian) {Hessian--向量积 \\ Hessian-Vector};
-    \node[subNode, above=of compare, yshift=-0.3cm] (cost) {常数倍开销 \\ Constant Overhead};
+    \node[subNode, left=of compare, yshift=3cm] (complexity) {复杂度对比 \\ Complexity};
+    \node[subNode, left=of compare, yshift=1cm] (hybrid) {混合模式 \\ Hybrid Mode};
+    \node[subNode, left=of compare, yshift=-1cm] (hessian) {Hessian--向量积 \\ Hessian-Vector};
+    \node[subNode, left=of compare, yshift=-3cm] (cost) {常数倍开销 \\ Constant Overhead};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
@@ -94,30 +94,30 @@
     \draw[arrowStyle, purple] (center) -- (compare);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (methods) -- (manual);
-    \draw[arrowStyle, red!60] (methods) -- (numeric);
-    \draw[arrowStyle, red!60] (methods) -- (symbolic);
-    \draw[arrowStyle, red!60] (methods) -- (autodiff);
+    \draw[arrowStyle, red!60] (methods) -- (manual.south);
+    \draw[arrowStyle, red!60] (methods) -- (numeric.south);
+    \draw[arrowStyle, red!60] (methods) -- (symbolic.south);
+    \draw[arrowStyle, red!60] (methods) -- (autodiff.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (forward) -- (primal);
-    \draw[arrowStyle, blue!60] (forward) -- (tangent);
-    \draw[arrowStyle, blue!60] (forward) -- (trace);
-    \draw[arrowStyle, blue!60] (forward) -- (jvp);
-    \draw[arrowStyle, blue!60] (forward) -- (column);
+    \draw[arrowStyle, blue!60] (forward) -- (primal.west);
+    \draw[arrowStyle, blue!60] (forward) -- (tangent.west);
+    \draw[arrowStyle, blue!60] (forward) -- (trace.west);
+    \draw[arrowStyle, blue!60] (forward) -- (jvp.west);
+    \draw[arrowStyle, blue!60] (forward) -- (column.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (reverse) -- (adjoint);
-    \draw[arrowStyle, green!60!black] (reverse) -- (backward);
-    \draw[arrowStyle, green!60!black] (reverse) -- (row);
-    \draw[arrowStyle, green!60!black] (reverse) -- (memory);
-    \draw[arrowStyle, green!60!black] (reverse) -- (vjp);
+    \draw[arrowStyle, green!60!black] (reverse) -- (adjoint.north);
+    \draw[arrowStyle, green!60!black] (reverse) -- (backward.north);
+    \draw[arrowStyle, green!60!black] (reverse) -- (row.north);
+    \draw[arrowStyle, green!60!black] (reverse) -- (memory.north);
+    \draw[arrowStyle, green!60!black] (reverse) -- (vjp.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (compare) -- (complexity);
-    \draw[arrowStyle, purple!60] (compare) -- (hybrid);
-    \draw[arrowStyle, purple!60] (compare) -- (hessian);
-    \draw[arrowStyle, purple!60] (compare) -- (cost);
+    \draw[arrowStyle, purple!60] (compare) -- (complexity.east);
+    \draw[arrowStyle, purple!60] (compare) -- (hybrid.east);
+    \draw[arrowStyle, purple!60] (compare) -- (hessian.east);
+    \draw[arrowStyle, purple!60] (compare) -- (cost.east);
 
 \end{tikzpicture}
 

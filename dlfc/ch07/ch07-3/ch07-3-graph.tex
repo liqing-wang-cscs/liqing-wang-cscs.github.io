@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {收敛性 \\ Convergence};
+    \node[centerStyle] (center) {7.3.收敛性 \\ Convergence};
 
     % ================= 2. 上方分支：学习率与曲率 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (lr) {学习率与曲率 \\ Learning Rate \& Curvature};
@@ -94,29 +94,29 @@
     \draw[arrowStyle, purple] (center) -- (adaptive);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (lr) -- (valley);
-    \draw[arrowStyle, red!60] (lr) -- (oscillate);
-    \draw[arrowStyle, red!60] (lr) -- (eigen);
-    \draw[arrowStyle, red!60] (lr) -- (condition);
+    \draw[arrowStyle, red!60] (lr) -- (valley.south);
+    \draw[arrowStyle, red!60] (lr) -- (oscillate.south);
+    \draw[arrowStyle, red!60] (lr) -- (eigen.south);
+    \draw[arrowStyle, red!60] (lr) -- (condition.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (linear) -- (decouple);
-    \draw[arrowStyle, blue!60] (linear) -- (factor);
-    \draw[arrowStyle, blue!60] (linear) -- (bound);
-    \draw[arrowStyle, blue!60] (linear) -- (slow);
+    \draw[arrowStyle, blue!60] (linear) -- (decouple.west);
+    \draw[arrowStyle, blue!60] (linear) -- (factor.west);
+    \draw[arrowStyle, blue!60] (linear) -- (bound.west);
+    \draw[arrowStyle, blue!60] (linear) -- (slow.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (momentum) -- (inertia);
-    \draw[arrowStyle, green!60!black] (momentum) -- (smooth);
-    \draw[arrowStyle, green!60!black] (momentum) -- (effective);
-    \draw[arrowStyle, green!60!black] (momentum) -- (mu);
-    \draw[arrowStyle, green!60!black] (momentum) -- (nesterov);
+    \draw[arrowStyle, green!60!black] (momentum) -- (inertia.north);
+    \draw[arrowStyle, green!60!black] (momentum) -- (smooth.north);
+    \draw[arrowStyle, green!60!black] (momentum) -- (effective.north);
+    \draw[arrowStyle, green!60!black] (momentum) -- (mu.north);
+    \draw[arrowStyle, green!60!black] (momentum) -- (nesterov.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (adaptive) -- (schedule);
-    \draw[arrowStyle, purple!60] (adaptive) -- (adagrad);
-    \draw[arrowStyle, purple!60] (adaptive) -- (rmsprop);
-    \draw[arrowStyle, purple!60] (adaptive) -- (adam);
+    \draw[arrowStyle, purple!60] (adaptive) -- (schedule.east);
+    \draw[arrowStyle, purple!60] (adaptive) -- (adagrad.east);
+    \draw[arrowStyle, purple!60] (adaptive) -- (rmsprop.east);
+    \draw[arrowStyle, purple!60] (adaptive) -- (adam.east);
     \draw[arrowStyle, purple!60] (adaptive) -- (bias);
 
 \end{tikzpicture}

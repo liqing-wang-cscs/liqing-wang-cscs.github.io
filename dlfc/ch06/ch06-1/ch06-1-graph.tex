@@ -1,0 +1,126 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.9cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {固定基函数的局限 \\ Limitations of \\ Fixed Basis Functions};
+
+    % ================= 2. 上方分支：线性基函数模型 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (linear) {线性基函数模型 \\ Linear Basis Function Model};
+
+    \node[subNode, above=of linear, xshift=-6cm] (form) {模型形式 \\ $y=f(\sum w_j\phi_j(x)+w_0)$};
+    \node[subNode, above=of linear, xshift=-2cm] (regression) {回归模型 \\ Regression};
+    \node[subNode, above=of linear, xshift=2cm] (classification) {分类模型 \\ Classification};
+    \node[subNode, above=of linear, xshift=6cm] (general) {通用逼近能力 \\ Universal Approximation};
+
+    % ================= 3. 右侧分支：维数灾难 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (curse) {维数灾难 \\ Curse of Dimensionality};
+
+    \node[subNode, right=of curse, yshift=4cm] (polynomial) {多项式回归 \\ Polynomial Regression};
+    \node[subNode, right=of curse, yshift=2cm] (grid) {网格分类器 \\ Grid-based Classifier};
+    \node[subNode, right=of curse, yshift=0cm] (exponential) {指数增长 \\ Exponential Growth};
+    \node[subNode, right=of curse, yshift=-2cm] (empty) {空单元格 \\ Empty Cells};
+    \node[subNode, right=of curse, yshift=-4cm] (data) {需指数级数据 \\ Exponential Data};
+
+    % ================= 4. 下方分支：高维空间性质 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (highdim) {高维空间性质 \\ High-dimensional Spaces};
+
+    \node[subNode, below=of highdim, xshift=-6cm] (hypersphere) {超球体体积 \\ Hypersphere Volume};
+    \node[subNode, below=of highdim, xshift=-2cm] (shell) {薄壳集中 \\ Thin Shell};
+    \node[subNode, below=of highdim, xshift=2cm] (gaussian) {高斯分布 \\ Gaussian Distribution};
+    \node[subNode, below=of highdim, xshift=6cm] (separable) {线性可分性 \\ Linear Separability};
+
+    % ================= 5. 左侧分支：数据流形与数据依赖基函数 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (manifold) {数据流形与数据依赖基函数 \\ Data Manifolds \& Data-dependent Basis};
+
+    \node[subNode, left=of manifold, yshift=5cm] (manifoldDef) {数据流形 \\ Data Manifold};
+    \node[subNode, left=of manifold, yshift=3cm] (image) {图像自由度 \\ Image Degrees of Freedom};
+    \node[subNode, left=of manifold, yshift=1cm] (rbf) {径向基函数 \\ RBF};
+    \node[subNode, left=of manifold, yshift=-1cm] (svm) {支持向量机 \\ SVM};
+    \node[subNode, left=of manifold, yshift=-3cm] (neural) {神经网络 \\ Neural Networks};
+    \node[subNode, left=of manifold, yshift=-5cm] (hierarchical) {层次表示 \\ Hierarchical Representations};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (linear);
+    \draw[arrowStyle, blue] (center) -- (curse);
+    \draw[arrowStyle, green!60!black] (center) -- (highdim);
+    \draw[arrowStyle, purple] (center) -- (manifold);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (linear) -- (form);
+    \draw[arrowStyle, red!60] (linear) -- (regression);
+    \draw[arrowStyle, red!60] (linear) -- (classification);
+    \draw[arrowStyle, red!60] (linear) -- (general);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (curse) -- (polynomial);
+    \draw[arrowStyle, blue!60] (curse) -- (grid);
+    \draw[arrowStyle, blue!60] (curse) -- (exponential);
+    \draw[arrowStyle, blue!60] (curse) -- (empty);
+    \draw[arrowStyle, blue!60] (curse) -- (data);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (highdim) -- (hypersphere);
+    \draw[arrowStyle, green!60!black] (highdim) -- (shell);
+    \draw[arrowStyle, green!60!black] (highdim) -- (gaussian);
+    \draw[arrowStyle, green!60!black] (highdim) -- (separable);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (manifold) -- (manifoldDef);
+    \draw[arrowStyle, purple!60] (manifold) -- (image);
+    \draw[arrowStyle, purple!60] (manifold) -- (rbf);
+    \draw[arrowStyle, purple!60] (manifold) -- (svm);
+    \draw[arrowStyle, purple!60] (manifold) -- (neural);
+    \draw[arrowStyle, purple!60] (manifold) -- (hierarchical);
+
+\end{tikzpicture}
+
+\end{document}

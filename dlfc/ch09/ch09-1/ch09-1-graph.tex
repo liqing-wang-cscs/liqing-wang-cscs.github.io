@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,72 +50,76 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {正则化 \\ Regularization};
+    \node[centerStyle] (center) {9.1.归纳偏置与不变性 \\ Inductive Bias \& \\ Invariance};
 
-    % ================= 2. 上方分支：核心思想 (红) =================
-    \node[branchTitle, fill=red!15, above=of center] (core) {核心思想 \\ Core Ideas};
+    % ================= 2. 上方分支：逆问题与归纳偏置 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (inverse) {逆问题与归纳偏置 \\ Inverse Problems \& Inductive Bias};
 
-    \node[subNode, above left=of core] (bias) {归纳偏置 \\ Inductive Bias};
-    \node[subNode, above=of core] (bvt) {偏差--方差权衡 \\ Bias--Variance};
-    \node[subNode, above right=of core] (gen) {泛化与过拟合 \\ Generalization};
-    \node[subNode, left=of core, yshift=0cm] (prior) {先验知识 \\ Prior Knowledge};
+    \node[subNode, above=of inverse, xshift=-6cm] (illposed) {不适定逆问题 \\ Ill-posed Inverse};
+    \node[subNode, above=of inverse, xshift=-2cm] (bias) {归纳偏置 \\ Inductive Bias};
+    \node[subNode, above=of inverse, xshift=2cm] (prior) {先验知识 \\ Prior Knowledge};
+    \node[subNode, above=of inverse, xshift=6cm] (transfer) {迁移与多任务 \\ Transfer \& Multi-task};
 
-    % ================= 3. 右侧分支：正则化方法 (蓝) =================
-    \node[branchTitle, fill=orange!15, right=of center] (methods) {正则化方法 \\ Methods};
+    % ================= 3. 右侧分支：对称性与不变性 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (symmetry) {对称性与不变性 \\ Symmetry \& Invariance};
 
-    \node[subNode, above=of methods] (l2) {L2 正则化 \\ Weight Decay};
-    \node[subNode, above right=of methods] (early) {早停 \\ Early Stopping};
-    \node[subNode, right=of methods] (dropout) {Dropout \\ 模型平均};
-    \node[subNode, below right=of methods, yshift=0cm] (aug) {数据增强 \\ Data Augmentation};
-    \node[subNode, below=of methods] (share) {参数共享 \\ Parameter Sharing};
+    \node[subNode, right=of symmetry, yshift=4cm] (trans) {平移不变性 \\ Translation Invariance};
+    \node[subNode, right=of symmetry, yshift=2cm] (scale) {尺度不变性 \\ Scale Invariance};
+    \node[subNode, right=of symmetry, yshift=0cm] (group) {群论与四公理 \\ Group Theory};
+    \node[subNode, right=of symmetry, yshift=-2cm] (geometric) {几何深度学习 \\ Geometric DL};
+    \node[subNode, right=of symmetry, yshift=-4cm] (learnhard) {直接学习的困难 \\ Hard to Learn Directly};
 
-    % ================= 4. 下方分支：不变性与等变性 (绿) =================
-    \node[branchTitle, fill=green!15, below=of center] (invar) {不变性与等变性 \\ Invariance \& Equivariance};
+    % ================= 4. 下方分支：等变性 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (equivar) {等变性 \\ Equivariance};
 
-    \node[subNode, below left=of invar] (trans) {平移不变性 \\ Translation Invariance};
-    \node[subNode, below=of invar] (scale) {尺度不变性 \\ Scale Invariance};
-    \node[subNode, below right=of invar] (equi) {等变性 \\ Equivariance};
-    \node[subNode, left=of invar, yshift=0cm] (group) {群论 \\ Group Theory};
+    \node[subNode, below=of equivar, xshift=-6cm] (def) {等变定义 \\ $\mathcal{S}(\mathcal{T}(I))=\mathcal{T}(\mathcal{S}(I))$};
+    \node[subNode, below=of equivar, xshift=-2cm] (seg) {图像分割例子 \\ Segmentation};
+    \node[subNode, below=of equivar, xshift=2cm] (general) {广义等变 \\ $\tilde{\mathcal{T}}$ 不同变换};
+    \node[subNode, below=of equivar, xshift=6cm] (special) {不变性是特例 \\ Invariance as Special Case};
 
-    % ================= 5. 左侧分支：实现途径 (紫) =================
-    \node[branchTitle, fill=purple!15, left=of center] (impl) {实现途径 \\ Approaches};
+    % ================= 5. 左侧分支：没有免费午餐与实现途径 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (nfl) {没有免费午餐与实现途径 \\ No Free Lunch \& Approaches};
 
-    \node[subNode, above left=of impl] (pre) {预处理 \\ Pre-processing};
-    \node[subNode, left=of impl] (reg) {正则化误差 \\ Regularized Error};
-    \node[subNode, below left=of impl] (arch) {网络结构 \\ Architecture};
-    \node[subNode, above=of impl, yshift=-0.3cm] (nfl) {没有免费午餐 \\ No Free Lunch};
+    \node[subNode, left=of nfl, yshift=5cm] (nfltheorem) {没有免费午餐定理 \\ No Free Lunch};
+    \node[subNode, left=of nfl, yshift=3cm] (modelbased) {基于模型的机器学习 \\ Model-based ML};
+    \node[subNode, left=of nfl, yshift=1cm] (pre) {预处理 \\ Pre-processing};
+    \node[subNode, left=of nfl, yshift=-1cm] (reg) {正则化误差 \\ Regularized Error};
+    \node[subNode, left=of nfl, yshift=-3cm] (aug) {数据增强 \\ Data Augmentation};
+    \node[subNode, left=of nfl, yshift=-5cm] (arch) {网络结构 \\ Architecture};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
-    \draw[arrowStyle, red] (center) -- (core);
-    \draw[arrowStyle, blue] (center) -- (methods);
-    \draw[arrowStyle, green!60!black] (center) -- (invar);
-    \draw[arrowStyle, purple] (center) -- (impl);
+    \draw[arrowStyle, red] (center) -- (inverse);
+    \draw[arrowStyle, blue] (center) -- (symmetry);
+    \draw[arrowStyle, green!60!black] (center) -- (equivar);
+    \draw[arrowStyle, purple] (center) -- (nfl);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (core) -- (bias);
-    \draw[arrowStyle, red!60] (core) -- (bvt);
-    \draw[arrowStyle, red!60] (core) -- (gen);
-    \draw[arrowStyle, red!60] (core) -- (prior);
+    \draw[arrowStyle, red!60] (inverse) -- (illposed.south);
+    \draw[arrowStyle, red!60] (inverse) -- (bias.south);
+    \draw[arrowStyle, red!60] (inverse) -- (prior.south);
+    \draw[arrowStyle, red!60] (inverse) -- (transfer.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (methods) -- (l2);
-    \draw[arrowStyle, blue!60] (methods) -- (early);
-    \draw[arrowStyle, blue!60] (methods) -- (dropout);
-    \draw[arrowStyle, blue!60] (methods) -- (aug);
-    \draw[arrowStyle, blue!60] (methods) -- (share);
+    \draw[arrowStyle, blue!60] (symmetry) -- (trans.west);
+    \draw[arrowStyle, blue!60] (symmetry) -- (scale.west);
+    \draw[arrowStyle, blue!60] (symmetry) -- (group.west);
+    \draw[arrowStyle, blue!60] (symmetry) -- (geometric.west);
+    \draw[arrowStyle, blue!60] (symmetry) -- (learnhard.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (invar) -- (trans);
-    \draw[arrowStyle, green!60!black] (invar) -- (scale);
-    \draw[arrowStyle, green!60!black] (invar) -- (equi);
-    \draw[arrowStyle, green!60!black] (invar) -- (group);
+    \draw[arrowStyle, green!60!black] (equivar) -- (def.north);
+    \draw[arrowStyle, green!60!black] (equivar) -- (seg.north);
+    \draw[arrowStyle, green!60!black] (equivar) -- (general.north);
+    \draw[arrowStyle, green!60!black] (equivar) -- (special.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (impl) -- (pre);
-    \draw[arrowStyle, purple!60] (impl) -- (reg);
-    \draw[arrowStyle, purple!60] (impl) -- (arch);
-    \draw[arrowStyle, purple!60] (impl) -- (nfl);
+    \draw[arrowStyle, purple!60] (nfl) -- (nfltheorem.east);
+    \draw[arrowStyle, purple!60] (nfl) -- (modelbased.east);
+    \draw[arrowStyle, purple!60] (nfl) -- (pre.east);
+    \draw[arrowStyle, purple!60] (nfl) -- (reg.east);
+    \draw[arrowStyle, purple!60] (nfl) -- (aug.east);
+    \draw[arrowStyle, purple!60] (nfl) -- (arch.east);
 
 \end{tikzpicture}
 

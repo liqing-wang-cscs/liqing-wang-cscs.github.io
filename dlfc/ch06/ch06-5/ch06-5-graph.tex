@@ -1,0 +1,128 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.9cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {混合密度网络 \\ Mixture Density \\ Network};
+
+    % ================= 2. 上方分支：动机与逆问题 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (motivation) {动机与逆问题 \\ Motivation \& Inverse Problems};
+
+    \node[subNode, above=of motivation, xshift=-8cm] (gaussianlimit) {高斯假设局限 \\ Gaussian Limitation};
+    \node[subNode, above=of motivation, xshift=-4cm] (robot) {机器人运动学 \\ Robot Kinematics};
+    \node[subNode, above=of motivation, xshift=0cm] (forwardinverse) {正问题与逆问题 \\ Forward vs Inverse};
+    \node[subNode, above=of motivation, xshift=4cm] (multimodal) {多模态分布 \\ Multimodal Distribution};
+    \node[subNode, above=of motivation, xshift=8cm] (toyexample) {玩具逆问题 \\ Toy Inverse Problem};
+
+    % ================= 3. 右侧分支：条件混合分布 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (mixture) {条件混合分布 \\ Conditional Mixture};
+
+    \node[subNode, right=of mixture, yshift=4cm] (gmm) {高斯混合模型 \\ GMM (6.38)};
+    \node[subNode, right=of mixture, yshift=2cm] (hetero) {异方差模型 \\ Heteroscedastic};
+    \node[subNode, right=of mixture, yshift=0cm] (isotropic) {各向同性协方差 \\ Isotropic Covariance};
+    \node[subNode, right=of mixture, yshift=-2cm] (cholesky) {Cholesky 分解扩展 \\ Cholesky Extension};
+    \node[subNode, right=of mixture, yshift=-4cm] (experts) {与专家混合对比 \\ Mixture of Experts};
+
+    % ================= 4. 下方分支：网络输出与误差函数 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (output) {网络输出与误差函数 \\ Outputs \& Error Function};
+
+    \node[subNode, below=of output, xshift=-8cm] (picoef) {混合系数输出 \\ Softmax (6.40)};
+    \node[subNode, below=of output, xshift=-4cm] (sigma) {方差输出 \\ Exp (6.41)};
+    \node[subNode, below=of output, xshift=0cm] (mu) {均值输出 \\ Identity (6.42)};
+    \node[subNode, below=of output, xshift=4cm] (nparams) {参数总数 \\ $(L+2)K$ Outputs};
+    \node[subNode, below=of output, xshift=8cm] (neglog) {负对数似然误差 \\ NLL (6.43)};
+
+    % ================= 5. 左侧分支：梯度优化与预测分布 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (gradient) {梯度优化与预测分布 \\ Gradient \& Predictive Distribution};
+
+    \node[subNode, left=of gradient, yshift=4cm] (gamma) {后验责任 \\ $\gamma_{nk}$ (6.44)};
+    \node[subNode, left=of gradient, yshift=2cm] (gradpi) {混合系数梯度 \\ $\partial E_n/\partial a_k^\pi$ (6.45)};
+    \node[subNode, left=of gradient, yshift=0cm] (gradmu) {均值梯度 \\ $\partial E_n/\partial a_{kl}^\mu$ (6.46)};
+    \node[subNode, left=of gradient, yshift=-2cm] (gradsigma) {方差梯度 \\ $\partial E_n/\partial a_k^\sigma$ (6.47)};
+    \node[subNode, left=of gradient, yshift=-4cm] (predictive) {预测分布 \\ Mean / Mode (6.48--6.50)};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (motivation);
+    \draw[arrowStyle, blue] (center) -- (mixture);
+    \draw[arrowStyle, green!60!black] (center) -- (output);
+    \draw[arrowStyle, purple] (center) -- (gradient);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (motivation) -- (gaussianlimit.south);
+    \draw[arrowStyle, red!60] (motivation) -- (robot.south);
+    \draw[arrowStyle, red!60] (motivation) -- (forwardinverse.south);
+    \draw[arrowStyle, red!60] (motivation) -- (multimodal.south);
+    \draw[arrowStyle, red!60] (motivation) -- (toyexample.south);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (mixture) -- (gmm.west);
+    \draw[arrowStyle, blue!60] (mixture) -- (hetero.west);
+    \draw[arrowStyle, blue!60] (mixture) -- (isotropic.west);
+    \draw[arrowStyle, blue!60] (mixture) -- (cholesky.west);
+    \draw[arrowStyle, blue!60] (mixture) -- (experts.west);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (output) -- (picoef.north);
+    \draw[arrowStyle, green!60!black] (output) -- (sigma.north);
+    \draw[arrowStyle, green!60!black] (output) -- (mu.north);
+    \draw[arrowStyle, green!60!black] (output) -- (nparams.north);
+    \draw[arrowStyle, green!60!black] (output) -- (neglog.north);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (gradient) -- (gamma.east);
+    \draw[arrowStyle, purple!60] (gradient) -- (gradpi.east);
+    \draw[arrowStyle, purple!60] (gradient) -- (gradmu.east);
+    \draw[arrowStyle, purple!60] (gradient) -- (gradsigma.east);
+    \draw[arrowStyle, purple!60] (gradient) -- (predictive.east);
+
+\end{tikzpicture}
+
+\end{document}

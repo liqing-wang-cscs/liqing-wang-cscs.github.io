@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,40 +50,40 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {模型平均 \\ Model Averaging};
+    \node[centerStyle] (center) {9.6.模型平均 \\ Model Averaging};
 
     % ================= 2. 上方分支：集成方法 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (ensemble) {集成方法 \\ Ensembles};
 
-    \node[subNode, above left=of ensemble] (committee) {委员会 \\ Committees};
-    \node[subNode, above=of ensemble] (bagging) {Bagging \\ 自助聚合};
-    \node[subNode, above right=of ensemble] (bootstrap) {自助采样 \\ Bootstrap};
-    \node[subNode, right=of ensemble, yshift=0cm] (boost) {Boosting \\ 提升};
+    \node[subNode, above=of ensemble, xshift=-6cm] (committee) {委员会 \\ Committees};
+    \node[subNode, above=of ensemble, xshift=-2cm] (bagging) {Bagging \\ 自助聚合};
+    \node[subNode, above=of ensemble, xshift=2cm] (bootstrap) {自助采样 \\ Bootstrap};
+    \node[subNode, above=of ensemble, xshift=6cm] (boost) {Boosting \\ 提升};
 
     % ================= 3. 右侧分支：Dropout (蓝) =================
     \node[branchTitle, fill=orange!15, right=of center] (dropout) {Dropout \\ 随机失活};
 
-    \node[subNode, above=of dropout] (mask) {掩码向量 \\ Mask $R_i$};
-    \node[subNode, above right=of dropout] (prob) {保留概率 $\rho$ \\ Keep Probability};
-    \node[subNode, right=of dropout] (prune) {剪枝网络 \\ Pruned Networks};
-    \node[subNode, below right=of dropout, yshift=0cm] (mc) {蒙特卡洛 \\ Monte Carlo};
-    \node[subNode, below=of dropout] (scale) {权重缩放 \\ Weight Scaling};
+    \node[subNode, right=of dropout, yshift=4cm] (mask) {掩码向量 \\ Mask $R_i$};
+    \node[subNode, right=of dropout, yshift=2cm] (prob) {保留概率 $\rho$ \\ Keep Probability};
+    \node[subNode, right=of dropout, yshift=0cm] (prune) {剪枝网络 \\ Pruned Networks};
+    \node[subNode, right=of dropout, yshift=-2cm] (mc) {蒙特卡洛 \\ Monte Carlo};
+    \node[subNode, right=of dropout, yshift=-4cm] (scale) {权重缩放 \\ Weight Scaling};
 
     % ================= 4. 下方分支：理论分析 (绿) =================
     \node[branchTitle, fill=green!15, below=of center] (theory) {理论分析 \\ Theory};
 
-    \node[subNode, below left=of theory] (bias) {偏差--方差 \\ Bias--Variance};
-    \node[subNode, below=of theory] (uncorr) {误差不相关 \\ Uncorrelated Errors};
-    \node[subNode, below right=of theory] (bayes) {贝叶斯视角 \\ Bayesian View};
-    \node[subNode, left=of theory, yshift=0cm] (coadapt) {共适应抑制 \\ Reduce Co-adaptation};
+    \node[subNode, below=of theory, xshift=-6cm] (bias) {偏差--方差 \\ Bias--Variance};
+    \node[subNode, below=of theory, xshift=-2cm] (uncorr) {误差不相关 \\ Uncorrelated Errors};
+    \node[subNode, below=of theory, xshift=2cm] (bayes) {贝叶斯视角 \\ Bayesian View};
+    \node[subNode, below=of theory, xshift=6cm] (coadapt) {共适应抑制 \\ Reduce Co-adaptation};
 
     % ================= 5. 左侧分支：实践要点 (紫) =================
     \node[branchTitle, fill=purple!15, left=of center] (practice) {实践要点 \\ Practical Points};
 
-    \node[subNode, above left=of practice] (cost) {计算开销 \\ Computational Cost};
-    \node[subNode, left=of practice] (noisy) {噪声梯度 \\ Noisy Gradients};
-    \node[subNode, below left=of practice] (test) {测试阶段 \\ Test Phase};
-    \node[subNode, above=of practice, yshift=-0.3cm] (broad) {广泛应用 \\ Broad Applicability};
+    \node[subNode, left=of practice, yshift=3cm] (cost) {计算开销 \\ Computational Cost};
+    \node[subNode, left=of practice, yshift=1cm] (noisy) {噪声梯度 \\ Noisy Gradients};
+    \node[subNode, left=of practice, yshift=-1cm] (test) {测试阶段 \\ Test Phase};
+    \node[subNode, left=of practice, yshift=-3cm] (broad) {广泛应用 \\ Broad Applicability};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
@@ -93,29 +93,29 @@
     \draw[arrowStyle, purple] (center) -- (practice);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (ensemble) -- (committee);
-    \draw[arrowStyle, red!60] (ensemble) -- (bagging);
-    \draw[arrowStyle, red!60] (ensemble) -- (bootstrap);
-    \draw[arrowStyle, red!60] (ensemble) -- (boost);
+    \draw[arrowStyle, red!60] (ensemble) -- (committee.south);
+    \draw[arrowStyle, red!60] (ensemble) -- (bagging.south);
+    \draw[arrowStyle, red!60] (ensemble) -- (bootstrap.south);
+    \draw[arrowStyle, red!60] (ensemble) -- (boost.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (dropout) -- (mask);
-    \draw[arrowStyle, blue!60] (dropout) -- (prob);
-    \draw[arrowStyle, blue!60] (dropout) -- (prune);
-    \draw[arrowStyle, blue!60] (dropout) -- (mc);
-    \draw[arrowStyle, blue!60] (dropout) -- (scale);
+    \draw[arrowStyle, blue!60] (dropout) -- (mask.west);
+    \draw[arrowStyle, blue!60] (dropout) -- (prob.west);
+    \draw[arrowStyle, blue!60] (dropout) -- (prune.west);
+    \draw[arrowStyle, blue!60] (dropout) -- (mc.west);
+    \draw[arrowStyle, blue!60] (dropout) -- (scale.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (theory) -- (bias);
-    \draw[arrowStyle, green!60!black] (theory) -- (uncorr);
-    \draw[arrowStyle, green!60!black] (theory) -- (bayes);
-    \draw[arrowStyle, green!60!black] (theory) -- (coadapt);
+    \draw[arrowStyle, green!60!black] (theory) -- (bias.north);
+    \draw[arrowStyle, green!60!black] (theory) -- (uncorr.north);
+    \draw[arrowStyle, green!60!black] (theory) -- (bayes.north);
+    \draw[arrowStyle, green!60!black] (theory) -- (coadapt.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (practice) -- (cost);
-    \draw[arrowStyle, purple!60] (practice) -- (noisy);
-    \draw[arrowStyle, purple!60] (practice) -- (test);
-    \draw[arrowStyle, purple!60] (practice) -- (broad);
+    \draw[arrowStyle, purple!60] (practice) -- (cost.east);
+    \draw[arrowStyle, purple!60] (practice) -- (noisy.east);
+    \draw[arrowStyle, purple!60] (practice) -- (test.east);
+    \draw[arrowStyle, purple!60] (practice) -- (broad.east);
 
 \end{tikzpicture}
 

@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,41 +50,41 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {梯度计算 \\ Evaluation of Gradients};
+    \node[centerStyle] (center) {8.1.梯度计算 \\ Evaluation of Gradients};
 
     % ================= 2. 上方分支：反向传播基础 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (bp) {反向传播基础 \\ Backprop Basics};
 
-    \node[subNode, above left=of bp] (single) {单层网络 \\ Single-Layer};
-    \node[subNode, above=of bp] (general) {一般前馈网络 \\ General Feed-Forward};
-    \node[subNode, above right=of bp] (delta) {误差项 $\delta_j$ \\ Error Terms};
-    \node[subNode, right=of bp, yshift=0cm] (autodiff) {自动微分 \\ Automatic Differentiation};
+    \node[subNode, above=of bp, xshift=-6cm] (single) {单层网络 \\ Single-Layer};
+    \node[subNode, above=of bp, xshift=-2cm] (general) {一般前馈网络 \\ General Feed-Forward};
+    \node[subNode, above=of bp, xshift=2cm] (delta) {误差项 $\delta_j$ \\ Error Terms};
+    \node[subNode, above=of bp, xshift=6cm] (autodiff) {自动微分 \\ Automatic Differentiation};
 
     % ================= 3. 右侧分支：雅可比矩阵 (蓝) =================
     \node[branchTitle, fill=orange!15, right=of center] (jacobian) {雅可比矩阵 \\ Jacobian Matrix};
 
-    \node[subNode, above=of jacobian] (sens) {局部敏感度 \\ Local Sensitivity};
-    \node[subNode, above right=of jacobian] (perturb) {输入扰动传播 \\ Input Perturbation};
-    \node[subNode, right=of jacobian] (recursive) {递归反向传播 \\ Recursive Backprop};
-    \node[subNode, below right=of jacobian, yshift=0cm] (forward) {前向传播法 \\ Forward Propagation};
-    \node[subNode, below=of jacobian] (numdiff) {数值微分检验 \\ Numerical Check};
+    \node[subNode, right=of jacobian, yshift=4cm] (sens) {局部敏感度 \\ Local Sensitivity};
+    \node[subNode, right=of jacobian, yshift=2cm] (perturb) {输入扰动传播 \\ Input Perturbation};
+    \node[subNode, right=of jacobian, yshift=0cm] (recursive) {递归反向传播 \\ Recursive Backprop};
+    \node[subNode, right=of jacobian, yshift=-2cm] (forward) {前向传播法 \\ Forward Propagation};
+    \node[subNode, right=of jacobian, yshift=-4cm] (numdiff) {数值微分检验 \\ Numerical Check};
 
     % ================= 4. 下方分支：黑塞矩阵 (绿) =================
     \node[branchTitle, fill=green!15, below=of center] (hessian) {黑塞矩阵 \\ Hessian Matrix};
 
-    \node[subNode, below left=of hessian] (second) {二阶导数 \\ Second Derivatives};
-    \node[subNode, below=of hessian] (complexity) {计算复杂度 \\ Complexity};
-    \node[subNode, below right=of hessian] (diag) {对角近似 \\ Diagonal Approximation};
-    \node[subNode, left=of hessian, yshift=0cm] (outer) {外积近似 \\ Outer Product};
-    \node[subNode, right=of hessian] (lm) {Levenberg--Marquardt \\ 近似};
+    \node[subNode, below=of hessian, xshift=-7cm] (second) {二阶导数 \\ Second Derivatives};
+    \node[subNode, below=of hessian, xshift=-3.5cm] (complexity) {计算复杂度 \\ Complexity};
+    \node[subNode, below=of hessian, xshift=0cm] (diag) {对角近似 \\ Diagonal Approximation};
+    \node[subNode, below=of hessian, xshift=3.5cm] (outer) {外积近似 \\ Outer Product};
+    \node[subNode, below=of hessian, xshift=7cm] (lm) {Levenberg--Marquardt \\ 近似};
 
     % ================= 5. 左侧分支：数值微分 (紫) =================
     \node[branchTitle, fill=purple!15, left=of center] (numeric) {数值微分 \\ Numerical Differentiation};
 
-    \node[subNode, above left=of numeric] (finite) {有限差分 \\ Finite Differences};
-    \node[subNode, left=of numeric] (central) {中心差分 \\ Central Differences};
-    \node[subNode, below left=of numeric] (cost) {计算成本 $\mathcal{O}(W^2)$ \\ Computational Cost};
-    \node[subNode, above=of numeric, yshift=-0.3cm] (verify) {正确性检验 \\ Correctness Check};
+    \node[subNode, left=of numeric, yshift=3cm] (finite) {有限差分 \\ Finite Differences};
+    \node[subNode, left=of numeric, yshift=1cm] (central) {中心差分 \\ Central Differences};
+    \node[subNode, left=of numeric, yshift=-1cm] (cost) {计算成本 $\mathcal{O}(W^2)$ \\ Computational Cost};
+    \node[subNode, left=of numeric, yshift=-3cm] (verify) {正确性检验 \\ Correctness Check};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
@@ -94,30 +94,30 @@
     \draw[arrowStyle, purple] (center) -- (numeric);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (bp) -- (single);
-    \draw[arrowStyle, red!60] (bp) -- (general);
-    \draw[arrowStyle, red!60] (bp) -- (delta);
-    \draw[arrowStyle, red!60] (bp) -- (autodiff);
+    \draw[arrowStyle, red!60] (bp) -- (single.south);
+    \draw[arrowStyle, red!60] (bp) -- (general.south);
+    \draw[arrowStyle, red!60] (bp) -- (delta.south);
+    \draw[arrowStyle, red!60] (bp) -- (autodiff.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (jacobian) -- (sens);
-    \draw[arrowStyle, blue!60] (jacobian) -- (perturb);
-    \draw[arrowStyle, blue!60] (jacobian) -- (recursive);
-    \draw[arrowStyle, blue!60] (jacobian) -- (forward);
-    \draw[arrowStyle, blue!60] (jacobian) -- (numdiff);
+    \draw[arrowStyle, blue!60] (jacobian) -- (sens.west);
+    \draw[arrowStyle, blue!60] (jacobian) -- (perturb.west);
+    \draw[arrowStyle, blue!60] (jacobian) -- (recursive.west);
+    \draw[arrowStyle, blue!60] (jacobian) -- (forward.west);
+    \draw[arrowStyle, blue!60] (jacobian) -- (numdiff.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (hessian) -- (second);
-    \draw[arrowStyle, green!60!black] (hessian) -- (complexity);
-    \draw[arrowStyle, green!60!black] (hessian) -- (diag);
-    \draw[arrowStyle, green!60!black] (hessian) -- (outer);
-    \draw[arrowStyle, green!60!black] (hessian) -- (lm);
+    \draw[arrowStyle, green!60!black] (hessian) -- (second.north);
+    \draw[arrowStyle, green!60!black] (hessian) -- (complexity.north);
+    \draw[arrowStyle, green!60!black] (hessian) -- (diag.north);
+    \draw[arrowStyle, green!60!black] (hessian) -- (outer.north);
+    \draw[arrowStyle, green!60!black] (hessian) -- (lm.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (numeric) -- (finite);
-    \draw[arrowStyle, purple!60] (numeric) -- (central);
-    \draw[arrowStyle, purple!60] (numeric) -- (cost);
-    \draw[arrowStyle, purple!60] (numeric) -- (verify);
+    \draw[arrowStyle, purple!60] (numeric) -- (finite.east);
+    \draw[arrowStyle, purple!60] (numeric) -- (central.east);
+    \draw[arrowStyle, purple!60] (numeric) -- (cost.east);
+    \draw[arrowStyle, purple!60] (numeric) -- (verify.east);
 
 \end{tikzpicture}
 

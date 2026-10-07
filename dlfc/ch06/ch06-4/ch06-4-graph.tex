@@ -1,0 +1,124 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.9cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {误差函数 \\ Error Functions};
+
+    % ================= 2. 上方分支：回归 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (regression) {回归 \\ Regression};
+
+    \node[subNode, above=of regression, xshift=-6cm] (gaussian) {高斯噪声假设 \\ Gaussian Noise (6.23)};
+    \node[subNode, above=of regression, xshift=-2cm] (likelihood) {似然函数 \\ Likelihood (6.24)};
+    \node[subNode, above=of regression, xshift=2cm] (sumsq) {平方和误差 \\ Sum-of-Squares (6.26)};
+    \node[subNode, above=of regression, xshift=6cm] (noisevar) {噪声方差估计 \\ Noise Variance (6.27)};
+
+    % ================= 3. 右侧分支：二分类 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (binary) {二分类 \\ Binary Classification};
+
+    \node[subNode, right=of binary, yshift=4cm] (bernoulli) {伯努利分布 \\ Bernoulli (6.32)};
+    \node[subNode, right=of binary, yshift=2cm] (sigmoidout) {Sigmoid 输出 \\ Logistic Sigmoid};
+    \node[subNode, right=of binary, yshift=0cm] (crossentropy) {交叉熵误差 \\ Cross-Entropy (6.33)};
+    \node[subNode, right=of binary, yshift=-2cm] (multibinary) {多独立二分类 \\ Multi-binary (6.35)};
+    \node[subNode, right=of binary, yshift=-4cm] (labelnoise) {标签噪声 \\ Label Noise $\epsilon$};
+
+    % ================= 4. 下方分支：多分类 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (multiclass) {多分类 \\ Multiclass Classification};
+
+    \node[subNode, below=of multiclass, xshift=-8cm] (onehot) {1-of-K 编码 \\ 1-of-K Coding};
+    \node[subNode, below=of multiclass, xshift=-4.5cm] (softmax) {Softmax 输出 \\ Softmax (6.37)};
+    \node[subNode, below=of multiclass, xshift=0.5cm] (multicross) {多类交叉熵 \\ Multiclass Cross-Entropy (6.36)};
+    \node[subNode, below=of multiclass, xshift=6cm] (degeneracy) {权重空间退化 \\ Weight-space Degeneracy};
+
+    % ================= 5. 左侧分支：统一框架与导数 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (unified) {统一框架与导数 \\ Unified Framework \& Derivatives};
+
+    \node[subNode, left=of unified, yshift=4cm] (pairing) {误差函数与激活配对 \\ Error-Activation Pairing};
+    \node[subNode, left=of unified, yshift=2cm] (identity) {回归：恒等 + 平方和 \\ Identity + Sum-of-Squares};
+    \node[subNode, left=of unified, yshift=0cm] (logistic) {二分类：Sigmoid + 交叉熵 \\ Sigmoid + Cross-Entropy};
+    \node[subNode, left=of unified, yshift=-2cm] (softmaxpair) {多分类：Softmax + 交叉熵 \\ Softmax + Cross-Entropy};
+    \node[subNode, left=of unified, yshift=-4cm] (derivative) {统一导数形式 \\ $\partial E/\partial a_k = y_k - t_k$ (6.31)};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (regression);
+    \draw[arrowStyle, blue] (center) -- (binary);
+    \draw[arrowStyle, green!60!black] (center) -- (multiclass);
+    \draw[arrowStyle, purple] (center) -- (unified);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (regression) -- (gaussian.south);
+    \draw[arrowStyle, red!60] (regression) -- (likelihood.south);
+    \draw[arrowStyle, red!60] (regression) -- (sumsq.south);
+    \draw[arrowStyle, red!60] (regression) -- (noisevar.south);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (binary) -- (bernoulli.west);
+    \draw[arrowStyle, blue!60] (binary) -- (sigmoidout.west);
+    \draw[arrowStyle, blue!60] (binary) -- (crossentropy.west);
+    \draw[arrowStyle, blue!60] (binary) -- (multibinary.west);
+    \draw[arrowStyle, blue!60] (binary) -- (labelnoise.west);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (multiclass) -- (onehot.north);
+    \draw[arrowStyle, green!60!black] (multiclass) -- (softmax.north);
+    \draw[arrowStyle, green!60!black] (multiclass) -- (multicross.north);
+    \draw[arrowStyle, green!60!black] (multiclass) -- (degeneracy.north);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (unified) -- (pairing.east);
+    \draw[arrowStyle, purple!60] (unified) -- (identity.east);
+    \draw[arrowStyle, purple!60] (unified) -- (logistic.east);
+    \draw[arrowStyle, purple!60] (unified) -- (softmaxpair.east);
+    \draw[arrowStyle, purple!60] (unified) -- (derivative.east);
+
+\end{tikzpicture}
+
+\end{document}

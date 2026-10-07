@@ -1,0 +1,126 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.9cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {多层网络 \\ Multilayer Networks};
+
+    % ================= 2. 上方分支：网络结构与参数 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (structure) {网络结构与参数 \\ Network Structure \& Parameters};
+
+    \node[subNode, above=of structure, xshift=-6cm] (twolayer) {两层网络 \\ Two-layer Network};
+    \node[subNode, above=of structure, xshift=-2cm] (preact) {预激活 \\ Pre-activation $a_j^{(1)}$};
+    \node[subNode, above=of structure, xshift=2cm] (hidden) {隐藏单元 \\ Hidden Units $z_j^{(1)}$};
+    \node[subNode, above=of structure, xshift=6cm] (output) {输出单元 \\ Output Units $y_k$};
+
+    % ================= 3. 右侧分支：参数矩阵表示 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (matrix) {参数矩阵表示 \\ Parameter Matrices};
+
+    \node[subNode, right=of matrix, yshift=4cm] (biasabsorb) {偏置吸收 \\ Bias Absorption $x_0=1$};
+    \node[subNode, right=of matrix, yshift=2cm] (overall) {整体函数 \\ Overall Function (6.11)};
+    \node[subNode, right=of matrix, yshift=0cm] (vector) {向量形式 \\ Vector Form (6.12)};
+    \node[subNode, right=of matrix, yshift=-2cm] (weightmatrix) {权重矩阵 \\ Weight Matrices $\mathbf{W}^{(1)}, \mathbf{W}^{(2)}$};
+    \node[subNode, right=of matrix, yshift=-4cm] (elementwise) {逐元素激活 \\ Element-wise Activation};
+
+    % ================= 4. 下方分支：万能逼近与激活函数 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (approx) {万能逼近与激活函数 \\ Universal Approximation \& Activations};
+
+    \node[subNode, below=of approx, xshift=-10cm] (universal) {万能逼近定理 \\ Universal Approximation};
+    \node[subNode, below=of approx, xshift=-5cm] (limitation) {局限性 \\ Exponential Units, No Free Lunch};
+    \node[subNode, below=of approx, xshift=0cm] (sigmoid) {Sigmoid / Tanh \\ 梯度消失};
+    \node[subNode, below=of approx, xshift=3.5cm] (relu) {ReLU / Softplus \\ 非零梯度};
+    \node[subNode, below=of approx, xshift=7cm] (leaky) {Leaky ReLU \\ 可学习 $\alpha_j$};
+
+    % ================= 5. 左侧分支：权重空间对称性 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (symmetry) {权重空间对称性 \\ Weight-space Symmetries};
+
+    \node[subNode, left=of symmetry, yshift=4cm] (signflip) {符号翻转对称 \\ Sign-flip Symmetry $2^M$};
+    \node[subNode, left=of symmetry, yshift=2cm] (interchange) {交换对称 \\ Interchange Symmetry $M!$};
+    \node[subNode, left=of symmetry, yshift=0cm] (factor) {总对称因子 \\ Overall Factor $M!2^M$};
+    \node[subNode, left=of symmetry, yshift=-2cm] (multilayer) {多层推广 \\ Product over Layers};
+    \node[subNode, left=of symmetry, yshift=-4cm] (bayesian) {贝叶斯方法中的作用 \\ Role in Bayesian Methods};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (structure);
+    \draw[arrowStyle, blue] (center) -- (matrix);
+    \draw[arrowStyle, green!60!black] (center) -- (approx);
+    \draw[arrowStyle, purple] (center) -- (symmetry);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (structure) -- (twolayer);
+    \draw[arrowStyle, red!60] (structure) -- (preact);
+    \draw[arrowStyle, red!60] (structure) -- (hidden);
+    \draw[arrowStyle, red!60] (structure) -- (output);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (matrix) -- (biasabsorb);
+    \draw[arrowStyle, blue!60] (matrix) -- (overall);
+    \draw[arrowStyle, blue!60] (matrix) -- (vector);
+    \draw[arrowStyle, blue!60] (matrix) -- (weightmatrix);
+    \draw[arrowStyle, blue!60] (matrix) -- (elementwise);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (approx) -- (universal);
+    \draw[arrowStyle, green!60!black] (approx) -- (limitation);
+    \draw[arrowStyle, green!60!black] (approx) -- (sigmoid);
+    \draw[arrowStyle, green!60!black] (approx) -- (relu);
+    \draw[arrowStyle, green!60!black] (approx) -- (leaky);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (symmetry) -- (signflip);
+    \draw[arrowStyle, purple!60] (symmetry) -- (interchange);
+    \draw[arrowStyle, purple!60] (symmetry) -- (factor);
+    \draw[arrowStyle, purple!60] (symmetry) -- (multilayer);
+    \draw[arrowStyle, purple!60] (symmetry) -- (bayesian);
+
+\end{tikzpicture}
+
+\end{document}

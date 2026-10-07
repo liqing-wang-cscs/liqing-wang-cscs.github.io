@@ -1,0 +1,126 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,ctex}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % 全局设置
+    node distance = 1.6cm and 1.4cm,
+    every node/.style = {
+        draw,
+        rounded corners,
+        thick,
+        align = center,
+        font = \sffamily\small,
+        minimum width = 2.0cm,
+        minimum height = 0.9cm
+    },
+    % 样式定义
+    centerStyle/.style = {
+        fill = blue!45,
+        text = white,
+        font = \sffamily\bfseries\large,
+        line width = 2pt,
+        minimum size = 2.8cm,
+        circle
+    },
+    branchTitle/.style = {
+        font = \sffamily\bfseries,
+        line width = 1.5pt
+    },
+    subNode/.style = {
+        fill = white,
+        font = \sffamily\small,
+        minimum width = 2.2cm,
+        minimum height = 0.8cm
+    },
+    leafNode/.style = {
+        fill = white,
+        font = \sffamily\footnotesize,
+        minimum width = 1.9cm,
+        minimum height = 0.7cm
+    },
+    arrowStyle/.style = {
+        ->,
+        thick,
+        >=stealth,
+        shorten >=2pt
+    }
+]
+
+    % ================= 1. 中心节点 =================
+    \node[centerStyle] (center) {深度网络 \\ Deep Networks};
+
+    % ================= 2. 上方分支：深层结构与优势 (红) =================
+    \node[branchTitle, fill=red!15, above=of center] (structure) {深层结构与优势 \\ Deep Structure \& Advantages};
+
+    \node[subNode, above=of structure, xshift=-8cm] (layerL) {多层推广 \\ $L$ 层公式 (6.19)};
+    \node[subNode, above=of structure, xshift=-4.5cm] (terminology) {层数术语 \\ Layer Counting};
+    \node[subNode, above=of structure, xshift=0cm] (regions) {区域指数增长 \\ Exponential Regions in Depth};
+    \node[subNode, above=of structure, xshift=6cm] (fewerparams) {更少参数 \\ Fewer Parameters than Shallow};
+
+    % ================= 3. 右侧分支：表示学习与迁移 (蓝) =================
+    \node[branchTitle, fill=orange!15, right=of center] (representation) {表示学习与迁移 \\ Representation \& Transfer};
+
+    \node[subNode, right=of representation, yshift=5cm] (hierarchical) {层次表示 \\ Hierarchical Representations};
+    \node[subNode, right=of representation, yshift=3cm] (distributed) {分布式表示 \\ Distributed Representations};
+    \node[subNode, right=of representation, yshift=1cm] (replearning) {表示学习 \\ Representation Learning};
+    \node[subNode, right=of representation, yshift=-1cm] (autoencoder) {自编码器 \\ Autoencoders};
+    \node[subNode, right=of representation, yshift=-3cm] (transfer) {迁移学习 \\ Transfer Learning};
+    \node[subNode, right=of representation, yshift=-5cm] (finetune) {微调 \\ Fine-tuning};
+
+    % ================= 4. 下方分支：对比学习 (绿) =================
+    \node[branchTitle, fill=green!15, below=of center] (contrastive) {对比学习 \\ Contrastive Learning};
+
+    \node[subNode, below=of contrastive, xshift=-8cm] (posneg) {正负样本对 \\ Positive / Negative Pairs};
+    \node[subNode, below=of contrastive, xshift=-4cm] (infonce) {InfoNCE 损失 \\ InfoNCE Loss (6.20)};
+    \node[subNode, below=of contrastive, xshift=0cm] (instance) {实例判别 \\ Instance Discrimination};
+    \node[subNode, below=of contrastive, xshift=4cm] (supervised) {监督对比学习 \\ Supervised Contrastive};
+    \node[subNode, below=of contrastive, xshift=7.5cm] (clip) {CLIP 多模态 \\ CLIP (6.21)};
+
+    % ================= 5. 左侧分支：通用架构与张量 (紫) =================
+    \node[branchTitle, fill=purple!15, left=of center] (general) {通用架构与张量 \\ General Architectures \& Tensors};
+
+    \node[subNode, left=of general, yshift=3cm] (feedforward) {前馈架构 \\ Feed-forward, No Cycles};
+    \node[subNode, left=of general, yshift=1cm] (generalunit) {通用单元公式 \\ General Unit (6.22)};
+    \node[subNode, left=of general, yshift=-1cm] (tensors) {张量 \\ Tensors};
+    \node[subNode, left=of general, yshift=-3cm] (gpu) {GPU 并行 \\ GPU Parallelism};
+
+    % ================= 连线逻辑 =================
+    % 中心 -> 四大分支标题
+    \draw[arrowStyle, red] (center) -- (structure);
+    \draw[arrowStyle, blue] (center) -- (representation);
+    \draw[arrowStyle, green!60!black] (center) -- (contrastive);
+    \draw[arrowStyle, purple] (center) -- (general);
+
+    % 分支标题 -> 子节点 (上方)
+    \draw[arrowStyle, red!60] (structure) -- (layerL.south);
+    \draw[arrowStyle, red!60] (structure) -- (terminology.south);
+    \draw[arrowStyle, red!60] (structure) -- (regions.south);
+    \draw[arrowStyle, red!60] (structure) -- (fewerparams.south);
+
+    % 分支标题 -> 子节点 (右侧)
+    \draw[arrowStyle, blue!60] (representation) -- (hierarchical.west);
+    \draw[arrowStyle, blue!60] (representation) -- (distributed.west);
+    \draw[arrowStyle, blue!60] (representation) -- (replearning.west);
+    \draw[arrowStyle, blue!60] (representation) -- (autoencoder.west);
+    \draw[arrowStyle, blue!60] (representation) -- (transfer.west);
+    \draw[arrowStyle, blue!60] (representation) -- (finetune.west);
+
+    % 分支标题 -> 子节点 (下方)
+    \draw[arrowStyle, green!60!black] (contrastive) -- (posneg.north);
+    \draw[arrowStyle, green!60!black] (contrastive) -- (infonce.north);
+    \draw[arrowStyle, green!60!black] (contrastive) -- (instance.north);
+    \draw[arrowStyle, green!60!black] (contrastive) -- (supervised.north);
+    \draw[arrowStyle, green!60!black] (contrastive) -- (clip.north);
+
+    % 分支标题 -> 子节点 (左侧)
+    \draw[arrowStyle, purple!60] (general) -- (feedforward.east);
+    \draw[arrowStyle, purple!60] (general) -- (generalunit.east);
+    \draw[arrowStyle, purple!60] (general) -- (tensors.east);
+    \draw[arrowStyle, purple!60] (general) -- (gpu.east);
+
+\end{tikzpicture}
+
+\end{document}

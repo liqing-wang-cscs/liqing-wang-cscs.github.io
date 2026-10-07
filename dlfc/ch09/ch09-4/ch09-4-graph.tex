@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,40 +50,40 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {参数共享 \\ Parameter Sharing};
+    \node[centerStyle] (center) {9.4.参数共享 \\ Parameter Sharing};
 
     % ================= 2. 上方分支：硬权重共享 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (hard) {硬权重共享 \\ Hard Sharing};
 
-    \node[subNode, above left=of hard] (tie) {参数绑定 \\ Parameter Tying};
-    \node[subNode, above=of hard] (dof) {自由度降低 \\ Fewer DOF};
-    \node[subNode, above right=of hard] (bias) {归纳偏置 \\ Inductive Bias};
-    \node[subNode, right=of hard, yshift=0cm] (cnn) {卷积网络 \\ CNN};
+    \node[subNode, above=of hard, xshift=-6cm] (tie) {参数绑定 \\ Parameter Tying};
+    \node[subNode, above=of hard, xshift=-2cm] (dof) {自由度降低 \\ Fewer DOF};
+    \node[subNode, above=of hard, xshift=2cm] (bias) {归纳偏置 \\ Inductive Bias};
+    \node[subNode, above=of hard, xshift=6cm] (cnn) {卷积网络 \\ CNN};
 
     % ================= 3. 右侧分支：软权重共享 (蓝) =================
     \node[branchTitle, fill=orange!15, right=of center] (soft) {软权重共享 \\ Soft Sharing};
 
-    \node[subNode, above=of soft] (mix) {高斯混合 \\ Gaussian Mixture};
-    \node[subNode, above right=of soft] (mean) {均值 $\mu_j$ \\ Means};
-    \node[subNode, right=of soft] (var) {方差 $\sigma_j^2$ \\ Variances};
-    \node[subNode, below right=of soft, yshift=0cm] (mixcoef) {混合系数 $\pi_j$ \\ Mixing Coefficients};
-    \node[subNode, below=of soft] (post) {后验概率 \\ Posterior};
+    \node[subNode, right=of soft, yshift=4cm] (mix) {高斯混合 \\ Gaussian Mixture};
+    \node[subNode, right=of soft, yshift=2cm] (mean) {均值 $\mu_j$ \\ Means};
+    \node[subNode, right=of soft, yshift=0cm] (var) {方差 $\sigma_j^2$ \\ Variances};
+    \node[subNode, right=of soft, yshift=-2cm] (mixcoef) {混合系数 $\pi_j$ \\ Mixing Coefficients};
+    \node[subNode, right=of soft, yshift=-4cm] (post) {后验概率 \\ Posterior};
 
     % ================= 4. 下方分支：学习与优化 (绿) =================
     \node[branchTitle, fill=green!15, below=of center] (learn) {学习与优化 \\ Learning \& Optimization};
 
-    \node[subNode, below left=of learn] (grad) {梯度下降 \\ Gradient Descent};
-    \node[subNode, below=of learn] (softmax) {Softmax 参数化 \\ Softmax};
-    \node[subNode, below right=of learn] (exp) {对数方差 \\ Log-Variance};
-    \node[subNode, left=of learn, yshift=0cm] (joint) {联合优化 \\ Joint Optimization};
+    \node[subNode, below=of learn, xshift=-6cm] (grad) {梯度下降 \\ Gradient Descent};
+    \node[subNode, below=of learn, xshift=-2cm] (softmax) {Softmax 参数化 \\ Softmax};
+    \node[subNode, below=of learn, xshift=2cm] (exp) {对数方差 \\ Log-Variance};
+    \node[subNode, below=of learn, xshift=6cm] (joint) {联合优化 \\ Joint Optimization};
 
     % ================= 5. 左侧分支：扩展应用 (紫) =================
     \node[branchTitle, fill=purple!15, left=of center] (ext) {扩展应用 \\ Extensions};
 
-    \node[subNode, above left=of ext] (gen) {生成模型 \\ Generative Model};
-    \node[subNode, left=of ext] (disc) {判别模型 \\ Discriminative Model};
-    \node[subNode, below left=of ext] (hybrid) {混合方法 \\ Hybrid Approach};
-    \node[subNode, above=of ext, yshift=-0.3cm] (unlabel) {无标签数据 \\ Unlabelled Data};
+    \node[subNode, left=of ext, yshift=3cm] (gen) {生成模型 \\ Generative Model};
+    \node[subNode, left=of ext, yshift=1cm] (disc) {判别模型 \\ Discriminative Model};
+    \node[subNode, left=of ext, yshift=-1cm] (hybrid) {混合方法 \\ Hybrid Approach};
+    \node[subNode, left=of ext, yshift=-3cm] (unlabel) {无标签数据 \\ Unlabelled Data};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
@@ -93,29 +93,29 @@
     \draw[arrowStyle, purple] (center) -- (ext);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (hard) -- (tie);
-    \draw[arrowStyle, red!60] (hard) -- (dof);
-    \draw[arrowStyle, red!60] (hard) -- (bias);
-    \draw[arrowStyle, red!60] (hard) -- (cnn);
+    \draw[arrowStyle, red!60] (hard) -- (tie.south);
+    \draw[arrowStyle, red!60] (hard) -- (dof.south);
+    \draw[arrowStyle, red!60] (hard) -- (bias.south);
+    \draw[arrowStyle, red!60] (hard) -- (cnn.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (soft) -- (mix);
-    \draw[arrowStyle, blue!60] (soft) -- (mean);
-    \draw[arrowStyle, blue!60] (soft) -- (var);
-    \draw[arrowStyle, blue!60] (soft) -- (mixcoef);
-    \draw[arrowStyle, blue!60] (soft) -- (post);
+    \draw[arrowStyle, blue!60] (soft) -- (mix.west);
+    \draw[arrowStyle, blue!60] (soft) -- (mean.west);
+    \draw[arrowStyle, blue!60] (soft) -- (var.west);
+    \draw[arrowStyle, blue!60] (soft) -- (mixcoef.west);
+    \draw[arrowStyle, blue!60] (soft) -- (post.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (learn) -- (grad);
-    \draw[arrowStyle, green!60!black] (learn) -- (softmax);
-    \draw[arrowStyle, green!60!black] (learn) -- (exp);
-    \draw[arrowStyle, green!60!black] (learn) -- (joint);
+    \draw[arrowStyle, green!60!black] (learn) -- (grad.north);
+    \draw[arrowStyle, green!60!black] (learn) -- (softmax.north);
+    \draw[arrowStyle, green!60!black] (learn) -- (exp.north);
+    \draw[arrowStyle, green!60!black] (learn) -- (joint.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (ext) -- (gen);
-    \draw[arrowStyle, purple!60] (ext) -- (disc);
-    \draw[arrowStyle, purple!60] (ext) -- (hybrid);
-    \draw[arrowStyle, purple!60] (ext) -- (unlabel);
+    \draw[arrowStyle, purple!60] (ext) -- (gen.east);
+    \draw[arrowStyle, purple!60] (ext) -- (disc.east);
+    \draw[arrowStyle, purple!60] (ext) -- (hybrid.east);
+    \draw[arrowStyle, purple!60] (ext) -- (unlabel.east);
 
 \end{tikzpicture}
 

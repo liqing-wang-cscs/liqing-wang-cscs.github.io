@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {归一化 \\ Normalization};
+    \node[centerStyle] (center) {7.4.归一化 \\ Normalization};
 
     % ================= 2. 上方分支：输入数据归一化 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (data) {输入数据归一化 \\ Data Normalization};
@@ -94,30 +94,30 @@
     \draw[arrowStyle, purple] (center) -- (theory);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (data) -- (range);
-    \draw[arrowStyle, red!60] (data) -- (mean);
-    \draw[arrowStyle, red!60] (data) -- (var);
-    \draw[arrowStyle, red!60] (data) -- (rescale);
+    \draw[arrowStyle, red!60] (data) -- (range.south);
+    \draw[arrowStyle, red!60] (data) -- (mean.south);
+    \draw[arrowStyle, red!60] (data) -- (var.south);
+    \draw[arrowStyle, red!60] (data) -- (rescale.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (batch) -- (mini);
-    \draw[arrowStyle, blue!60] (batch) -- (preact);
-    \draw[arrowStyle, blue!60] (batch) -- (gamma);
-    \draw[arrowStyle, blue!60] (batch) -- (beta);
-    \draw[arrowStyle, blue!60] (batch) -- (moving);
+    \draw[arrowStyle, blue!60] (batch) -- (mini.west);
+    \draw[arrowStyle, blue!60] (batch) -- (preact.west);
+    \draw[arrowStyle, blue!60] (batch) -- (gamma.west);
+    \draw[arrowStyle, blue!60] (batch) -- (beta.west);
+    \draw[arrowStyle, blue!60] (batch) -- (moving.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (layer) -- (hidden);
-    \draw[arrowStyle, green!60!black] (layer) -- (perdata);
-    \draw[arrowStyle, green!60!black] (layer) -- (rnn);
-    \draw[arrowStyle, green!60!black] (layer) -- (noavg);
+    \draw[arrowStyle, green!60!black] (layer) -- (hidden.north);
+    \draw[arrowStyle, green!60!black] (layer) -- (perdata.north);
+    \draw[arrowStyle, green!60!black] (layer) -- (rnn.north);
+    \draw[arrowStyle, green!60!black] (layer) -- (noavg.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (theory) -- (vanish);
-    \draw[arrowStyle, purple!60] (theory) -- (explode);
-    \draw[arrowStyle, purple!60] (theory) -- (smooth);
-    \draw[arrowStyle, purple!60] (theory) -- (covariate);
-    \draw[arrowStyle, purple!60] (theory) -- (santurkar);
+    \draw[arrowStyle, purple!60] (theory) -- (vanish.east);
+    \draw[arrowStyle, purple!60] (theory) -- (explode.east);
+    \draw[arrowStyle, purple!60] (theory) -- (smooth.east);
+    \draw[arrowStyle, purple!60] (theory) -- (covariate.east);
+    \draw[arrowStyle, purple!60] (theory) -- (santurkar.east);
 
 \end{tikzpicture}
 

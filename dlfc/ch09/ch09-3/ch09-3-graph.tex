@@ -22,7 +22,7 @@
         text = white,
         font = \sffamily\bfseries\large,
         line width = 2pt,
-        minimum size = 2.5cm,
+        minimum size = 2.8cm,
         circle
     },
     branchTitle/.style = {
@@ -32,13 +32,13 @@
     subNode/.style = {
         fill = white,
         font = \sffamily\small,
-        minimum width = 2.0cm,
+        minimum width = 2.2cm,
         minimum height = 0.8cm
     },
     leafNode/.style = {
         fill = white,
         font = \sffamily\footnotesize,
-        minimum width = 1.8cm,
+        minimum width = 1.9cm,
         minimum height = 0.7cm
     },
     arrowStyle/.style = {
@@ -50,40 +50,40 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {学习曲线 \\ Learning Curves};
+    \node[centerStyle] (center) {9.3.学习曲线 \\ Learning Curves};
 
     % ================= 2. 上方分支：基本概念 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (basic) {基本概念 \\ Basics};
 
-    \node[subNode, above left=of basic] (train) {训练误差 \\ Training Error};
-    \node[subNode, above=of basic] (valid) {验证误差 \\ Validation Error};
-    \node[subNode, above right=of basic] (trade) {偏差--方差权衡 \\ Bias--Variance};
-    \node[subNode, right=of basic, yshift=0cm] (iter) {迭代次数 \\ Iterations};
+    \node[subNode, above=of basic, xshift=-6cm] (train) {训练误差 \\ Training Error};
+    \node[subNode, above=of basic, xshift=-2cm] (valid) {验证误差 \\ Validation Error};
+    \node[subNode, above=of basic, xshift=2cm] (trade) {偏差--方差权衡 \\ Bias--Variance};
+    \node[subNode, above=of basic, xshift=6cm] (iter) {迭代次数 \\ Iterations};
 
     % ================= 3. 右侧分支：早停法 (蓝) =================
     \node[branchTitle, fill=orange!15, right=of center] (early) {早停法 \\ Early Stopping};
 
-    \node[subNode, above=of early] (stop) {停止准则 \\ Stop Criterion};
-    \node[subNode, above right=of early] (complex) {有效复杂度 \\ Effective Complexity};
-    \node[subNode, right=of early] (weight) {类似权重衰减 \\ Like Weight Decay};
-    \node[subNode, below right=of early, yshift=0cm] (path) {权重路径 \\ Weight Path};
-    \node[subNode, below=of early] (recip) {倒数关系 \\ $\tau/\eta \sim 1/\lambda$};
+    \node[subNode, right=of early, yshift=4cm] (stop) {停止准则 \\ Stop Criterion};
+    \node[subNode, right=of early, yshift=2cm] (complex) {有效复杂度 \\ Effective Complexity};
+    \node[subNode, right=of early, yshift=0cm] (weight) {类似权重衰减 \\ Like Weight Decay};
+    \node[subNode, right=of early, yshift=-2cm] (path) {权重路径 \\ Weight Path};
+    \node[subNode, right=of early, yshift=-4cm] (recip) {倒数关系 \\ $\tau/\eta \sim 1/\lambda$};
 
     % ================= 4. 下方分支：双下降 (绿) =================
     \node[branchTitle, fill=green!15, below=of center] (double) {双下降 \\ Double Descent};
 
-    \node[subNode, below left=of double] (interp) {插值阈值 \\ Interpolation Threshold};
-    \node[subNode, below right=of double] (modern) {现代深度学习 \\ Modern DL};
-    \node[subNode, left=of double, yshift=0cm] (epoch) {训练轮数 \\ Epochs};
-    \node[subNode, below=of double] (data) {数据量影响 \\ Data Size Effect};
+    \node[subNode, below=of double, xshift=-6cm] (interp) {插值阈值 \\ Interpolation Threshold};
+    \node[subNode, below=of double, xshift=-2cm] (modern) {现代深度学习 \\ Modern DL};
+    \node[subNode, below=of double, xshift=2cm] (epoch) {训练轮数 \\ Epochs};
+    \node[subNode, below=of double, xshift=6cm] (data) {数据量影响 \\ Data Size Effect};
 
     % ================= 5. 左侧分支：实践启示 (紫) =================
     \node[branchTitle, fill=purple!15, left=of center] (practice) {实践启示 \\ Practical Insights};
 
-    \node[subNode, above left=of practice] (bigger) {更大模型 \\ Bigger Models};
-    \node[subNode, left=of practice] (implicit) {隐式偏置 \\ Implicit Bias};
-    \node[subNode, below left=of practice] (sgt) {随机梯度下降 \\ SGD};
-    \node[subNode, above=of practice, yshift=-0.3cm] (ironic) {更多数据 \\ More Data};
+    \node[subNode, left=of practice, yshift=3cm] (bigger) {更大模型 \\ Bigger Models};
+    \node[subNode, left=of practice, yshift=1cm] (implicit) {隐式偏置 \\ Implicit Bias};
+    \node[subNode, left=of practice, yshift=-1cm] (sgt) {随机梯度下降 \\ SGD};
+    \node[subNode, left=of practice, yshift=-3cm] (ironic) {更多数据 \\ More Data};
 
     % ================= 连线逻辑 =================
     % 中心 -> 四大分支标题
@@ -93,29 +93,29 @@
     \draw[arrowStyle, purple] (center) -- (practice);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (basic) -- (train);
-    \draw[arrowStyle, red!60] (basic) -- (valid);
-    \draw[arrowStyle, red!60] (basic) -- (trade);
-    \draw[arrowStyle, red!60] (basic) -- (iter);
+    \draw[arrowStyle, red!60] (basic) -- (train.south);
+    \draw[arrowStyle, red!60] (basic) -- (valid.south);
+    \draw[arrowStyle, red!60] (basic) -- (trade.south);
+    \draw[arrowStyle, red!60] (basic) -- (iter.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (early) -- (stop);
-    \draw[arrowStyle, blue!60] (early) -- (complex);
-    \draw[arrowStyle, blue!60] (early) -- (weight);
-    \draw[arrowStyle, blue!60] (early) -- (path);
-    \draw[arrowStyle, blue!60] (early) -- (recip);
+    \draw[arrowStyle, blue!60] (early) -- (stop.west);
+    \draw[arrowStyle, blue!60] (early) -- (complex.west);
+    \draw[arrowStyle, blue!60] (early) -- (weight.west);
+    \draw[arrowStyle, blue!60] (early) -- (path.west);
+    \draw[arrowStyle, blue!60] (early) -- (recip.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (double) -- (interp);
-    \draw[arrowStyle, green!60!black] (double) -- (modern);
-    \draw[arrowStyle, green!60!black] (double) -- (epoch);
-    \draw[arrowStyle, green!60!black] (double) -- (data);
+    \draw[arrowStyle, green!60!black] (double) -- (interp.north);
+    \draw[arrowStyle, green!60!black] (double) -- (modern.north);
+    \draw[arrowStyle, green!60!black] (double) -- (epoch.north);
+    \draw[arrowStyle, green!60!black] (double) -- (data.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (practice) -- (bigger);
-    \draw[arrowStyle, purple!60] (practice) -- (implicit);
-    \draw[arrowStyle, purple!60] (practice) -- (sgt);
-    \draw[arrowStyle, purple!60] (practice) -- (ironic);
+    \draw[arrowStyle, purple!60] (practice) -- (bigger.east);
+    \draw[arrowStyle, purple!60] (practice) -- (implicit.east);
+    \draw[arrowStyle, purple!60] (practice) -- (sgt.east);
+    \draw[arrowStyle, purple!60] (practice) -- (ironic.east);
 
 \end{tikzpicture}
 

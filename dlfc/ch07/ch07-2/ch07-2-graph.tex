@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {梯度下降优化 \\ Gradient Descent};
+    \node[centerStyle] (center) {7.2.梯度下降优化 \\ Gradient Descent};
 
     % ================= 2. 上方分支：梯度信息价值 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (value) {梯度信息价值 \\ Value of Gradient};
@@ -94,30 +94,30 @@
     \draw[arrowStyle, purple] (center) -- (mini);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (value) -- (iterative);
-    \draw[arrowStyle, red!60] (value) -- (info);
-    \draw[arrowStyle, red!60] (value) -- (complexity);
-    \draw[arrowStyle, red!60] (value) -- (backprop);
+    \draw[arrowStyle, red!60] (value) -- (iterative.south);
+    \draw[arrowStyle, red!60] (value) -- (info.south);
+    \draw[arrowStyle, red!60] (value) -- (complexity.south);
+    \draw[arrowStyle, red!60] (value) -- (backprop.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (batch) -- (fullbatch);
-    \draw[arrowStyle, blue!60] (batch) -- (lr);
-    \draw[arrowStyle, blue!60] (batch) -- (steepest);
-    \draw[arrowStyle, blue!60] (batch) -- (inefficient);
+    \draw[arrowStyle, blue!60] (batch) -- (fullbatch.west);
+    \draw[arrowStyle, blue!60] (batch) -- (lr.west);
+    \draw[arrowStyle, blue!60] (batch) -- (steepest.west);
+    \draw[arrowStyle, blue!60] (batch) -- (inefficient.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (sgd) -- (single);
-    \draw[arrowStyle, green!60!black] (sgd) -- (epoch);
-    \draw[arrowStyle, green!60!black] (sgd) -- (online);
-    \draw[arrowStyle, green!60!black] (sgd) -- (redundancy);
-    \draw[arrowStyle, green!60!black] (sgd) -- (escape);
+    \draw[arrowStyle, green!60!black] (sgd) -- (single.north);
+    \draw[arrowStyle, green!60!black] (sgd) -- (epoch.north);
+    \draw[arrowStyle, green!60!black] (sgd) -- (online.north);
+    \draw[arrowStyle, green!60!black] (sgd) -- (redundancy.north);
+    \draw[arrowStyle, green!60!black] (sgd) -- (escape.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (mini) -- (minibatch);
-    \draw[arrowStyle, purple!60] (mini) -- (noise);
-    \draw[arrowStyle, purple!60] (mini) -- (shuffle);
-    \draw[arrowStyle, purple!60] (mini) -- (symmetry);
-    \draw[arrowStyle, purple!60] (mini) -- (he);
+    \draw[arrowStyle, purple!60] (mini) -- (minibatch.east);
+    \draw[arrowStyle, purple!60] (mini) -- (noise.east);
+    \draw[arrowStyle, purple!60] (mini) -- (shuffle.east);
+    \draw[arrowStyle, purple!60] (mini) -- (symmetry.east);
+    \draw[arrowStyle, purple!60] (mini) -- (he.east);
 
 \end{tikzpicture}
 

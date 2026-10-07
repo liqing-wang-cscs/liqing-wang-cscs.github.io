@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {误差曲面 \\ Error Surfaces};
+    \node[centerStyle] (center) {7.1.误差曲面 \\ Error Surfaces};
 
     % ================= 2. 上方分支：优化基础 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (basics) {优化基础 \\ Optimization Basics};
@@ -94,30 +94,30 @@
     \draw[arrowStyle, purple] (center) -- (practice);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (basics) -- (approx);
-    \draw[arrowStyle, red!60] (basics) -- (error);
-    \draw[arrowStyle, red!60] (basics) -- (gradient);
-    \draw[arrowStyle, red!60] (basics) -- (backprop);
+    \draw[arrowStyle, red!60] (basics) -- (approx.south);
+    \draw[arrowStyle, red!60] (basics) -- (error.south);
+    \draw[arrowStyle, red!60] (basics) -- (gradient.south);
+    \draw[arrowStyle, red!60] (basics) -- (backprop.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (stationary) -- (vanish);
-    \draw[arrowStyle, blue!60] (stationary) -- (minimum);
-    \draw[arrowStyle, blue!60] (stationary) -- (maximum);
-    \draw[arrowStyle, blue!60] (stationary) -- (saddle);
-    \draw[arrowStyle, blue!60] (stationary) -- (global);
+    \draw[arrowStyle, blue!60] (stationary) -- (vanish.west);
+    \draw[arrowStyle, blue!60] (stationary) -- (minimum.west);
+    \draw[arrowStyle, blue!60] (stationary) -- (maximum.west);
+    \draw[arrowStyle, blue!60] (stationary) -- (saddle.west);
+    \draw[arrowStyle, blue!60] (stationary) -- (global.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (quadratic) -- (taylor);
-    \draw[arrowStyle, green!60!black] (quadratic) -- (hessian);
-    \draw[arrowStyle, green!60!black] (quadratic) -- (eigen);
-    \draw[arrowStyle, green!60!black] (quadratic) -- (positive);
-    \draw[arrowStyle, green!60!black] (quadratic) -- (contour);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (taylor.north);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (hessian.north);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (eigen.north);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (positive.north);
+    \draw[arrowStyle, green!60!black] (quadratic) -- (contour.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (practice) -- (equiv);
-    \draw[arrowStyle, purple!60] (practice) -- (flat);
-    \draw[arrowStyle, purple!60] (practice) -- (general);
-    \draw[arrowStyle, purple!60] (practice) -- (regular);
+    \draw[arrowStyle, purple!60] (practice) -- (equiv.east);
+    \draw[arrowStyle, purple!60] (practice) -- (flat.east);
+    \draw[arrowStyle, purple!60] (practice) -- (general.east);
+    \draw[arrowStyle, purple!60] (practice) -- (regular.east);
 
 \end{tikzpicture}
 
