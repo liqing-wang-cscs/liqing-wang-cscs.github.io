@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {多层网络 \\ Multilayer Networks};
+    \node[centerStyle] (center) {6.2.多层网络 \\ Multilayer Networks};
 
     % ================= 2. 上方分支：网络结构与参数 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (structure) {网络结构与参数 \\ Network Structure \& Parameters};
@@ -95,31 +95,31 @@
     \draw[arrowStyle, purple] (center) -- (symmetry);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (structure) -- (twolayer);
-    \draw[arrowStyle, red!60] (structure) -- (preact);
-    \draw[arrowStyle, red!60] (structure) -- (hidden);
-    \draw[arrowStyle, red!60] (structure) -- (output);
+    \draw[arrowStyle, red!60] (structure) -- (twolayer.south);
+    \draw[arrowStyle, red!60] (structure) -- (preact.south);
+    \draw[arrowStyle, red!60] (structure) -- (hidden.south);
+    \draw[arrowStyle, red!60] (structure) -- (output.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (matrix) -- (biasabsorb);
-    \draw[arrowStyle, blue!60] (matrix) -- (overall);
-    \draw[arrowStyle, blue!60] (matrix) -- (vector);
-    \draw[arrowStyle, blue!60] (matrix) -- (weightmatrix);
-    \draw[arrowStyle, blue!60] (matrix) -- (elementwise);
+    \draw[arrowStyle, blue!60] (matrix) -- (biasabsorb.west);
+    \draw[arrowStyle, blue!60] (matrix) -- (overall.west);
+    \draw[arrowStyle, blue!60] (matrix) -- (vector.west);
+    \draw[arrowStyle, blue!60] (matrix) -- (weightmatrix.west);
+    \draw[arrowStyle, blue!60] (matrix) -- (elementwise.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (approx) -- (universal);
-    \draw[arrowStyle, green!60!black] (approx) -- (limitation);
-    \draw[arrowStyle, green!60!black] (approx) -- (sigmoid);
-    \draw[arrowStyle, green!60!black] (approx) -- (relu);
-    \draw[arrowStyle, green!60!black] (approx) -- (leaky);
+    \draw[arrowStyle, green!60!black] (approx) -- (universal.north);
+    \draw[arrowStyle, green!60!black] (approx) -- (limitation.north);
+    \draw[arrowStyle, green!60!black] (approx) -- (sigmoid.north);
+    \draw[arrowStyle, green!60!black] (approx) -- (relu.north);
+    \draw[arrowStyle, green!60!black] (approx) -- (leaky.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (symmetry) -- (signflip);
-    \draw[arrowStyle, purple!60] (symmetry) -- (interchange);
-    \draw[arrowStyle, purple!60] (symmetry) -- (factor);
-    \draw[arrowStyle, purple!60] (symmetry) -- (multilayer);
-    \draw[arrowStyle, purple!60] (symmetry) -- (bayesian);
+    \draw[arrowStyle, purple!60] (symmetry) -- (signflip.east);
+    \draw[arrowStyle, purple!60] (symmetry) -- (interchange.east);
+    \draw[arrowStyle, purple!60] (symmetry) -- (factor.east);
+    \draw[arrowStyle, purple!60] (symmetry) -- (multilayer.east);
+    \draw[arrowStyle, purple!60] (symmetry) -- (bayesian.east);
 
 \end{tikzpicture}
 

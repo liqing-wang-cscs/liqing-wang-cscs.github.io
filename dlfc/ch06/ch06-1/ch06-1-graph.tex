@@ -50,7 +50,7 @@
 ]
 
     % ================= 1. 中心节点 =================
-    \node[centerStyle] (center) {固定基函数的局限 \\ Limitations of \\ Fixed Basis Functions};
+    \node[centerStyle] (center) {6.1.固定基函数的局限 \\ Limitations of \\ Fixed Basis Functions};
 
     % ================= 2. 上方分支：线性基函数模型 (红) =================
     \node[branchTitle, fill=red!15, above=of center] (linear) {线性基函数模型 \\ Linear Basis Function Model};
@@ -95,31 +95,31 @@
     \draw[arrowStyle, purple] (center) -- (manifold);
 
     % 分支标题 -> 子节点 (上方)
-    \draw[arrowStyle, red!60] (linear) -- (form);
-    \draw[arrowStyle, red!60] (linear) -- (regression);
-    \draw[arrowStyle, red!60] (linear) -- (classification);
-    \draw[arrowStyle, red!60] (linear) -- (general);
+    \draw[arrowStyle, red!60] (linear) -- (form.south);
+    \draw[arrowStyle, red!60] (linear) -- (regression.south);
+    \draw[arrowStyle, red!60] (linear) -- (classification.south);
+    \draw[arrowStyle, red!60] (linear) -- (general.south);
 
     % 分支标题 -> 子节点 (右侧)
-    \draw[arrowStyle, blue!60] (curse) -- (polynomial);
-    \draw[arrowStyle, blue!60] (curse) -- (grid);
-    \draw[arrowStyle, blue!60] (curse) -- (exponential);
-    \draw[arrowStyle, blue!60] (curse) -- (empty);
-    \draw[arrowStyle, blue!60] (curse) -- (data);
+    \draw[arrowStyle, blue!60] (curse) -- (polynomial.west);
+    \draw[arrowStyle, blue!60] (curse) -- (grid.west);
+    \draw[arrowStyle, blue!60] (curse) -- (exponential.west);
+    \draw[arrowStyle, blue!60] (curse) -- (empty.west);
+    \draw[arrowStyle, blue!60] (curse) -- (data.west);
 
     % 分支标题 -> 子节点 (下方)
-    \draw[arrowStyle, green!60!black] (highdim) -- (hypersphere);
-    \draw[arrowStyle, green!60!black] (highdim) -- (shell);
-    \draw[arrowStyle, green!60!black] (highdim) -- (gaussian);
-    \draw[arrowStyle, green!60!black] (highdim) -- (separable);
+    \draw[arrowStyle, green!60!black] (highdim) -- (hypersphere.north);
+    \draw[arrowStyle, green!60!black] (highdim) -- (shell.north);
+    \draw[arrowStyle, green!60!black] (highdim) -- (gaussian.north);
+    \draw[arrowStyle, green!60!black] (highdim) -- (separable.north);
 
     % 分支标题 -> 子节点 (左侧)
-    \draw[arrowStyle, purple!60] (manifold) -- (manifoldDef);
-    \draw[arrowStyle, purple!60] (manifold) -- (image);
-    \draw[arrowStyle, purple!60] (manifold) -- (rbf);
-    \draw[arrowStyle, purple!60] (manifold) -- (svm);
-    \draw[arrowStyle, purple!60] (manifold) -- (neural);
-    \draw[arrowStyle, purple!60] (manifold) -- (hierarchical);
+    \draw[arrowStyle, purple!60] (manifold) -- (manifoldDef.east);
+    \draw[arrowStyle, purple!60] (manifold) -- (image.east);
+    \draw[arrowStyle, purple!60] (manifold) -- (rbf.east);
+    \draw[arrowStyle, purple!60] (manifold) -- (svm.east);
+    \draw[arrowStyle, purple!60] (manifold) -- (neural.east);
+    \draw[arrowStyle, purple!60] (manifold) -- (hierarchical.east);
 
 \end{tikzpicture}
 

@@ -1,0 +1,466 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包
+\usepackage{graphicx}
+
+% 算法包
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\renewcommand{\algorithmiccomment}[1]{\hfill\texttt{\textcolor{violet}{// #1}}}
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+\algnewcommand\Output{\item[\algorithmicoutput]}
+
+% 标题页信息
+\title[8.2.自动微分]{第8章：反向传播}
+\subtitle{第2节：自动微分法 (Automatic Differentiation)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：四种求导方法
+% ============================================================
+\section{四种求导方法}
+
+\begin{frame}
+    \frametitle{1. 评估梯度的四种方法}
+    \begin{itemize}
+        \item 利用梯度信息高效训练神经网络至关重要。
+        \item 本质上，有\alert{四种方法}评估神经网络误差函数的梯度：
+        \begin{enumerate}
+            \item 手动推导反向传播方程并显式实现
+            \item 数值微分（有限差分）
+            \item 符号微分
+            \item \alert{自动微分}（automatic differentiation）
+        \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 方法一：手动推导反向传播}
+    \begin{itemize}
+        \item 多年来一直是神经网络的\alert{中流砥柱}。
+        \item 如果操作得当：代码高效，结果精确到数值精度。
+        \item \textbf{缺点}：
+        \begin{itemize}
+            \item 推导和编码都\alert{耗时且易出错}
+            \item 前向传播与反向传播方程\alert{分开编写}，导致代码冗余
+            \item 模型更改时，前向和后向实现必须\alert{同步修改}
+            \item 限制了快速探索不同架构的能力
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.2 方法二：数值微分}
+    \begin{itemize}
+        \item 只需实现\alert{前向传播方程}。
+        \item \textbf{优点}：实现简单，可用于\alert{调试其他方法}。
+        \item \textbf{缺点}：
+        \begin{itemize}
+            \item 计算精度有限（但对 SGD 影响不大）
+            \item 主要问题：\alert{可扩展性差}，$\mathcal{O}(W^2)$
+            \item 每个参数需单独扰动，对现代大网络不可行
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{用途}
+        将反向传播或自动微分的导数与\alert{中心差分}结果比较，验证软件正确性。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.3 方法三：符号微分}
+    \begin{itemize}
+        \item 用专用软件自动化解析推导过程（计算机代数）。
+        \item 自动应用微积分规则（如链式法则）。
+        \item \textbf{优点}：避免人为错误，机器精度，无扩展性问题。
+        \item \textbf{缺点}：\alert{表达式膨胀}（expression swell）。
+    \end{itemize}
+    \begin{block}{表达式膨胀示例}
+        \begin{align}
+            f(x) &= u(x)v(x) \tag{8.42} \\
+            f'(x) &= u'(x)v(x) + u(x)v'(x) \tag{8.43}
+        \end{align}
+        $u(x)$ 和 $v(x)$ 在 $f$ 和 $f'$ 中都需要计算——\alert{冗余}。\\
+        嵌套因子导致表达式复杂度\alert{指数级增长}。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.4 符号微分的表达式膨胀示例}
+    两层网络示例（soft ReLU 激活）：
+    \begin{align}
+        z &= h(w_1 x + b_1) \tag{8.44} \\
+        y &= h(w_2 z + b_2) \tag{8.45}
+    \end{align}
+    符号微分求得的导数：
+    \begin{equation}
+        \frac{\partial y}{\partial w_1} = \frac{w_2 x \exp\left(w_1 x + b_1 + b_2 + w_2 \ln\left[1 + e^{w_1 x + b_1}\right]\right)}{\left(1 + e^{w_1 x + b_1}\right)\left(1 + \exp\left(b_2 + w_2 \ln\left[1 + e^{w_1 x + b_1}\right]\right)\right)}
+        \tag{8.48}
+    \end{equation}
+    \begin{itemize}
+        \item 复杂度显著高于原函数。
+        \item $w_1 x + b_1$ 等表达式\alert{多次重复}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.5 符号微分的局限性：封闭形式与控制流}
+    \begin{itemize}
+        \item 要求表达式以\alert{封闭形式}给出。
+        \item 无法处理\alert{控制流操作}：
+        \begin{itemize}
+            \item 循环、递归
+            \item 条件执行
+            \item 过程调用
+        \end{itemize}
+        \item 这些是定义网络函数时\alert{有价值}的构造。
+    \end{itemize}
+    \begin{block}{关键限制}
+        符号微分对\alert{静态表达式树}进行代数变换，无法处理运行时才能确定结构的计算逻辑。
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第二部分：自动微分
+% ============================================================
+\section{自动微分}
+
+\begin{frame}
+    \frametitle{2. 方法四：自动微分}
+    \begin{itemize}
+        \item 也称 autodiff 或\alert{算法微分}。
+        \item 目标：\alert{不是}找导数的数学表达式，而是让计算机\alert{自动生成梯度计算代码}。
+        \item 仅需前向传播代码，即可生成梯度计算代码。
+        \item \textbf{优点}：
+        \begin{itemize}
+            \item 机器精度（同符号微分）
+            \item 利用\alert{中间变量}避免冗余计算（比符号微分高效）
+            \item 能处理\alert{控制流}（分支、循环、递归、过程调用）
+        \end{itemize}
+        \item 自动微分是成熟领域，主要在\alert{机器学习社区之外}发展。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.1 自动微分的核心思想}
+    \begin{itemize}
+        \item 取计算函数的代码（如神经网络的前向传播方程）。
+        \item 在执行过程中\alert{增加额外变量}来累积数值，从而获得导数。
+    \end{itemize}
+    \begin{block}{两种主要形式}
+        \begin{itemize}
+            \item \alert{前向模式}（forward mode）：概念上更简单
+            \item \alert{反向模式}（reverse mode）：深度学习的主流选择
+        \end{itemize}
+    \end{block}
+    \begin{itemize}
+        \item 核心机制：将复杂函数分解为\alert{基本运算}，用链式法则组合导数。
+        \item 就像把复杂数学题拆解成基础运算，再综合结果。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.2 前向模式 vs 反向模式}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \footnotesize
+        \begin{tabular}{|p{1.8cm}|p{4.5cm}|p{4.5cm}|}
+            \hline
+            \textbf{特性} & \textbf{前向模式} & \textbf{反向模式} \\
+            \hline
+            计算方向 & 输入 $\to$ 输出 & 输出 $\to$ 输入 \\
+            \hline
+            工作原理 & 计算中间变量同时算其对输入的导数 & 先前向记录计算图，再从输出反向计算梯度 \\
+            \hline
+            效率特点 & 一次得\alert{一个输入}的导数 & 一次得\alert{所有输入}的导数 \\
+            \hline
+            内存消耗 & 较低 & 较高（需保存中间结果） \\
+            \hline
+            适用场景 & 输入维度小、输出维度大 & \alert{输入维度远大于输出维度}（深度学习） \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item 深度学习：参数百万级，损失函数标量输出 $\Rightarrow$ \alert{反向模式是主流}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.3 实现机制：计算图}
+    \begin{itemize}
+        \item 框架执行张量运算时\alert{动态构建有向无环图}（DAG）。
+        \item \textbf{叶子节点}：输入数据或模型参数。
+        \item \textbf{中间节点}：基本运算（加法、矩阵乘法等）。
+        \item \textbf{根节点}：最终输出（如损失值）。
+    \end{itemize}
+    \begin{block}{前向传播与反向传播}
+        \begin{itemize}
+            \item \alert{前向传播}：沿计算图从输入到输出，计算每个节点值和最终损失。
+            \item \alert{反向传播}：从根节点开始，沿反方向用链式法则将梯度传回每个节点。
+        \end{itemize}
+        现代框架通常存储\alert{向量-雅可比乘积}（VJP），而非完整雅可比矩阵。
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第三部分：前向模式自动微分
+% ============================================================
+\section{前向模式自动微分}
+
+\begin{frame}
+    \frametitle{3. 前向模式自动微分 (8.2.1)}
+    \begin{itemize}
+        \item 为每个中间变量 $z_i$（\alert{主变量}，primal）附加一个\alert{切线变量} $\dot{z}_i$。
+        \item 切线变量及其代码由软件环境\alert{自动生成}。
+        \item 代码传播\alert{元组} $(z_i, \dot{z}_i)$，变量与导数\alert{并行}计算。
+        \item 原始函数由\alert{基本算子}定义（算术、取反、指数、对数、三角函数）。
+        \item 这些算子的导数公式简单，结合\alert{链式法则}自动构建梯度计算代码。
+    \end{itemize}
+    \begin{block}{关键点}
+        一次前向传播只能计算对\alert{一个}输入变量的导数。\\
+        若有 $D$ 个输入，需 $D$ 次前向传播。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.1 前向模式示例}
+    考虑函数：
+    \begin{equation}
+        f(x_1, x_2) = x_1 x_2 + \exp(x_1 x_2) - \sin(x_2)
+        \tag{8.49}
+    \end{equation}
+    主变量（求值轨迹）：
+    \begin{align}
+        v_1 &= x_1 \tag{8.50} \\
+        v_2 &= x_2 \tag{8.51} \\
+        v_3 &= v_1 v_2 \tag{8.52} \\
+        v_4 &= \sin(v_2) \tag{8.53} \\
+        v_5 &= \exp(v_3) \tag{8.54} \\
+        v_6 &= v_3 - v_4 \tag{8.55} \\
+        v_7 &= v_5 + v_6 \tag{8.56}
+    \end{align}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+    \frametitle{3.2 切线变量的计算}
+    求 $\partial f / \partial x_1$，定义 $\dot{v}_i = \partial v_i / \partial x_1$。
+    链式法则：
+    \begin{equation}
+        \dot{v}_i = \frac{\partial v_i}{\partial x_1} 
+        = \sum_{j \in \mathrm{pa}(i)} \dot{v}_j \frac{\partial v_i}{\partial v_j}
+        \tag{8.57}
+    \end{equation}
+    其中 $\mathrm{pa}(i)$ 是节点 $i$ 的\alert{父节点}集合。
+
+    切线变量方程：
+    \begin{align}
+        \dot{v}_1 &= 1 \tag{8.58} \\
+        \dot{v}_2 &= 0 \tag{8.59} \\
+        \dot{v}_3 &= \dot{v}_1 v_2 + v_1 \dot{v}_2 \tag{8.60} \\
+        \dot{v}_4 &= \dot{v}_2 \cos(v_2) \tag{8.61} \\
+        \dot{v}_5 &= \dot{v}_3 \exp(v_3) \tag{8.62} \\
+        \dot{v}_6 &= \dot{v}_3 - \dot{v}_4 \tag{8.63} \\
+        \dot{v}_7 &= \dot{v}_5 + \dot{v}_6 \tag{8.64}
+    \end{align}
+
+    初始条件：$\dot{v}_1 = 1$，$\dot{v}_2 = 0$（对 $x_1$ 求导）。
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.3 多输出与前向模式的雅可比矩阵}
+    考虑两个输出 $f_1, f_2$：
+    \begin{equation}
+        f_2(x_1, x_2) = (x_1 x_2 - \sin(x_2)) \exp(x_1 x_2)
+        \tag{8.65}
+    \end{equation}
+    \begin{itemize}
+        \item $\partial f_1 / \partial x_1$ 和 $\partial f_2 / \partial x_1$ 可在\alert{同一次前向传播}中一起计算。
+        \item 但若求对 $x_2$ 的导数，需\alert{单独}再跑一次前向传播。
+    \end{itemize}
+    \begin{block}{雅可比矩阵}
+        $D$ 个输入、$K$ 个输出的函数：
+        \begin{equation}
+            \mathbf{J} =
+            \begin{bmatrix}
+                \frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_D} \\
+                \vdots & \ddots & \vdots \\
+                \frac{\partial f_K}{\partial x_1} & \cdots & \frac{\partial f_K}{\partial x_D}
+            \end{bmatrix}
+            \tag{8.66}
+        \end{equation}
+        一次前向传播产生雅可比矩阵的\alert{一列}。
+        计算完整雅可比矩阵需 $D$ 次前向传播。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.4 前向模式的局限性与反向模式的引入}
+    \begin{itemize}
+        \item 前向模式：$D$ 次前向传播计算完整雅可比矩阵。
+        \item 适合\alert{输入少、输出多}的网络（$K \gg D$）。
+        \item \textbf{但深度学习}：一个误差函数，大量参数（百万到数十亿）。
+        \item 此时前向模式\alert{极其低效}。
+        \item 因此转向\alert{反向模式}：基于导数数据在求值轨迹图中的\alert{反向流动}。
+    \end{itemize}
+    \begin{block}{关键对比}
+        前向模式代价正比于\alert{输入维度 $D$}。\\
+        反向模式代价正比于\alert{输出维度 $K$}。\\
+        神经网络：$K=1$（标量损失），$D$ 百万级 $\Rightarrow$ 反向模式获得 $O(D)$ 倍加速。
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第四部分：反向模式自动微分
+% ============================================================
+\section{反向模式自动微分}
+
+\begin{frame}
+    \frametitle{4. 反向模式自动微分 (8.2.2)}
+    \begin{itemize}
+        \item 可视为\alert{误差反向传播的推广}。
+        \item 为每个中间变量 $v_i$ 附加\alert{伴随变量} $\overline{v}_i$：
+        \begin{equation}
+            \overline{v}_i = \frac{\partial f}{\partial v_i}
+            \tag{8.68}
+        \end{equation}
+        \item 从输出开始，反向使用链式法则：
+        \begin{equation}
+            \overline{v}_i = \sum_{j \in \mathrm{ch}(i)} \overline{v}_j \frac{\partial v_j}{\partial v_i}
+            \tag{8.69}
+        \end{equation}
+        其中 $\mathrm{ch}(i)$ 是节点 $i$ 的\alert{子节点}集合。
+        \item 伴随变量的连续求值代表信息在图中\alert{反向流动}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.1 反向模式示例}
+    对函数 (8.49) 的伴随变量方程：
+    \begin{align}
+        \overline{v}_7 &= 1 \tag{8.70} \\
+        \overline{v}_6 &= \overline{v}_7 \tag{8.71} \\
+        \overline{v}_5 &= \overline{v}_7 \tag{8.72} \\
+        \overline{v}_4 &= -\overline{v}_6 \tag{8.73} \\
+        \overline{v}_3 &= \overline{v}_5 v_5 + \overline{v}_6 \tag{8.74} \\
+        \overline{v}_2 &= \overline{v}_2 v_1 + \overline{v}_4 \cos(v_2) \tag{8.75} \\
+        \overline{v}_1 &= \overline{v}_3 v_2 \tag{8.76}
+    \end{align}
+    \begin{itemize}
+        \item 从输出开始，\alert{反向流动}到输入。
+        \item 即使有多个输入，只需\alert{一次反向传播}。
+        \item 对神经网络，$E$ 对权重和偏置的导数即为相应伴随变量。
+        \item 若有多个输出，需对每个输出单独反向传播。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.2 反向模式的内存与实现考量}
+    \begin{itemize}
+        \item 反向模式通常比前向模式\alert{更耗内存}。
+        \item 原因：所有\alert{中间主变量}必须存储，供反向传播使用。
+        \item 前向模式：主变量和切线变量一起计算，用完即可丢弃。
+        \item 因此前向模式通常\alert{更容易实现}。
+    \end{itemize}
+    \begin{block}{计算开销}
+        两种模式的单次传播均不超过函数求值计算代价的\alert{6 倍}。\\
+        实践中通常为\alert{2--3 倍}（Griewank and Walther, 2008）。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.3 混合模式：Hessian-向量积}
+    \begin{itemize}
+        \item 前向与反向模式的\alert{混合}也很有用。
+        \item 典型应用：\alert{Hessian 矩阵与向量的乘积}，无需显式构造完整 Hessian。
+    \end{itemize}
+    \begin{block}{Hessian-向量积的计算步骤}
+        \begin{enumerate}
+            \item 设向量 $\mathbf{v}$ 和点 $\mathbf{x}$。
+            \item 前向模式：令 $\dot{\mathbf{x}} = \mathbf{v}$，得到方向导数 $\mathbf{v}^\top \nabla f$。
+            \item 反向模式：对该结果微分，得到 $\nabla^2 f \, \mathbf{v} = \mathbf{H} \mathbf{v}$。
+        \end{enumerate}
+    \end{block}
+    \begin{itemize}
+        \item 若参数数量为 $W$，HVP 复杂度为 $\mathcal{O}(W)$。
+        \item 即使 Hessian 本身大小为 $W \times W$。
+        \item 显式计算完整 Hessian：$\mathcal{O}(W^2)$。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第五部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{5. 本节总结}
+    \begin{itemize}
+        \item \alert{四种求导方法}：
+        \begin{itemize}
+            \item 手动反向传播：高效但耗时易错
+            \item 数值微分：简单但 $\mathcal{O}(W^2)$
+            \item 符号微分：机器精度但\alert{表达式膨胀}，不支持控制流
+            \item \alert{自动微分}：机器精度、高效、支持控制流
+        \end{itemize}
+        \item \alert{自动微分核心思想}：增强代码，通过额外变量累积导数。
+        \item \alert{前向模式}：
+        \begin{itemize}
+            \item 传播元组 $(z_i, \dot{z}_i)$，变量与导数并行计算
+            \item 一次传播产生雅可比矩阵\alert{一列}
+            \item 适合 $K \gg D$，但深度学习不适用
+        \end{itemize}
+        \item \alert{反向模式}：
+        \begin{itemize}
+            \item 定义伴随变量 $\overline{v}_i = \partial f / \partial v_i$
+            \item 从输出反向传播，一次得\alert{所有输入}的导数
+            \item 内存开销大，但深度学习\alert{主流选择}
+        \end{itemize}
+        \item \alert{混合模式}：Hessian-向量积，$\mathcal{O}(W)$ 复杂度。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第六部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{6. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Baydin, A. G. et al. (2018). Automatic differentiation in machine learning: a survey.
+        \item Griewank, A. \& Walther, A. (2008). Evaluating Derivatives: Principles and Techniques of Algorithmic Differentiation.
+        \item Pearlmutter, B. A. (1994). Fast exact multiplication by the Hessian.
+        \item Grosse, R. (2018). Automatic differentiation.
+    \end{itemize}
+\end{frame}
+
+\end{document}

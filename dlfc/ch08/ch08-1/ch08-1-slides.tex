@@ -1,0 +1,499 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包
+\usepackage{graphicx}
+
+% 算法包
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\renewcommand{\algorithmiccomment}[1]{\hfill\texttt{\textcolor{violet}{// #1}}}
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+\algnewcommand\Output{\item[\algorithmicoutput]}
+
+% 标题页信息
+\title[8.1.梯度计算]{第8章：反向传播}
+\subtitle{第1节：梯度计算 (Evaluation of Gradients)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：引言
+% ============================================================
+\section{引言}
+
+\begin{frame}
+    \frametitle{1. 反向传播：目标与动机}
+    \begin{itemize}
+        \item 目标：为前馈神经网络寻找\alert{高效计算误差函数梯度 $E(\mathbf{w})$} 的技术。
+        \item 方法：\alert{误差反向传播}（error backpropagation），信息从后向前传递。
+        \item 历史上：反向传播方程手工推导并手写实现，耗时且易错。
+        \item 现代：\alert{自动微分}（automatic differentiation）几乎可以计算任何导数。
+        \item 但仍然值得理解计算过程，避免依赖“黑箱”软件。
+    \end{itemize}
+    \begin{block}{术语说明}
+        “反向传播”在文献中有多种用法。本书特指\alert{数值计算导数的计算过程}，而非端到端训练过程。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 误差函数的求和形式}
+    \begin{itemize}
+        \item 许多实际误差函数（如 i.i.d. 数据的最大似然）是\alert{各项之和}：
+        \begin{equation}
+            E(\mathbf{w}) = \sum_{n=1}^N E_n(\mathbf{w})
+            \tag{8.1}
+        \end{equation}
+        \item 我们考虑评估其中\alert{一项} $\nabla E_n(\mathbf{w})$。
+        \item 可直接用于 SGD，或对批量/小批量方法累加。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第二部分：单层网络
+% ============================================================
+\section{单层网络}
+
+\begin{frame}
+    \frametitle{2. 单层网络 (8.1.1)}
+    考虑简单线性模型：
+    \begin{equation}
+        y_k = \sum_i w_{ki} x_i
+        \tag{8.2}
+    \end{equation}
+    平方和误差：
+    \begin{equation}
+        E_n = \frac{1}{2} \sum_k (y_{nk} - t_{nk})^2
+        \tag{8.3}
+    \end{equation}
+    梯度：
+    \begin{equation}
+        \frac{\partial E_n}{\partial w_{ji}} = (y_{nj} - t_{nj}) x_{ni}
+        \tag{8.4}
+    \end{equation}
+    \begin{itemize}
+        \item 可解释为\alert{“局部”计算}：误差信号 $(y_{nj} - t_{nj})$ 与输入 $x_{ni}$ 的乘积。
+        \item 这一简单结果将推广到多层前馈网络。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第三部分：一般前馈网络
+% ============================================================
+\section{一般前馈网络}
+
+\begin{frame}
+    \frametitle{3. 一般前馈网络 (8.1.2)}
+    \begin{itemize}
+        \item 每个单元计算输入的\alert{加权和}：
+        \begin{equation}
+            a_j = \sum_i w_{ji} z_i
+            \tag{8.5}
+        \end{equation}
+        \item 通过\alert{非线性激活函数} $h(\cdot)$ 得到激活值：
+        \begin{equation}
+            z_j = h(a_j)
+            \tag{8.6}
+        \end{equation}
+        \item 偏置可通过引入固定 $+1$ 的额外单元包含在求和中。
+        \item \alert{前向传播}：给定输入，依次应用 (8.5)(8.6) 计算所有隐藏和输出单元。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.1 误差项 $\delta_j$ 的定义}
+    考虑 $E_n$ 关于权重 $w_{ji}$ 的导数。$E_n$ 仅通过 $a_j$ 依赖于 $w_{ji}$：
+    \begin{equation}
+        \frac{\partial E_n}{\partial w_{ji}} = \frac{\partial E_n}{\partial a_j} \frac{\partial a_j}{\partial w_{ji}}
+        \tag{8.7}
+    \end{equation}
+    引入\alert{误差项}：
+    \begin{equation}
+        \delta_j \equiv \frac{\partial E_n}{\partial a_j}
+        \tag{8.8}
+    \end{equation}
+    由 (8.5) 得：
+    \begin{equation}
+        \frac{\partial a_j}{\partial w_{ji}} = z_i
+        \tag{8.9}
+    \end{equation}
+    代入得：
+    \begin{equation}
+        \frac{\partial E_n}{\partial w_{ji}} = \delta_j z_i
+        \tag{8.10}
+    \end{equation}
+    \begin{itemize}
+        \item 导数 = \alert{输出端 $\delta$ × 输入端 $z$}（与线性模型 (8.4) 同形式）。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.2 输出单元与隐藏单元的 $\delta$}
+    \textbf{输出单元}（使用规范链接激活函数）：
+    \begin{equation}
+        \delta_k = y_k - t_k
+        \tag{8.11}
+    \end{equation}
+    \textbf{隐藏单元}：再次使用链式法则：
+    \begin{equation}
+        \delta_j \equiv \frac{\partial E_n}{\partial a_j} = \sum_k \frac{\partial E_n}{\partial a_k} \frac{\partial a_k}{\partial a_j}
+        \tag{8.12}
+    \end{equation}
+    代入定义并利用 (8.5)(8.6)：
+    \begin{equation}
+        \delta_j = h'(a_j) \sum_k w_{kj} \delta_k
+        \tag{8.13}
+    \end{equation}
+    \begin{itemize}
+        \item 隐藏单元的 $\delta$ 通过\alert{反向传播}输出单元的 $\delta$ 得到。
+        \item 求和遍历 $w_{kj}$ 的\alert{第一个下标}（反向），而前向传播遍历第二个下标。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=0.33]
+    \frametitle{3.3 反向传播算法伪代码}
+    \begin{algorithm}[H]
+    \caption{Backpropagation}
+    \begin{algorithmic}
+    \Input 输入向量 $\mathbf{x}_n$；网络参数 $\mathbf{w}$；误差函数 $E_n(\mathbf{w})$；激活函数 $h$
+    \Output 误差函数导数 $\{\partial E_n / \partial w_{ji}\}$
+    \State // 前向传播
+    \For{$j \in$ 所有隐藏和输出单元}
+        \State $a_j \leftarrow \sum_i w_{ji} z_i$ \Comment{包含输入}
+        \State $z_j \leftarrow h(a_j)$
+    \EndFor
+    \State // 误差评估
+    \For{$k \in$ 所有输出单元}
+        \State $\delta_k \leftarrow \frac{\partial E_n}{\partial a_k}$
+    \EndFor
+    \State // 反向传播（逆序）
+    \For{$j \in$ 所有隐藏单元}
+        \State $\delta_j \leftarrow h'(a_j) \sum_k w_{kj} \delta_k$
+        \State $\frac{\partial E_n}{\partial w_{ji}} \leftarrow \delta_j z_i$
+    \EndFor
+    \State \Return $\{\frac{\partial E_n}{\partial w_{ji}}\}$
+    \end{algorithmic}
+    \end{algorithm}
+    \begin{itemize}
+        \item 批量方法：对每个数据点重复，然后求和：
+        $\frac{\partial E}{\partial w_{ji}} = \sum_n \frac{\partial E_n}{\partial w_{ji}}$
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：简单示例
+% ============================================================
+\section{简单示例}
+
+\begin{frame}
+    \frametitle{4. 简单示例 (8.1.3)}
+    两层网络 + 平方和误差：
+    \begin{itemize}
+        \item 输出单元：\alert{线性}激活，$y_k = a_k$
+        \item 隐藏单元：\alert{sigmoidal} 激活，$h(a) = \tanh(a)$
+        \item 导数：$h'(a) = 1 - h(a)^2$
+    \end{itemize}
+    \begin{block}{前向传播}
+        $$
+            a_j = \sum_{i=0}^D w_{ji}^{(1)} x_i, \quad %\tag{8.18} \\
+            z_j = \tanh(a_j), \quad %\tag{8.19} \\
+            y_k = \sum_{j=0}^M w_{kj}^{(2)} z_j. %\tag{8.20}
+        $$
+        其中 $x_0 = z_0 = 1$ 用于包含偏置。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.1 反向传播与导数}
+    \textbf{输出单元误差}：
+    \begin{equation}
+        \delta_k = y_k - t_k
+        \tag{8.21}
+    \end{equation}
+    \textbf{隐藏单元误差}：
+    \begin{equation}
+        \delta_j = (1 - z_j^2) \sum_{k=1}^K w_{kj}^{(2)} \delta_k
+        \tag{8.22}
+    \end{equation}
+    \textbf{权重导数}：
+    \begin{equation}
+        \frac{\partial E_n}{\partial w_{ji}^{(1)}} = \delta_j x_i, \qquad \frac{\partial E_n}{\partial w_{kj}^{(2)}} = \delta_k z_j
+        \tag{8.23}
+    \end{equation}
+    \begin{itemize}
+        \item $\delta_k$：输出层误差；$\delta_j$：隐藏层误差。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第五部分：数值微分法
+% ============================================================
+\section{数值微分法}
+
+\begin{frame}
+    \frametitle{5. 数值微分法 (8.1.4)}
+    \begin{itemize}
+        \item 反向传播的重要特性：\alert{计算效率}。
+        \item 单次误差函数评估需 $\mathcal{O}(W)$ 次操作。
+        \item 前向传播中大部分计算来自 (8.5) 的求和，激活函数评估开销小。
+        \item 求和每项需一次乘法和一次加法，总成本 $\mathcal{O}(W)$。
+    \end{itemize}
+    \begin{block}{有限差分法}
+        \begin{equation}
+            \frac{\partial E_n}{\partial w_{ji}} = \frac{E_n(w_{ji} + \epsilon) - E_n(w_{ji})}{\epsilon} + \mathcal{O}(\epsilon)
+            \tag{8.24}
+        \end{equation}
+        \begin{equation}
+            \frac{\partial E_n}{\partial w_{ji}} = \frac{E_n(w_{ji} + \epsilon) - E_n(w_{ji} - \epsilon)}{2\epsilon} + \mathcal{O}(\epsilon^2)
+            \tag{8.25}
+        \end{equation}
+        \begin{itemize}
+            \item 中心差分法：$\mathcal{O}(\epsilon)$ 修正项抵消，精度更高。
+            \item 但计算步数约为 (8.24) 的\alert{两倍}。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{5.1 数值微分的问题与用途}
+    \begin{itemize}
+        \item \alert{主要问题}：失去 $\mathcal{O}(W)$ 缩放特性。
+        \begin{itemize}
+            \item 每次前向传播 $\mathcal{O}(W)$ 步。
+            \item 需扰动 $W$ 个权重，总成本 $\mathcal{O}(W^2)$。
+        \end{itemize}
+        \item \alert{实际用途}：检验软件正确性。
+        \begin{itemize}
+            \item 将反向传播或自动微分的导数与\alert{中心差分}结果比较。
+            \item 是验证实现正确性的有力手段。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第六部分：雅可比矩阵
+% ============================================================
+\section{雅可比矩阵}
+
+\begin{frame}
+    \frametitle{6. 雅可比矩阵 (8.1.5)}
+    \begin{itemize}
+        \item 反向传播也可计算其他导数，如\alert{雅可比矩阵}：
+        \begin{equation}
+            J_{ki} \equiv \frac{\partial y_k}{\partial x_i}
+            \tag{8.26}
+        \end{equation}
+        \item 每个导数在其他输入固定时计算。
+        \item 雅可比矩阵在\alert{模块化系统}中作用重要（图 8.3）。
+        \item 每个模块可以是固定或可学习函数，线性或非线性，只要\alert{可微}。
+    \end{itemize}
+    \begin{block}{雅可比矩阵的用途}
+        \begin{itemize}
+            \item 衡量输出对输入变化的\alert{局部敏感度}
+            \item 支持\alert{模块化系统中的误差传播}
+            \item 用于近似输出变化与\alert{不确定性传播}
+            \item 作为\alert{高阶导数计算}的基础
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.1 雅可比矩阵的反向传播计算}
+    \begin{itemize}
+        \item 误差函数导数：
+        \begin{equation}
+            \frac{\partial E}{\partial w} = \sum_{k,j} \frac{\partial E}{\partial y_k} \frac{\partial y_k}{\partial z_j} \frac{\partial z_j}{\partial w}
+            \tag{8.27}
+        \end{equation}
+        中间项即为红色模块的雅可比矩阵。
+        \item 输入误差传播：
+        \begin{equation}
+            \Delta y_k \approx \sum_i \frac{\partial y_k}{\partial x_i} \Delta x_i
+            \tag{8.28}
+        \end{equation}
+        仅在\alert{小扰动}时有效，需对每个新输入重新计算。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.2 雅可比矩阵的递归公式}
+    将 $J_{ki}$ 写成：
+    \begin{equation}
+        J_{ki} \equiv \frac{\partial y_k}{\partial x_i} = \sum_j \frac{\partial y_k}{\partial a_j} \frac{\partial a_j}{\partial x_i} = \sum_j w_{ji} \frac{\partial y_k}{\partial a_j}
+        \tag{8.29}
+    \end{equation}
+    递归反向传播公式：
+    \begin{equation}
+        \frac{\partial y_k}{\partial a_j} = \sum_\ell \frac{\partial y_k}{\partial a_\ell} \frac{\partial a_\ell}{\partial z_j} = h'(a_j) \sum_\ell w_{\ell j} \frac{\partial y_k}{\partial a_\ell}
+        \tag{8.30}
+    \end{equation}
+    \begin{itemize}
+        \item 从输出单元开始，所需导数可直接从输出激活函数得到。
+        \item \alert{线性输出}：$\partial y_k/\partial a_\ell = \delta_{k\ell}$
+        \item \alert{Sigmoid 输出}：$\partial y_k/\partial a_\ell = \delta_{k\ell} \sigma'(a_k)$
+        \item \alert{Softmax 输出}：$\partial y_k/\partial a_\ell = \delta_{k\ell} y_\ell - y_k y_\ell$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.3 雅可比矩阵的计算流程与检验}
+    \textbf{计算流程}：
+    \begin{enumerate}
+        \item 前向传播获取所有隐藏和输出单元状态。
+        \item 对雅可比矩阵每一行 $k$，用 (8.30) 反向传播，起点为 (8.31)(8.33)(8.34)。
+        \item 用 (8.29) 传播至输入层。
+    \end{enumerate}
+    \textbf{前向传播形式}：也可用类似方式推导，适合\alert{输入维度小、输出维度大}的情况。
+    \vspace{0.5em}
+    \textbf{数值检验}：
+    \begin{equation}
+        \frac{\partial y_k}{\partial x_i} = \frac{y_k(x_i + \epsilon) - y_k(x_i - \epsilon)}{2\epsilon} + \mathcal{O}(\epsilon^2)
+        \tag{8.35}
+    \end{equation}
+    \begin{itemize}
+        \item 需 $2D$ 次前向传播，总计算量 $\mathcal{O}(DW)$。
+        \item 效率远低于反向传播，但可用于\alert{验证实现正确性}。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第七部分：黑塞矩阵
+% ============================================================
+\section{黑塞矩阵}
+
+\begin{frame}
+    \frametitle{7. 黑塞矩阵 (8.1.6)}
+    \begin{itemize}
+        \item 反向传播也可计算\alert{二阶导数}：
+        \begin{equation}
+            \frac{\partial^2 E}{\partial w_{ij} \partial w_{kl}}
+            \tag{8.36}
+        \end{equation}
+        \item 将所有权重和偏置视为向量 $\mathbf{w}$ 的元素，二阶导数构成\alert{黑塞矩阵}：
+        \begin{equation}
+            H_{ij} = \frac{\partial^2 E}{\partial w_i \partial w_j}
+            \tag{8.37}
+        \end{equation}
+        \item 应用于：\alert{二阶优化算法}、\alert{贝叶斯方法}、\alert{大语言模型权重精度降低}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{7.1 黑塞矩阵的计算复杂度}
+    \begin{itemize}
+        \item 黑塞矩阵维度 $W \times W$，计算复杂度 $\mathcal{O}(W^2)$（每个数据点）。
+        \item 扩展反向传播可高效计算，缩放为 $\mathcal{O}(W^2)$。
+        \item 有时只需\alert{黑塞矩阵与向量的乘积} $\mathbf{v}^\mathrm{T} \mathbf{H}$：
+        \begin{itemize}
+            \item 可用反向传播扩展在 $\mathcal{O}(W)$ 步内计算。
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{实际困难}
+        \begin{itemize}
+            \item 神经网络可能有数百万甚至数十亿参数。
+            \item 完整黑塞矩阵的\alert{评估或存储不可行}。
+            \item 求逆更苛刻：$\mathcal{O}(W^3)$ 复杂度。
+            \item 因此需要\alert{近似替代方法}。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{7.2 对角近似与外积近似}
+    \textbf{对角近似}：
+    \begin{itemize}
+        \item 仅计算对角线元素，非对角线设为零。
+        \item 存储 $\mathcal{O}(W)$，求逆 $\mathcal{O}(W)$，但计算仍需 $\mathcal{O}(W^2)$。
+        \item 实际中黑塞矩阵通常有显著非对角线项，需谨慎使用。
+    \end{itemize}
+    \textbf{外积近似}（Levenberg--Marquardt 近似）：
+    \begin{itemize}
+        \item 对平方和误差：
+        $\displaystyle %\begin{equation}
+            \mathbf{H} = \sum_{n=1}^N \nabla y_n (\nabla y_n)^\mathrm{T} + \sum_{n=1}^N (y_n - t_n) \nabla \nabla y_n
+            %\tag{8.39}
+        $%\end{equation}
+        \item 当网络训练良好时，第二项很小可忽略：
+        $\displaystyle %\begin{equation}
+            \mathbf{H} \simeq \sum_{n=1}^N \nabla a_n \nabla a_n^\mathrm{T}
+            %\tag{8.40}
+        $%\end{equation}
+        \item 仅涉及一阶导数，可用标准反向传播 $\mathcal{O}(W)$ 计算，矩阵元素 $\mathcal{O}(W^2)$。
+        \item 交叉熵 + sigmoid 输出：
+        $\displaystyle %\begin{equation}
+            \mathbf{H} \simeq \sum_{n=1}^N y_n (1 - y_n) \nabla a_n \nabla a_n^\mathrm{T}
+            %\tag{8.41}
+        $%\end{equation}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第八部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{8. 本节总结}
+    \begin{itemize}
+        \item \alert{反向传播}：高效计算误差函数梯度，复杂度 $\mathcal{O}(W)$。
+        \item \alert{单层网络}：导数 = 误差信号 × 输入，形式简单。
+        \item \alert{一般前馈网络}：
+        \begin{itemize}
+            \item 定义误差项 $\delta_j = \partial E_n / \partial a_j$
+            \item 输出单元：$\delta_k = y_k - t_k$
+            \item 隐藏单元：$\delta_j = h'(a_j) \sum_k w_{kj} \delta_k$
+            \item 权重导数：$\partial E_n / \partial w_{ji} = \delta_j z_i$
+        \end{itemize}
+        \item \alert{数值微分}：简单可靠但 $\mathcal{O}(W^2)$，用于验证实现正确性。
+        \item \alert{雅可比矩阵}：输出对输入的导数，用于敏感度分析和模块化系统。
+        \item \alert{黑塞矩阵}：二阶导数矩阵，用于二阶优化和贝叶斯方法。
+        \begin{itemize}
+            \item 完整计算 $\mathcal{O}(W^2)$，求逆 $\mathcal{O}(W^3)$。
+            \item 外积近似仅需一阶导数，是重要的实用近似。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第九部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{9. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Bishop, C. M. (1992). Exact calculation of the Hessian matrix within a feedforward network.
+        \item Møller, M. F. (1993). A scaled conjugate gradient algorithm for fast supervised learning.
+        \item Pearlmutter, B. A. (1994). Fast exact multiplication by the Hessian.
+        \item MacKay, D. J. C. (1992). A practical Bayesian framework for backpropagation networks.
+        \item Shen, S. et al. (2019). Q-BERT: Hessian based ultra low precision quantization of BERT.
+    \end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,363 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包 (如果需要插入图片)
+\usepackage{graphicx}
+% \graphicspath{{./images/}} % 假设图片放在images文件夹
+
+% 标题页信息
+\title[7.4.归一化]{第7章：梯度下降}
+\subtitle{第4节：归一化 (Normalization)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：引言
+% ============================================================
+\section{引言}
+
+\begin{frame}
+    \frametitle{1. 为什么需要归一化？}
+    \begin{itemize}
+        \item 对前向传播中计算的变量进行\alert{归一化}，消除网络处理极大或极小数值的需求。
+        \item 原则上权重和偏置可适应任何值，但实践中\alert{归一化对有效训练至关重要}。
+        \item 本节按归一化范围分三类：
+        \begin{itemize}
+            \item \alert{输入数据归一化}：跨输入数据
+            \item \alert{批归一化}：跨小批量
+            \item \alert{层归一化}：跨层
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{归一化为何至关重要？}
+        \begin{itemize}
+            \item 统一输入量纲，避免特征主导偏差
+            \item 加速收敛，提升训练效率
+            \item 缓解梯度消失与爆炸问题
+            \item 降低对初始化和超参数的敏感性
+            \item 支持更深网络结构的训练
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第二部分：输入数据归一化
+% ============================================================
+\section{输入数据归一化}
+
+\begin{frame}
+    \frametitle{2. 数据归一化 (Data Normalization)}
+    \begin{itemize}
+        \item 实际问题中，不同输入变量可能跨越\alert{差异极大的范围}。
+        \item 例如健康数据：身高 $1.8\,\mathrm{m}$ vs 血小板 $300{,}000/\mu\mathrm{L}$。
+        \item 这种差异使梯度下降训练\alert{变得困难}。
+    \end{itemize}
+    \begin{block}{为什么困难？}
+        单层回归网络中，若两个输入范围差异大：
+        \begin{itemize}
+            \item 一个权重的变化引起的输出变化远大于另一个。
+            \item 对应误差曲面沿不同轴有\alert{非常不同的曲率}（图 7.3）。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.1 输入归一化的步骤}
+    \begin{enumerate}
+        \item 计算每个输入的均值和方差（\alert{训练前一次性完成}）：
+        \begin{align}
+            \mu_i &= \frac{1}{N} \sum_{n=1}^N x_{ni} \tag{7.48} \\
+            \sigma_i^2 &= \frac{1}{N} \sum_{n=1}^N (x_{ni} - \mu_i)^2 \tag{7.49}
+        \end{align}
+        \item 重新缩放输入：
+        \begin{equation}
+            \widetilde{x}_{ni} = \frac{x_{ni} - \mu_i}{\sigma_i} \tag{7.50}
+        \end{equation}
+        使 $\{\widetilde{x}_{ni}\}$ 具有\alert{零均值和单位方差}。
+    \end{enumerate}
+    \begin{itemize}
+        \item \alert{重要}：必须用相同的 $\mu_i$ 和 $\sigma_i$ 预处理开发集、验证集、测试集。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.2 开发集、验证集、测试集的区别}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{|p{3cm}|p{9.5cm}|}
+            \hline
+            \textbf{数据集} & \textbf{功能} \\
+            \hline
+            开发集/验证集 & 训练中调整超参数、选择模型架构、决定是否停止训练 \\
+            \hline
+            测试集 & 最终评估泛化性能，训练和调参过程中\alert{不可见} \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item 三者必须保持\alert{数据分布一致}，且不能相互重叠。
+        \item 若训练集与测试集来源不同（如网络图片 vs 手机拍摄），部署时性能可能骤降。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第三部分：批归一化
+% ============================================================
+\section{批归一化}
+
+\begin{frame}
+    \frametitle{3. 批归一化 (Batch Normalization)}
+    \begin{itemize}
+        \item 将输入归一化的思路应用到\alert{每个隐藏层}。
+        \item 若某隐藏层激活值范围差异大，归一化为零均值和单位方差使\alert{下一层学习更容易}。
+        \item 与输入归一化不同：隐藏单元归一化需在\alert{每次权重更新后重复}。
+        \item 这被称为\alert{批归一化} (Ioffe and Szegedy, 2015)。
+    \end{itemize}
+    \begin{block}{另一个动机：梯度消失与爆炸}
+        由链式法则，第一层参数的梯度是大量雅可比矩阵元素的乘积：
+        \begin{equation}
+            \frac{\partial E}{\partial w_i} = 
+            \sum_m \cdots \sum_l \sum_j 
+            \frac{\partial z_m^{(1)}}{\partial w_i}
+            \cdots
+            \frac{\partial z_j^{(K)}}{\partial z_l^{(K-1)}}
+            \frac{\partial E}{\partial z_j^{(K)}} \tag{7.51}
+        \end{equation}
+        若大多数项幅值 $<1$ $\rightarrow$ 梯度趋于 0；若 $>1$ $\rightarrow$ 趋于 $\infty$。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.1 批归一化的定义}
+    考虑多层网络中特定层，对\alert{预激活值} $a_i$ 进行归一化。
+    对小批量大小 $K$：
+    \begin{align}
+        \mu_i &= \frac{1}{K} \sum_{n=1}^K a_{ni} \tag{7.52} \\
+        \sigma_i^2 &= \frac{1}{K} \sum_{n=1}^K (a_{ni} - \mu_i)^2 \tag{7.53} \\
+        \widehat{a}_{ni} &= \frac{a_{ni} - \mu_i}{\sqrt{\sigma_i^2 + \delta}} \tag{7.54}
+    \end{align}
+    \begin{itemize}
+        \item $\delta$ 是小常数，避免 $\sigma_i^2$ 很小时的数值问题。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.2 可学习的重缩放参数}
+    \begin{itemize}
+        \item 归一化减少了该层参数的\alert{自由度}，降低表示能力。
+        \item 通过\alert{重缩放}补偿：
+        \begin{equation}
+            \widetilde{a}_{ni} = \gamma_i \widehat{a}_{ni} + \beta_i \tag{7.55}
+        \end{equation}
+        \item $\beta_i$ 和 $\gamma_i$ 是\alert{自适应参数}，与权重和偏置一起通过梯度下降联合学习。
+        \item 这些可学习参数是批归一化与输入归一化的\alert{关键区别}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.3 批归一化 vs 输入归一化}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.2}
+        \footnotesize
+        \begin{tabular}{|p{2.2cm}|p{3.5cm}|p{4.5cm}|}
+            \hline
+            \textbf{维度} & \textbf{输入归一化} & \textbf{批归一化} \\
+            \hline
+            归一化对象 & 输入层特征 & 隐藏层预激活值 \\
+            \hline
+            计算时机 & 训练前一次性 & 每个小批量动态计算 \\
+            \hline
+            可学习参数 & 无 & $\beta_i$（均值）、$\gamma_i$（标准差） \\
+            \hline
+            推理阶段 & 使用固定统计量 & 使用训练期间记录的移动平均值 \\
+            \hline
+            解决痛点 & 输入量纲不一致 & 梯度消失/爆炸，深层网络训练 \\
+            \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.4 为什么可学习参数更容易训练？}
+    \begin{itemize}
+        \item 变换 (7.55) 看似抵消了归一化效果——均值和方差又可适应任意值。
+        \item \alert{关键区别}：参数在训练中的演变方式。
+    \end{itemize}
+    \begin{block}{原始网络：被动演变（间接控制）}
+        均值/方差由该层所有 $W$ 和 $b$ 通过复杂函数决定。\\
+        改变分布是更新 $W,b$ 的\alert{副产物}，不受直接控制。
+    \end{block}
+    \begin{block}{批归一化：主动演变（直接控制）}
+        均值/方差由\alert{独立参数} $\beta_i, \gamma_i$ 直接决定。\\
+        梯度下降有直接路径更新它们，\alert{解耦}了“控制分布”与“拟合特征”的任务。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.5 批归一化作为网络层}
+    \begin{itemize}
+        \item 公式 (7.52)--(7.55) 关于 $\beta_i, \gamma_i$ \alert{可微}。
+        \item 可视为神经网络中的\alert{附加层}：每个标准隐藏层后可跟一个批归一化层。
+        \item 在代码中只需像普通层一样添加（如 `BatchNorm1d()`）。
+        \item 反向传播时框架自动计算并更新 $\beta$ 和 $\gamma$。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.6 推理阶段的移动平均}
+    \begin{itemize}
+        \item 推理时没有训练小批量，无法从单个样本确定均值和方差。
+        \item 原则上可对全训练集计算，但\alert{代价过高}。
+        \item 替代方案：训练期间计算\alert{移动平均值}：
+        \begin{align}
+            \overline{\mu}_i^{(\tau)} &= \alpha \overline{\mu}_i^{(\tau-1)} + (1-\alpha) \mu_i \tag{7.56} \\
+            \overline{\sigma}_i^{(\tau)} &= \alpha \overline{\sigma}_i^{(\tau-1)} + (1-\alpha) \sigma_i \tag{7.57}
+        \end{align}
+        \item 这些移动平均值\alert{训练时不起作用}，仅在推理阶段处理新数据点。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.7 批归一化为何有效？}
+    \begin{itemize}
+        \item 实践中非常有效，但\alert{内在原因仍有不确定性}。
+        \item \textbf{最初动机}：内部协变量偏移 (internal covariate shift)
+        \begin{itemize}
+            \item 较早层权重更新改变后续层看到的数值分布。
+        \end{itemize}
+        \item \textbf{后续研究} (Santurkar et al., 2018)：
+        \begin{itemize}
+            \item 协变量偏移\alert{不是关键因素}。
+            \item 训练提升实际源于\alert{误差函数曲面平滑度的改善}。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：层归一化
+% ============================================================
+\section{层归一化}
+
+\begin{frame}
+    \frametitle{4. 层归一化 (Layer Normalization)}
+    \begin{itemize}
+        \item 批归一化的\alert{问题}：
+        \begin{itemize}
+            \item 批量太小时，均值和方差估计\alert{过于嘈杂}。
+            \item 大批量可能分配到不同 GPU，全局归一化\alert{效率低}。
+        \end{itemize}
+        \item \alert{替代方案}：对每个数据点，跨该层所有隐藏单元值进行归一化。
+        \item 这被称为\alert{层归一化} (Ba, Kiros, and Hinton, 2016)。
+        \item 最初用于\alert{循环神经网络}（每时间步分布变化，批归一化不可行）。
+        \item 在\alert{Transformer} 等架构中同样有用。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.1 层归一化的定义}
+    与批归一化类似，进行如下变换：
+    \begin{align}
+        \mu_n &= \frac{1}{M} \sum_{i=1}^M a_{ni} \tag{7.58} \\
+        \sigma_n^2 &= \frac{1}{M} \sum_{i=1}^M (a_{ni} - \mu_n)^2 \tag{7.59} \\
+        \widehat{a}_{ni} &= \frac{a_{ni} - \mu_n}{\sqrt{\sigma_n^2 + \delta}} \tag{7.60}
+    \end{align}
+    \begin{itemize}
+        \item 求和 $i = 1, \dots, M$ 在\alert{该层所有隐藏单元}上进行。
+        \item 与批归一化一样，为每个隐藏单元引入可学习的 $\beta_i$ 和 $\gamma_i$（公式 7.55）。
+        \item \alert{关键优势}：训练和推理使用\alert{相同}的归一化函数，\alert{无需存储移动平均值}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.2 三种归一化的核心对比}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.2}
+        \footnotesize
+        \begin{tabular}{|p{2.2cm}|p{2.8cm}|p{3.2cm}|p{3.2cm}|}
+            \hline
+            \textbf{维度} & \textbf{输入归一化} & \textbf{批归一化} & \textbf{层归一化} \\
+            \hline
+            归一化对象 & 输入层特征 & 隐藏层预激活值 & 隐藏层预激活值 \\
+            \hline
+            归一化方向 & 跨所有样本，对每个特征 & 跨小批量样本，对每个隐藏单元 & 跨隐藏单元，对每个数据点 \\
+            \hline
+            可学习参数 & 无 & $\beta_i, \gamma_i$ & $\beta_i, \gamma_i$ \\
+            \hline
+            推理阶段 & 固定统计量 & 移动平均值 & 与训练相同 \\
+            \hline
+            需要移动平均 & 否 & 是 & 否 \\
+            \hline
+            对小批量依赖 & 否 & 是 & 否 \\
+            \hline
+            典型应用 & 数据预处理 & CNN 等前馈网络 & RNN、Transformer \\
+            \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ============================================================
+% 第五部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{5. 本节总结}
+    \begin{itemize}
+        \item \alert{归一化}对确保有效训练至关重要，消除网络处理极大/极小值的需求。
+        \item \alert{输入数据归一化}：训练前一次性计算，使各输入具有零均值和单位方差。
+        \item \alert{批归一化}：
+        \begin{itemize}
+            \item 对每个隐藏单元跨小批量归一化预激活值。
+            \item 引入可学习参数 $\beta_i, \gamma_i$ 补偿表示能力损失。
+            \item 缓解梯度消失/爆炸，使训练极深网络成为可能。
+            \item 推理阶段使用训练期间记录的移动平均值。
+        \end{itemize}
+        \item \alert{层归一化}：
+        \begin{itemize}
+            \item 对每个数据点跨隐藏单元归一化。
+            \item 不依赖小批量，训练和推理使用相同函数。
+            \item 适用于 RNN、Transformer 等序列模型。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第六部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{6. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Ioffe, S. \& Szegedy, C. (2015). Batch normalization: Accelerating deep network training by reducing internal covariate shift.
+        \item Santurkar, S. et al. (2018). How does batch normalization help optimization?
+        \item Ba, J. L., Kiros, J. R., \& Hinton, G. E. (2016). Layer normalization.
+    \end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,262 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包
+\usepackage{graphicx}
+
+% 标题页信息
+\title[9.4.参数共享]{第9章：正则化}
+\subtitle{第4节：参数共享 (Parameter Sharing)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：硬权重共享
+% ============================================================
+\section{硬权重共享}
+
+\begin{frame}
+    \frametitle{1. 硬权重共享 (Hard Weight Sharing)}
+    \begin{itemize}
+        \item $L_2$ 正则化 $\|\mathbf{w}\|^2$：鼓励权重接近零来减少过拟合。
+        \item \textbf{另一种减少网络复杂度的方法}：对权重施加\alert{硬约束}。
+        \begin{itemize}
+            \item 将权重分组
+            \item 要求每组内所有权重\alert{共享相同的值}
+            \item 共享值从数据中学习
+        \end{itemize}
+        \item 这被称为\alert{权重共享}、\alert{参数共享}或\alert{参数绑定}。
+        \item 效果：\alert{自由度数量小于网络中连接的数量}。
+        \item 通常作为编码\alert{归纳偏置}的方式，表达已知的不变性。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 硬权重共享的实现与局限}
+    \begin{itemize}
+        \item 此类网络的误差函数梯度计算：
+        \begin{itemize}
+            \item 可通过\alert{反向传播的小修改}完成。
+            \item 实际上通过\alert{自动微分}隐式处理。
+        \end{itemize}
+        \item 将在\alert{卷积神经网络}中广泛使用参数共享。
+        \item \textbf{局限}：参数共享仅适用于\alert{约束形式可预先指定}的特定问题。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第二部分：软权重共享
+% ============================================================
+\section{软权重共享}
+
+\begin{frame}
+    \frametitle{2. 软权重共享 (Soft Weight Sharing)}
+    \begin{itemize}
+        \item 不用硬约束强制参数相等，Nowlan and Hinton (1992) 提出\alert{软权重共享}。
+        \item 正则化项鼓励\alert{成组的权重具有相似的值}。
+        \item \textbf{所有内容都从学习中确定}：
+        \begin{itemize}
+            \item 权重如何分组
+            \item 每组的均值
+            \item 组内值的散布
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+    \frametitle{2.1 高斯混合先验}
+    \begin{itemize}
+        \item 简单权重衰减 = 权重上\alert{零均值高斯先验}的负对数。
+        \item 鼓励所有权重收敛到\alert{单一值零}。
+        \item \textbf{推广}：使用\alert{高斯混合}分布，鼓励权重形成\alert{多个组}。
+        \item 混合模型的参数全部作为可调参数：
+        \begin{itemize}
+            \item 均值 $\{\mu_j\}$
+            \item 方差 $\{\sigma_j^2\}$
+            \item 混合系数 $\{\pi_j\}$
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{概率密度与正则化函数}
+        \begin{equation}
+            p(\mathbf{w}) = \prod_i \left\{ \sum_{j=1}^K \pi_j \mathcal{N}(w_i \mid \mu_j, \sigma_j^2) \right\}
+            \tag{9.21}
+        \end{equation}
+        \begin{equation}
+            \Omega(\mathbf{w}) = - \sum_i \ln \left( \sum_{j=1}^K \pi_j \mathcal{N}(w_i \mid \mu_j, \sigma_j^2) \right)
+            \tag{9.22}
+        \end{equation}
+        总误差函数：
+        \begin{equation}
+            \widetilde{E}(\mathbf{w}) = E(\mathbf{w}) + \lambda \Omega(\mathbf{w})
+            \tag{9.23}
+        \end{equation}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.2 后验概率与权重梯度}
+    \begin{itemize}
+        \item 对权重 $\{w_i\}$ 和混合模型参数 $\{\pi_j, \mu_j, \sigma_j\}$ \alert{联合最小化}误差。
+        \item 使用梯度下降，需计算 $\Omega(\mathbf{w})$ 对所有可学习参数的导数。
+        \item 将 $\{\pi_j\}$ 视为\alert{先验概率}，引入\alert{后验概率}（贝叶斯定理）：
+        \begin{equation}
+            \gamma_j(w_i) = \frac{\pi_j \mathcal{N}(w_i \mid \mu_j, \sigma_j^2)}{\sum_k \pi_k \mathcal{N}(w_i \mid \mu_k, \sigma_k^2)}
+            \tag{9.24}
+        \end{equation}
+        \item 总误差函数对权重的导数：
+        \begin{equation}
+            \frac{\partial \widetilde{E}}{\partial w_i} = \frac{\partial E}{\partial w_i} + \lambda \sum_j \gamma_j(w_i) \frac{(w_i - \mu_j)}{\sigma_j^2}
+            \tag{9.25}
+        \end{equation}
+        \item 效果：将每个权重\alert{拉向第 $j$ 个高斯的中心}，力的大小正比于该高斯对给定权重的后验概率。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.3 高斯中心、方差与混合系数的梯度}
+    \textbf{高斯中心的导数}：
+    \begin{equation}
+        \frac{\partial \widetilde{E}}{\partial \mu_j} = \lambda \sum_i \gamma_j(w_i) \frac{(\mu_j - w_i)}{\sigma_j^2}
+        \tag{9.26}
+    \end{equation}
+    \begin{itemize}
+        \item 直观解释：将 $\mu_j$ 推向权重的\alert{加权平均}，权重为后验概率。
+    \end{itemize}
+    \textbf{方差}：引入 $\sigma_j^2 = \exp(\xi_j)$ 确保正值，对 $\{\xi_j\}$ 无约束最小化：
+    \begin{equation}
+        \frac{\partial \widetilde{E}}{\partial \xi_j} = \frac{\lambda}{2} \sum_i \gamma_j(w_i) \left( 1 - \frac{(w_i - \mu_j)^2}{\sigma_j^2} \right)
+        \tag{9.28}
+    \end{equation}
+    \begin{itemize}
+        \item 将 $\sigma_j$ 推向权重围绕中心 $\mu_j$ 的\alert{加权平均平方偏差}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.4 混合系数的约束与梯度}
+    混合系数需满足约束：
+    \begin{equation}
+        \sum_j \pi_j = 1, \qquad 0 \leqslant \pi_i \leqslant 1
+        \tag{9.29}
+    \end{equation}
+    用\alert{softmax}函数表达：
+    \begin{equation}
+        \pi_j = \frac{\exp(\eta_j)}{\sum_{k=1}^K \exp(\eta_k)}
+        \tag{9.30}
+    \end{equation}
+    对 $\{\eta_j\}$ 的导数：
+    \begin{equation}
+        \frac{\partial \widetilde{E}}{\partial \eta_j} = \lambda \sum_i \left( \pi_j - \gamma_j(w_i) \right)
+        \tag{9.31}
+    \end{equation}
+    \begin{itemize}
+        \item $\pi_j$ 被驱动向混合分量 $j$ 的\alert{平均后验概率}。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第三部分：软权重共享的扩展应用
+% ============================================================
+\section{扩展应用}
+
+\begin{frame}
+    \frametitle{3. 软权重共享的扩展：生成与判别模型结合}
+    \begin{itemize}
+        \item Lasserre, Bishop, and Minka (2006) 提出\alert{有原则的方法}：
+        \begin{itemize}
+            \item 结合\alert{生成模型}的无监督训练
+            \item 与对应\alert{判别模型}的监督训练
+        \end{itemize}
+        \item \textbf{适用场景}：有大量\alert{无标签数据}，但\alert{有标签数据稀缺}。
+    \end{itemize}
+    \begin{block}{两种模型的优势互补}
+        \begin{itemize}
+            \item \alert{生成模型}：所有数据（含无标签）都可用于确定参数。
+            \item \alert{判别模型}：在\alert{模型误设定}时能获得更好泛化。
+            \begin{itemize}
+                \item 模型误设定：模型未精确描述生成数据的真实分布（通常是这种情况）。
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+    \begin{itemize}
+        \item 通过引入两模型参数的\alert{软绑定}，获得\alert{混合方法}：
+        \begin{itemize}
+            \item 对模型误设定\alert{鲁棒}
+            \item 同时受益于\alert{无标签数据}的训练
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{4. 本节总结}
+    \begin{itemize}
+        \item \alert{硬权重共享}：
+        \begin{itemize}
+            \item 将权重分组，要求组内共享相同值。
+            \item 自由度数量小于连接数量。
+            \item 编码归纳偏置，表达已知不变性。
+            \item 通过反向传播小修改或自动微分实现。
+            \item 局限：仅适用于约束形式可预先指定的问题。
+        \end{itemize}
+        \item \alert{软权重共享}：
+        \begin{itemize}
+            \item 正则化项鼓励成组权重具有相似值。
+            \item 分组、均值、散布都从学习中确定。
+            \item 使用\alert{高斯混合先验}：
+            \begin{itemize}
+                \item 权重被拉向高斯中心，力正比于后验概率。
+                \item 中心被推向权重的加权平均。
+                \item 方差被推向加权平均平方偏差。
+                \item 混合系数被推向平均后验概率。
+            \end{itemize}
+        \end{itemize}
+        \item \alert{扩展应用}：生成模型 + 判别模型的软绑定。
+        \begin{itemize}
+            \item 适用于无标签数据多、有标签数据少的场景。
+            \item 对模型误设定鲁棒，同时受益于无标签数据。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第五部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{5. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Nowlan, S. J. \& Hinton, G. E. (1992). Simplifying neural networks by soft weight-sharing.
+        \item Lasserre, J. A., Bishop, C. M., \& Minka, T. P. (2006). Principled hybrids of generative and discriminative models.
+    \end{itemize}
+\end{frame}
+
+\end{document}

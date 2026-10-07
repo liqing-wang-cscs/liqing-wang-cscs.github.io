@@ -1,0 +1,246 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包
+\usepackage{graphicx}
+
+% 标题页信息
+\title[10.1.卷积网络]{第10章：卷积网络}
+\subtitle{第1节：卷积网络与计算机视觉 (Convolutional Networks)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：从非结构化到结构化数据
+% ============================================================
+\section{从非结构化到结构化数据}
+
+\begin{frame}
+    \frametitle{1. 非结构化数据的假设}
+    \begin{itemize}
+        \item 最简单的机器学习模型假设观测数据是\alert{非结构化}的。
+        \item 数据向量 $\mathbf{x} = (x_1, \dots, x_D)$ 中各元素被视为\alert{无关联}。
+        \item \textbf{思想实验}：随机置换变量顺序，一致地应用于所有训练和测试数据。
+        \begin{itemize}
+            \item 对传统模型，性能\alert{不会有任何差异}。
+            \item 说明模型\alert{未利用任何位置或顺序信息}。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 结构化数据与局部相关性}
+    \begin{itemize}
+        \item 许多应用涉及\alert{结构化数据}，输入变量之间存在额外关系。
+    \end{itemize}
+    \begin{block}{示例：自然语言}
+        单词构成\alert{序列}。自回归生成过程中，每个单词更强地依赖\alert{紧邻的前几个单词}，对更早单词依赖较弱。
+    \end{block}
+    \begin{block}{示例：图像}
+        像素具有明确\alert{空间关系}，排列成二维网格。\alert{邻近像素的值高度相关}。
+    \end{block}
+    \begin{itemize}
+        \item 核心：\alert{局部相关性}作为先验知识，是卷积网络设计的基础动机。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.2 利用结构先验的途径}
+    \begin{itemize}
+        \item 对特定数据模态结构的了解，可通过多种途径利用：
+        \begin{enumerate}
+            \item 在训练目标中向误差函数添加\alert{正则化项}
+            \item \alert{数据增强}
+            \item 修改\alert{模型架构}
+        \end{enumerate}
+        \item 这些方法引导模型尊重某些性质：
+        \begin{itemize}
+            \item \alert{不变性} (invariance)：输出不随输入变换改变
+            \item \alert{等变性} (equivariance)：输出随输入变换而相应变换
+        \end{itemize}
+        \item 本章聚焦\alert{卷积神经网络} (CNN)：
+        \begin{itemize}
+            \item 具有\alert{参数共享}的\alert{稀疏连接}多层网络
+            \item 编码图像数据特有的不变性和等变性
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第二部分：计算机视觉
+% ============================================================
+\section{计算机视觉}
+
+\begin{frame}
+    \frametitle{2. 计算机视觉与 CNN 的历史地位}
+    \begin{itemize}
+        \item 图像数据的自动分析和解释是\alert{计算机视觉}领域的核心。
+        \item 机器学习的重要应用领域 (Szeliski, 2022)。
+        \item \textbf{历史演变}：
+        \begin{itemize}
+            \item 早期：基于\alert{三维射影几何}
+            \item 手工设计特征 + 简单学习算法 (Hartley and Zisserman, 2004)
+            \item 深度革命：CNN 架构带来\alert{范式转变}
+        \end{itemize}
+        \item CNN 最初为图像分析开发，也应用于\alert{序列数据}分析。
+        \item 最近：基于\alert{Transformer} 的架构在某些应用中与 CNN 竞争。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.1 计算机视觉常见应用任务（1/2）}
+    \begin{enumerate}
+        \item \alert{分类}：对图像分类，如皮肤病变良/恶性。也称“图像识别”。
+        \item \alert{检测}：检测物体并确定位置，如自动驾驶检测行人。
+        \item \alert{分割}：对每个像素单独分类，划分为共同标签的区域。
+        \begin{itemize}
+            \item 自然场景：天空、草地、树木、建筑物
+            \item 医学扫描：癌组织、正常组织
+        \end{itemize}
+        \item \alert{字幕生成}：从图像自动生成文本描述。
+        \item \alert{合成}：生成新图像，如人脸；也可基于文本描述合成。
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.2 计算机视觉常见应用任务（2/2）}
+    \begin{enumerate}
+        \setcounter{enumi}{5}
+        \item \alert{修复} (inpainting)：将图像区域替换为一致的合成像素。用于移除不需要的物体。
+        \item \alert{风格迁移}：将一种风格（照片）转换为另一种风格（油画）。
+        \item \alert{超分辨率}：增加像素数量并合成高频信息。
+        \item \alert{深度预测}：预测每个像素处场景到相机的距离。
+        \item \alert{场景重建}：从二维图像重建三维表示。
+    \end{enumerate}
+    \begin{block}{任务分类}
+        \begin{itemize}
+            \item \alert{判别类}：分类、检测、分割、深度预测
+            \item \alert{生成类}：合成、修复、风格迁移、超分辨率、场景重建
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第三部分：图像数据
+% ============================================================
+\section{图像数据}
+
+\begin{frame}
+    \frametitle{3. 图像数据的表示与维度}
+    \begin{itemize}
+        \item 图像 = 像素的\alert{矩形阵列}。
+        \item 每个像素：
+        \begin{itemize}
+            \item 灰度强度，或
+            \item 更常见：\alert{红、绿、蓝通道}三元组，各有强度值。
+        \end{itemize}
+        \item 强度为\alert{非负数}，有最大值（相机硬件限制）。
+        \item 通常视为\alert{连续变量}，实际以有限精度表示：
+        \begin{itemize}
+            \item 例如 8 位整数，范围 $0, \dots, 255$。
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{扩展到更高维度}
+        \begin{itemize}
+            \item \alert{MRI 扫描}：三维\alert{体素}网格。
+            \item \alert{视频}：二维图像序列，可视为三维结构（连续帧在时间上堆叠）。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.1 图像高维性与结构化先验}
+    \begin{itemize}
+        \item 图像通常具有\alert{高维性}：典型相机捕获数千万像素。
+        \item 视为非结构化 $\Rightarrow$ 需要\alert{海量参数}，不可行训练。
+        \item 更重要：未考虑图像\alert{高度结构化}的特性。
+        \item 不同像素的\alert{相对位置}起关键作用。
+    \end{itemize}
+    \begin{block}{两个思想实验}
+        \begin{itemize}
+            \item \textbf{随机置换像素}：结果不再像自然图像。
+            \item \textbf{独立随机生成像素强度}：几乎零概率生成自然图像。
+        \end{itemize}
+    \end{block}
+    \begin{itemize}
+        \item \alert{局部相关性}很重要：
+        \begin{itemize}
+            \item 邻近像素具有相似颜色和强度的概率远高于远距离像素。
+        \end{itemize}
+        \item 这是\alert{强大的先验知识}，可编码为强归纳偏置。
+        \item 效果：\alert{参数少得多}，\alert{泛化精度高得多}。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{4. 本节总结}
+    \begin{itemize}
+        \item \alert{非结构化假设}：传统模型假设数据元素无关联，随机置换不影响性能。
+        \item \alert{结构化数据}：
+        \begin{itemize}
+            \item 自然语言：单词序列，局部依赖
+            \item 图像：二维网格，邻近像素高度相关
+        \end{itemize}
+        \item \alert{利用结构先验}：正则化、数据增强、架构设计。
+        \item \alert{不变性与等变性}：
+        \begin{itemize}
+            \item 不变性：输出不随输入变换改变
+            \item 等变性：输出随输入变换而相应变换
+        \end{itemize}
+        \item \alert{卷积神经网络 (CNN)}：
+        \begin{itemize}
+            \item 参数共享的稀疏连接多层网络
+            \item 编码图像特有的不变性和等变性
+            \item 由深度学习革命带来计算机视觉范式转变
+        \end{itemize}
+        \item \alert{图像数据}：
+        \begin{itemize}
+            \item 像素/通道/体素/视频帧
+            \item 高维但高度结构化
+            \item 局部相关性是强大先验知识
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第五部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{5. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Szeliski, R. (2022). Computer Vision: Algorithms and Applications.
+        \item Hartley, R. \& Zisserman, A. (2004). Multiple View Geometry in Computer Vision.
+    \end{itemize}
+\end{frame}
+
+\end{document}

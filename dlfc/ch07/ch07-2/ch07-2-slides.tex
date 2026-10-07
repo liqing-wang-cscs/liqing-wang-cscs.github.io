@@ -1,0 +1,368 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+
+% 图形包 (如果需要插入图片)
+\usepackage{graphicx}
+% \graphicspath{{./images/}} % 假设图片放在images文件夹
+
+% 算法包
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\renewcommand{\algorithmiccomment}[1]{\hfill\texttt{\textcolor{violet}{// #1}}}
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+\algnewcommand\Output{\item[\algorithmicoutput]}
+
+% 标题页信息
+\title[7.2.梯度下降优化]{第7章：梯度下降}
+\subtitle{第2节：梯度下降优化 (Gradient Descent Optimization)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：迭代数值方法
+% ============================================================
+\section{迭代数值方法}
+
+\begin{frame}
+    \frametitle{1. 为什么需要迭代数值方法？}
+    \begin{itemize}
+        \item 对于神经网络定义的复杂误差函数，\alert{几乎不可能找到 $\nabla E(\mathbf{w}) = 0$ 的解析解}。
+        \item 因此需要\alert{迭代数值方法}。
+        \item 大多数方法：选取初始值 $\mathbf{w}^{(0)}$，然后逐步移动：
+        \begin{equation}
+        \mathbf{w}^{(\tau)} = \mathbf{w}^{(\tau-1)} + \Delta \mathbf{w}^{(\tau-1)}
+        \tag{7.15}
+        \end{equation}
+        \item 不同算法的区别在于\alert{更新量 $\Delta \mathbf{w}^{(\tau)}$ 的选择}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 初始值的重要性}
+    \begin{itemize}
+        \item 误差曲面形状复杂，找到的解\alert{取决于初始参数 $\mathbf{w}^{(0)}$}。
+        \item 为了找到足够好的解：
+        \begin{itemize}
+            \item 可能需要\alert{多次运行}基于梯度的算法。
+            \item 每次使用\alert{不同的随机初始点}。
+            \item 在独立的\alert{验证集}上比较结果性能。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第二部分：梯度信息的价值
+% ============================================================
+\section{梯度信息的价值}
+
+\begin{frame}
+    \frametitle{2. 为什么梯度信息如此重要？}
+    \begin{itemize}
+        \item 深度神经网络的梯度可用\alert{误差反向传播}高效计算。
+        \item 利用梯度信息能\alert{显著提升训练速度}。
+    \end{itemize}
+    \begin{block}{信息效率的对比}
+        \begin{itemize}
+            \item \textbf{不用梯度}：每次函数求值只获得 \alert{1 个标量信息}。
+            \item \textbf{用梯度}：每次梯度计算获得 \alert{$W$ 个独立信息}（$W$ 维向量）。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.1 计算复杂度分析}
+    误差函数的二次近似由 $\mathbf{b}$（$W$ 维）和 $\mathbf{H}$（$W \times W$ 对称矩阵）确定，共 $W(W+3)/2$ 个独立元素。
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{|c|c|c|}
+            \hline
+             & 不用梯度 & 用梯度（反向传播） \\
+            \hline
+            每次计算获得信息量 & 1 个（标量） & $W$ 个（梯度向量） \\
+            \hline
+            所需计算次数 & $\mathcal{O}(W^2)$ & $\mathcal{O}(W)$ \\
+            \hline
+            每次计算代价 & $\mathcal{O}(W)$ & $\mathcal{O}(W)$ \\
+            \hline
+            \textbf{总计算量} & $\mathcal{O}(W^3)$ & $\mathcal{O}(W^2)$ \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item 梯度方法比不用梯度\alert{快一个数量级}。
+        \item 这是所有实用神经网络训练算法的基础。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第三部分：批量梯度下降
+% ============================================================
+\section{批量梯度下降}
+
+\begin{frame}
+    \frametitle{3. 批量梯度下降 (Batch Gradient Descent)}
+    \begin{itemize}
+        \item 最简单的梯度方法：沿\alert{负梯度方向}走一小步：
+        \begin{equation}
+        \mathbf{w}^{(\tau)} = \mathbf{w}^{(\tau-1)} - \eta \nabla E\bigl(\mathbf{w}^{(\tau-1)}\bigr)
+        \tag{7.16}
+        \end{equation}
+        \item $\eta > 0$ 称为\alert{学习率 (learning rate)}。
+        \item 每一步都沿误差下降最快的方向移动，故又称\alert{最速下降法}。
+        \item 误差函数定义在\alert{整个训练集}上，每步需处理全部数据。
+        \item 一次使用全部数据的方法称为\alert{批方法 (batch methods)}。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：随机梯度下降
+% ============================================================
+\section{随机梯度下降}
+
+\begin{frame}
+    \frametitle{4. 随机梯度下降 (SGD)}
+    \begin{itemize}
+        \item 深度学习方法受益于\alert{超大规模数据集}。
+        \item 但批方法在数据量大时\alert{极其低效}——每次评估梯度都要处理全部数据。
+        \item 基于最大似然的误差函数是\alert{各项之和}：
+        \begin{equation}
+        E(\mathbf{w}) = \sum_{n=1}^{N} E_n(\mathbf{w})
+        \tag{7.17}
+        \end{equation}
+        \item SGD 每次只基于\alert{一个数据点}更新权重：
+        \begin{equation}
+        \mathbf{w}^{(\tau)} = \mathbf{w}^{(\tau-1)} - \eta \nabla E_n\bigl(\mathbf{w}^{(\tau-1)}\bigr)
+        \tag{7.18}
+        \end{equation}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+    \frametitle{4.1 SGD 的关键术语}
+    \begin{block}{训练轮次 (Training Epoch)}
+        完整遍历一次整个训练集。
+    \end{block}
+    \begin{block}{在线梯度下降 (Online Gradient Descent)}
+        当数据来源于连续的新数据流时，SGD 的别称。
+    \end{block}
+    \vspace{0.5em}
+    \begin{algorithm}[H]
+    \caption{Stochastic gradient descent}
+    \begin{algorithmic}
+    \Input Training set $\{1,\dots,N\}$; error $E_n(\mathbf{w})$; learning rate $\eta$; initial $\mathbf{w}$
+    \Output Final weight vector $\mathbf{w}$
+    \State $n \leftarrow 1$
+    \Repeat
+      \State $\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla E_n(\mathbf{w})$ \Comment{update weight}
+      \State $n \leftarrow n + 1 \pmod{N}$ \Comment{iterate over data}
+    \Until{convergence}
+    \State \textbf{return} $\mathbf{w}$
+    \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.2 SGD 的优势：处理冗余数据}
+    \begin{itemize}
+        \item 考虑极端例子：将数据集\alert{复制加倍}。
+        \item 数学上等价于将误差函数乘以 2（调整学习率即可补偿）。
+        \item \textbf{批量方法}：需要\alert{双倍计算量}来评估梯度。
+        \item \textbf{SGD}：\alert{不受影响}——单步仍只处理 1 个样本。
+    \end{itemize}
+    \begin{block}{另一个优势：逃离局部极小值}
+        对整个数据集的驻点，通常\alert{不是}单个数据点的驻点，因此 SGD 有可能跳出局部极小值。
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第五部分：小批量
+% ============================================================
+\section{小批量}
+
+\begin{frame}
+    \frametitle{5. 小批量 (Mini-batches)}
+    \begin{itemize}
+        \item SGD 的缺点：单点梯度是\alert{噪声极大的估计}。
+        \item 折中方案：使用一小部分数据点（\alert{小批量}）评估梯度。
+        \item \textbf{批量大小的选择}：
+        \begin{itemize}
+            \item 基于 $N$ 个样本计算均值的误差为 $\sigma/\sqrt{N}$。
+            \item 增大批量，收益\alert{递减}：增大 100 倍，误差仅缩小 10 倍。
+            \item 考虑硬件效率：2 的幂次（64, 128, 256, \dots）通常性能较好。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+    \frametitle{5.1 小批量的数据选取}
+    \begin{itemize}
+        \item 数据点应\alert{随机选取}，因为原始数据可能存在相关性（如按字母或日期排序）。
+        \item 常用做法：\alert{随机打乱}整个数据集，然后依次抽取连续数据块。
+        \item 各轮迭代之间可\alert{重新打乱}，帮助逃离局部极小值。
+        \item 即使使用小批量，该算法通常仍被称为“随机梯度下降”。
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{algorithm}[H]
+    \caption{Mini-batch stochastic gradient descent}
+    \begin{algorithmic}
+    \Input Training set $\{1,\dots,N\}$; batch size $B$; error $E_{n:n+B-1}(\mathbf{w})$; $\eta$; initial $\mathbf{w}$
+    \Output Final weight vector $\mathbf{w}$
+    \State $n \leftarrow 1$
+    \Repeat
+      \State $\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla E_{n:n+B-1}(\mathbf{w})$ \Comment{update weight}
+      \State $n \leftarrow n + B$ \Comment{next mini-batch}
+      \If{$n>N$}
+        \State shuffle data; $n \gets 1$
+      \EndIf
+    \Until{convergence}
+    \State \textbf{return} $\mathbf{w}$
+    \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+% ============================================================
+% 第六部分：参数初始化
+% ============================================================
+\section{参数初始化}
+
+\begin{frame}
+    \frametitle{6. 参数初始化 (Parameter Initialization)}
+    \begin{itemize}
+        \item 迭代算法需要\alert{初始参数设置}。
+        \item 初始化方式显著影响\alert{收敛速度}和\alert{泛化性能}。
+        \item 目前理论指导相对较少。
+    \end{itemize}
+    \begin{block}{关键考量：对称性破缺 (Symmetry Breaking)}
+        \begin{itemize}
+            \item 若同一层所有单元参数\alert{初始化为相同值}（如全 0）：
+            \begin{itemize}
+                \item 前向传播：输出完全相同。
+                \item 反向传播：梯度完全相同。
+                \item 更新后：权重仍然完全相同 $\rightarrow$ \alert{完全冗余}。
+            \end{itemize}
+            \item 解决方案：从某种分布中\alert{随机初始化}，打破对称性。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.1 初始化分布与 He 初始化}
+    \begin{itemize}
+        \item 常用分布：均匀分布 $[-\epsilon,\epsilon]$ 或零均值高斯 $\mathcal{N}(0,\epsilon^2)$。
+        \item $\epsilon$ 的选择至关重要。
+    \end{itemize}
+    \begin{block}{He 初始化 (He et al., 2015b)}
+        考虑第 $\ell$ 层：
+        $$
+        a_i^{(\ell)} = \sum_{j=1}^{M} w_{ij} z_j^{(\ell-1)}, \quad %\tag{7.19} 
+        z_i^{(\ell)} = \mathrm{ReLU}\bigl(a_i^{(\ell)}\bigr). %\tag{7.20}
+        $$
+        若权重来自 $\mathcal{N}(0,\epsilon^2)$，$z_j^{(\ell-1)}$ 方差为 $\lambda^2$，则：
+        $$
+        \mathbb{E}[a_i^{(\ell)}] = 0, \quad %\tag{7.21} \\
+        \mathrm{var}[z_j^{(\ell)}] = \frac{M}{2} \epsilon^2 \lambda^2. %\tag{7.22}
+        $$
+        要求逐层方差稳定 $\Rightarrow$ \alert{$\epsilon = \sqrt{2/M}$} (7.23)
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.2 He 初始化中的“2”从何而来？}
+    \begin{itemize}
+        \item ReLU 将一半负数输出截断为 0。
+        \item 数据方差每经过一次 ReLU\alert{损失一半}（公式 7.22 中的 $1/2$）。
+        \item 为弥补损失，He 初始化在标准差中乘上 $\sqrt{2}$（公式 7.23）。
+        \item 目的：让信号在深层网络中传播时\alert{方差保持稳定}。
+    \end{itemize}
+    \begin{block}{前提条件}
+        公式 (7.21)(7.22) 的推导需要 $w_{ij}$ 与 $z_j^{(\ell-1)}$ \alert{相互独立}，且\alert{均值都为零}。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{6.3 其他初始化考虑}
+    \begin{itemize}
+        \item 可将初始化尺度 $\epsilon$ 视为\alert{超参数}，多次训练尝试不同取值。
+        \item \textbf{偏置初始化}：通常设为\alert{小正值}，确保学习初期大多数激活前处于激活状态。
+        \begin{itemize}
+            \item 对 ReLU 单元尤为重要——希望激活前为正，产生非零梯度。
+        \end{itemize}
+        \item \textbf{迁移学习初始化}：利用其他任务训练所得参数，或各种无监督训练得到的参数。
+    \end{itemize}
+    \begin{block}{什么是超参数 (Hyperparameter)？}
+        训练开始前由人类设定的参数，训练过程中保持不变。\\
+        例如：学习率 $\eta$、初始化尺度 $\epsilon$、小批量大小、网络结构、正则化系数。
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第七部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{7. 本节总结}
+    \begin{itemize}
+        \item 神经网络优化依赖\alert{迭代数值方法}，无法求解析解。
+        \item \alert{梯度信息}至关重要：信息效率高 $W$ 倍，总计算量从 $\mathcal{O}(W^3)$ 降到 $\mathcal{O}(W^2)$。
+        \item \alert{批量梯度下降}：每步使用全部数据，沿负梯度方向更新。
+        \item \alert{随机梯度下降 (SGD)}：每次用一个样本，高效处理大数据和冗余。
+        \item \alert{小批量 SGD}：折中方案，兼顾噪声与效率，需随机打乱数据。
+        \item \alert{参数初始化}：
+        \begin{itemize}
+            \item 必须\alert{随机初始化}以打破对称性。
+            \item \alert{He 初始化}：$\epsilon = \sqrt{2/M}$，补偿 ReLU 带来的方差衰减。
+            \item 偏置通常初始化为\alert{小正值}。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第八部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{8. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Bottou, L. (2010). Large-scale machine learning with stochastic gradient descent.
+        \item He, K., Zhang, X., Ren, S., \& Sun, J. (2015). Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification.
+        % \item 课程网站资源：\url{https://gitee.com/liqing-wang-cscs/deep-learning-foundations}
+    \end{itemize}
+    % \vspace{1em}
+    % 课程网站包含内容：
+    % \begin{itemize}
+    %     \item 课文解读
+    %     \item 例子代码
+    %     \item 本幻灯片
+    %     \item 课文相关练习题
+    % \end{itemize}
+\end{frame}
+
+\end{document}

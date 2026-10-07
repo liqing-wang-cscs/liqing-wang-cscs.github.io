@@ -1,0 +1,394 @@
+\documentclass[t,aspectratio=169]{beamer} % 使用16:9宽高比
+\usetheme{Madrid} % 选择Madrid主题
+\usecolortheme{default} % 使用默认颜色主题
+
+% 设置字体
+\usepackage[UTF8]{ctex}
+\usefonttheme{structurebold} % 加粗结构字体
+
+% 数学包
+\usepackage{amsmath, amssymb, bm}
+\usepackage{url}
+\usepackage{booktabs}
+
+% 图形包
+\usepackage{graphicx}
+
+% 标题页信息
+\title[9.1.归纳偏置]{第9章：正则化}
+\subtitle{第1节：归纳偏置 (Inductive Bias)}
+\author{《深度学习基础》课程小组}
+% \institute{上海立信会计金融学院}
+\date{\today}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% 第一部分：模型选择与归纳偏置
+% ============================================================
+\section{模型选择与归纳偏置}
+
+\begin{frame}
+    \frametitle{1. 模型选择：偏差-方差权衡}
+    \begin{itemize}
+        \item 多项式回归实验：\alert{中等复杂度}的模型泛化误差最小。
+        \item 正则化实验：\alert{中等 $\lambda$ 值}给出最佳预测。
+        \item 偏差-方差分解的启示：
+        \begin{itemize}
+            \item \alert{高偏差}的简单模型：无法捕捉数据生成过程的变化
+            \item \alert{低偏差}的灵活模型：容易过拟合，泛化差
+        \end{itemize}
+        \item 数据量增大 $\Rightarrow$ 可使用更灵活（更低偏差）的模型而不产生过大方差。
+        \item 实践中还需考虑内存、执行速度等因素，但本节聚焦\alert{泛化性能}。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.1 逆问题 (Inverse Problems)}
+    \begin{itemize}
+        \item 模型选择问题的根源：大多数机器学习任务是\alert{逆问题}。
+        \item \textbf{正问题}：给定条件分布 $p(t|\mathbf{x})$，从有限输入点采样对应目标值——简单直接。
+        \item \textbf{逆问题}：仅给定有限样本，\alert{推断整个分布}。
+        \item 逆问题本质上是\alert{不适定}（ill-posed）的：
+        \begin{itemize}
+            \item 有无限多个分布可能生成了观测到的训练数据。
+            \item 任何在观测目标值处具有非零概率密度的分布都是候选。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.2 归纳偏置 (Inductive Bias)}
+    \begin{itemize}
+        \item 为了对新 $\mathbf{x}$ 做预测，需要从无限可能中\alert{选择特定分布}。
+        \item 对某种选择的偏好称为\alert{归纳偏置}或\alert{先验知识}。
+        \item 先验知识可来自背景信息，帮助约束解空间。
+    \end{itemize}
+    \begin{block}{常见归纳偏置示例}
+        \begin{itemize}
+            \item \textbf{平滑性}：输入的小变化应导致输出的小变化。
+            \item 正则化项 (9.1) 鼓励小权重 $\Rightarrow$ 偏向变化更慢的函数。
+            \item \textbf{平移不变性}：图像中物体的身份与其位置无关。
+        \end{itemize}
+    \end{block}
+    \begin{itemize}
+        \item \alert{注意}：不要引入与数据生成过程不一致的偏置或约束。
+        \item 例如：假设线性关系而实际存在显著非线性 $\Rightarrow$ 系统产生不准确答案。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1.3 迁移学习与多任务学习}
+    \begin{itemize}
+        \item 迁移学习和多任务学习可从\alert{正则化}视角理解。
+        \item 当某任务训练数据有限时，可使用\alert{相关任务}的额外数据帮助确定参数。
+        \item 任务间相似性的假设是一种\alert{更复杂的归纳偏置}形式。
+        \item 这解释了使用额外数据带来的性能提升。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第二部分：没有免费午餐定理
+% ============================================================
+\section{没有免费午餐定理}
+
+\begin{frame}
+    \frametitle{2. 没有免费午餐定理 (No Free Lunch)}
+    \begin{itemize}
+        \item 深度神经网络是高度灵活模型，已革新众多领域。
+        \item 看似是能解决所有任务的\alert{“通用”学习算法}。
+        \item 但即使非常灵活的神经网络也包含\alert{重要的归纳偏置}。
+        \item 例如：CNN 编码了\alert{平移等变性}等归纳偏置，对图像应用特别有用。
+    \end{itemize}
+    \begin{block}{定理内容 (Wolpert, 1996)}
+        在所有可能问题上平均而言，\alert{每个学习算法都一样好}。\\
+        若某算法在某些问题上优于平均，必在其他问题上劣于平均。
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.1 定理的理论性与实际意义}
+    \begin{itemize}
+        \item 定理中的“所有可能问题”包含\alert{非常不符合实际}的输入-输出关系。
+        \item 大多数实际问题展现某种程度的\alert{平滑性}：
+        \begin{itemize}
+            \item 输入的小变化大多对应目标的小变化。
+        \end{itemize}
+        \item 神经网络及大多数广泛使用的机器学习技术都展现这种归纳偏置，因此具有\alert{广泛适用性}。
+    \end{itemize}
+    \begin{block}{核心启示}
+        尽管定理偏理论，但它强调了\alert{偏置在决定算法性能中的核心重要性}。
+        \begin{itemize}
+            \item 偏置可以是\alert{隐式}的：如神经网络参数有限，限制了可表示的函数。
+            \item 偏置也可以是\alert{显式}的：如反映特定问题先验知识的编码。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{2.2 通用算法与专用偏置}
+    \begin{itemize}
+        \item 寻找通用学习算法，实质是寻找\alert{适合广泛应用的归纳偏置}。
+        \item 对特定应用，若能融入\alert{更强的专用归纳偏置}，可获得更好结果。
+        \item \alert{基于模型的机器学习} (Winn et al., 2023)：
+        \begin{itemize}
+            \item 倡导将机器学习模型中的所有假设\alert{显式化}。
+            \item 以便为归纳偏置做出适当选择。
+        \end{itemize}
+        \item 归纳偏置的引入方式：
+        \begin{itemize}
+            \item 通过\alert{分布形式}（如输出是固定基函数的线性函数）
+            \item 通过\alert{正则化项}
+            \item 通过\alert{训练过程本身}
+        \end{itemize}
+        \item 深层网络即使参数多于数据点，只要训练过程设置正确，也能给出良好泛化。
+        \item 将深度学习应用于实际问题的部分技巧在于\alert{精心设计归纳偏置}。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第三部分：对称性与不变性
+% ============================================================
+\section{对称性与不变性}
+
+\begin{frame}
+    \frametitle{3. 对称性与不变性 (Symmetry \& Invariance)}
+    \begin{itemize}
+        \item 许多应用中，预测应在输入变量的\alert{一个或多个变换}下保持不变（\alert{不变性}）。
+        \item \textbf{平移不变性}：物体在图像中的位置不影响其分类。
+        \item \textbf{尺度不变性}：物体大小的变化不影响其分类。
+        \item 利用这些对称性创建归纳偏置可\alert{大幅提升性能}。
+        \item 这是\alert{几何深度学习} (Bronstein et al., 2021) 的主题。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.1 群论基础}
+    \begin{itemize}
+        \item 保持特定属性不变的变换（如平移、缩放）代表\alert{对称性}。
+        \item 对应某对称性的所有变换构成\alert{群} (group)。
+        \item 群由元素集合 $\mathcal{A}, \mathcal{B}, \mathcal{C}, \dots$ 和二元运算 $\circ$ 组成。
+    \end{itemize}
+    \begin{block}{群的四大公理}
+        \begin{enumerate}
+            \item \textbf{封闭性}：$\mathcal{A} \circ \mathcal{B}$ 仍在集合中。
+            \item \textbf{结合律}：$(\mathcal{A} \circ \mathcal{B}) \circ \mathcal{C} = \mathcal{A} \circ (\mathcal{B} \circ \mathcal{C})$。
+            \item \textbf{单位元}：存在 $\mathcal{I}$ 使得 $\mathcal{A} \circ \mathcal{I} = \mathcal{I} \circ \mathcal{A} = \mathcal{A}$。
+            \item \textbf{逆元}：存在 $\mathcal{A}^{-1}$ 使得 $\mathcal{A} \circ \mathcal{A}^{-1} = \mathcal{A}^{-1} \circ \mathcal{A} = \mathcal{I}$。
+        \end{enumerate}
+    \end{block}
+    \begin{itemize}
+        \item 简单例子：正方形旋转 $90^\circ$ 的倍数；二维平面中物体的连续平移。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.2 从数据中学习不变性的困难}
+    \begin{itemize}
+        \item 原则上，神经网络对输入变换的不变性可\alert{从数据中学习}，无需特殊修改。
+        \item 实践中极具挑战：
+        \begin{itemize}
+            \item 变换可导致原始数据\alert{显著变化}。
+            \item 例如：图像中物体即使平移几个像素，像素值也会大幅改变。
+            \item 多种不变性常需\alert{同时成立}：二维平移、缩放、旋转、强度变化、色彩平衡等。
+            \item 这些变换的组合\alert{呈指数级}，所需训练集大小\alert{不可承受}。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.3 实现不变性的四类方法}
+    \begin{enumerate}
+        \item \alert{预处理}：计算在所需变换下不变的特征。后续系统使用这些特征作为输入，自然尊重这些不变性。
+        \item \alert{正则化误差函数}：在误差函数中添加正则化项，惩罚输入受不变变换时模型输出的变化。
+        \item \alert{数据增强}：用变换后的训练数据副本扩展训练集，携带与未变换样本相同的目标值。
+        \item \alert{网络结构}：通过适当的网络架构选择，将不变性性质构建到网络结构中。
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.4 方法一：预处理}
+    \begin{itemize}
+        \item \textbf{挑战}：设计具有所需不变性的特征，同时\alert{不丢弃}对确定网络输出有用的信息。
+        \item 固定的手工特征能力有限。
+        \item 已被深度神经网络获得的\alert{学习表示}所取代。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.5 方法二：正则化误差函数}
+    \begin{itemize}
+        \item 示例：\alert{切线传播} (tangent propagation, Simard et al., 1992)。
+        \item 训练时向误差函数添加正则化项。
+        \item 直接惩罚由对应不变变换的输入变化引起的输出变化。
+        \item \textbf{局限}：
+        \begin{itemize}
+            \item 增加训练复杂度。
+            \item 难以处理小变换（如小于一个像素的平移）。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.6 方法三：数据增强}
+    \begin{itemize}
+        \item 通常\alert{易于实现}，实践中非常有效。
+        \item 常用于图像分析，因为创建变换后的训练数据很直接。
+        \item 示例变换（图 9.1）：
+        \begin{itemize}
+            \item 水平翻转、缩放、平移、旋转
+            \item 亮度对比度变化、加性噪声、颜色偏移
+        \end{itemize}
+        \item 医学软组织图像：还可包括连续\alert{“橡皮布”变形}。
+    \end{itemize}
+    \begin{block}{训练算法中的实现}
+        \begin{itemize}
+            \item \alert{顺序算法}（如 SGD）：每次呈现前变换输入，可每次应用不同变换。
+            \item \alert{批量方法}：复制每个数据点若干次，独立变换每个副本。
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.7 数据增强的理论分析}
+    \begin{itemize}
+        \item 考虑代表原始样本小变化的变换，对误差函数做\alert{泰勒展开}。
+        \item 得到正则化误差函数，其中正则化项惩罚网络输出对输入的梯度在\alert{变换方向上的投影}。
+        \item 与切线传播技术相关。
+        \item \textbf{特殊情况}：变换为添加随机噪声时，正则化项惩罚网络输出对输入的导数。
+        \item 直观合理：鼓励网络输出在输入加噪时保持不变。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3.8 方法四：网络结构}
+    \begin{itemize}
+        \item 将不变性构建到网络结构中，已被证明\alert{非常强大有效}。
+        \item 带来其他关键好处。
+        \item 将在计算机视觉的\alert{卷积神经网络}背景下详细讨论。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第四部分：等变性
+% ============================================================
+\section{等变性}
+
+\begin{frame}
+    \frametitle{4. 等变性 (Equivariance)}
+    \begin{itemize}
+        \item 不变性的重要推广：\alert{等变性}。
+        \item 输入变换时，输出\alert{不是保持不变，而是按特定方式变换}。
+        \item 示例：图像分割网络。
+        \begin{itemize}
+            \item 输入：图像 $\mathbf{I}$
+            \item 输出：每个像素分类为前景物体或背景的分割
+            \item 若物体位置平移，希望对应分割也\alert{同样平移}
+        \end{itemize}
+        \item 用 $\mathcal{S}$ 表示分割网络，$\mathcal{T}$ 表示平移操作：
+        \begin{equation}
+            \mathcal{S}\bigl(\mathcal{T}(\mathbf{I})\bigr) = \mathcal{T}\bigl(\mathcal{S}(\mathbf{I})\bigr)
+            \tag{9.2}
+        \end{equation}
+        \begin{itemize}
+            \item 平移图像的分割 = 原图像分割的平移（图 9.2）。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.1 广义等变性}
+    更一般地，输出变换可与输入变换不同：
+    \begin{equation}
+        \mathcal{S}\bigl(\mathcal{T}(\mathbf{I})\bigr) = \widetilde{\mathcal{T}}\bigl(\mathcal{S}(\mathbf{I})\bigr)
+        \tag{9.3}
+    \end{equation}
+    \begin{itemize}
+        \item \textbf{示例 1}：分割图像分辨率低于原图。
+        \begin{itemize}
+            \item $\mathcal{T}$：原图空间中的平移
+            \item $\widetilde{\mathcal{T}}$：低维分割空间中对应的平移
+        \end{itemize}
+        \item \textbf{示例 2}：$\mathcal{S}$ 测量物体方向，$\mathcal{T}$ 表示旋转（对像素值的复杂非线性变换）。
+        \begin{itemize}
+            \item $\widetilde{\mathcal{T}}$ 会增减 $\mathcal{S}$ 生成的标量方向值
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{4.2 不变性是等变性的特例}
+    \begin{itemize}
+        \item 不变性是等变性中\alert{输出变换为单位变换}的特殊情况。
+        \item 示例：分类网络 $\mathcal{C}$ 和翻译操作 $\mathcal{T}$：
+        \begin{equation}
+            \mathcal{C}\bigl(\mathcal{T}(\mathbf{I})\bigr) = \mathcal{C}(\mathbf{I})
+            \tag{9.4}
+        \end{equation}
+        \item 物体类别不依赖于其在图像中的位置。
+    \end{itemize}
+    \begin{block}{总结}
+        \begin{itemize}
+            \item \alert{不变性}：$f(\mathcal{T}(x)) = f(x)$
+            \item \alert{等变性}：$f(\mathcal{T}(x)) = \widetilde{\mathcal{T}}(f(x))$
+            \item 不变性是等变性在 $\widetilde{\mathcal{T}} = \mathcal{I}$ 时的特例
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ============================================================
+% 第五部分：总结
+% ============================================================
+\section{总结}
+
+\begin{frame}
+    \frametitle{5. 本节总结}
+    \begin{itemize}
+        \item \alert{模型选择}是机器学习的核心问题，源于大多数任务是\alert{逆问题}。
+        \item \alert{归纳偏置}：从无限可能中选择特定分布的偏好，即先验知识。
+        \item \alert{没有免费午餐定理}：所有算法在所有问题上平均一样好，但实际问题具有结构（如平滑性）。
+        \item 偏置可以是\alert{隐式}（如参数有限）或\alert{显式}（如先验知识编码）。
+        \item \alert{对称性与不变性}：
+        \begin{itemize}
+            \item 平移不变性、尺度不变性
+            \item 群论：封闭性、结合律、单位元、逆元
+            \item 从数据直接学习不变性困难（指数级变换组合）
+        \end{itemize}
+        \item \alert{实现不变性的四类方法}：
+        \begin{enumerate}
+            \item 预处理
+            \item 正则化误差函数（切线传播）
+            \item 数据增强
+            \item 网络结构（CNN）
+        \end{enumerate}
+        \item \alert{等变性}：输出随输入变换而特定变换，不变性是其特例。
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% 第六部分：参考文献
+% ============================================================
+\section{参考文献}
+
+\begin{frame}
+    \frametitle{6. 参考文献}
+    \begin{itemize}
+        \item 教材：Bishop, C. M. \& Bishop, H. (2023). Deep Learning Foundations and Concepts. Springer Nature Switzerland AG.
+        \item Wolpert, D. H. (1996). The lack of a priori distinctions between learning algorithms.
+        \item Bronstein, M. M. et al. (2021). Geometric deep learning: Grids, groups, graphs, geodesics, and gauges.
+        \item Simard, P. et al. (1992). Tangent prop - A formalism for specifying selected invariances in an adaptive network.
+        \item Ronneberger, O., Fischer, P., \& Brox, T. (2015). U-Net: Convolutional networks for biomedical image segmentation.
+        \item Winn, J. et al. (2023). Model-based machine learning.
+    \end{itemize}
+\end{frame}
+
+\end{document}
