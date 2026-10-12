@@ -1,3 +1,6 @@
+## interactive quiz answer files:
+*.html.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
