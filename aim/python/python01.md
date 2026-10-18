@@ -258,20 +258,22 @@ for i in range(5):
 <details>
 <summary>解答：</summary>
 
-Python 使用 `pip` 作为包管理工具。在 VS Code 的内置终端中，可以使用 `pip install 包名` 命令安装第三方库。例如，安装科学计算库 `numpy`：`pip install numpy`。如果需要安装特定版本，可以使用 `pip install 包名==版本号`，如 `pip install numpy==1.24.0`。
+Python 使用 `pip` 作为包管理工具。在 VS Code 的内置终端中，可以使用 `pip install 包名` 命令安装第三方库。例如，安装科学计算库 `numpy` 的终端命令为： `pip install numpy`。如果需要安装特定版本，可以使用 `pip install 包名==版本号`，如 `pip install numpy==1.24.0`。
 
 在国内网络环境下，直接从 PyPI 官方源下载可能速度较慢。推荐使用清华镜像源加速下载，有两种常用方式：
 
-- **临时使用**：在安装命令中指定 `-i` 参数，例如 `pip install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple`。
+- **临时使用**：在安装命令中指定 `-i` 参数，例如安装 `numpy` 的终端命令改为： 
+  ```bash
+  pip install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple
+  ```
+
 - **设置为默认源**：执行以下命令将清华镜像设置为永久默认源，此后所有 `pip install` 命令都会自动使用该镜像源：
   ```bash
   pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ```
   设置完成后，可以直接使用 `pip install 包名` 安装，无需每次指定镜像地址。
 
-查看当前 Python 环境中已安装的所有库，可以使用 `pip list` 命令。如果需要导出所有库及版本号（用于分享或备份），可以使用 `pip freeze > requirements.txt` 命令生成依赖清单，他人则可通过 `pip install -r requirements.txt` 一键安装所有依赖（如需使用镜像源，可在命令后添加 `-i https://pypi.tuna.tsinghua.edu.cn/simple`）。
-
-此外，VS Code 的 Python 扩展还提供了图形化的“Python 包管理”界面（在资源管理器的“Python 包”面板中），可以直观地查看和搜索已安装的包。
+查看当前 Python 环境中已安装的所有库，可以使用 `pip list` 命令。
 
 </details>
 

@@ -8,6 +8,8 @@
 ### 参考教材
 
 1. 辛景民、武佳懿、郑南宁编，人工智能概论，清华大学出版社，2025年12月第1版。
+2. 张雨萌，机器学习线性代数基础-Python语言描述，北京大学出版社，2019年9月第1版。
+3. Stewart, J. M., & Mommert, M. Python for Scientists (3rd ed.). Cambridge University Press, 2023. 
 
 ---
 
@@ -84,12 +86,12 @@
 | 3 | 9.21 | 在 VSCode 里用 Markdown 语言写三门数学课的笔记。 | 安装VSCode |
 | 4 | 9.28 | 使用 Edge 浏览器 + Markdown Viewer 扩展浏览 Markdown 数学笔记。|  |
 | 5 | 10.5 | 国庆节放假 |  |
-| 6 | 10.12 | 在 VSCode 里用 Markdown 里总结常用的 LaTeX 数学公式。 | 布置课程论文 |
-| 7 | 10.19 | 在 Texlive 的 Texworks 里写 LaTeX 文档。 | 安装 Texlive |
-| 8 | 10.26 | 在 VSCode 里写 LaTeX 文档。 |  |
-| 9 | 11.2 | 在 VSCode 里运行 Python numpy 程序。 | 安装 Python |
-| 10 | 11.9 | 运行 Python numpy + matplotlib 程序。 |  |
-| 11 | 11.16 | 运行 Python numpy + scipy + matplotlib 程序。 |  |
+| 6 | 10.12 | 在 VSCode 里运行 Python numpy 程序。 | 安装 Python |
+| 7 | 10.19 | 运行 Python numpy + matplotlib 程序。 |  |
+| 8 | 10.26 | 运行 Python numpy + scipy + matplotlib 程序。 |  |
+| 9 | 11.2 | 在 VSCode 里用 Markdown 里总结常用的 LaTeX 数学公式。 | 布置课程论文 |
+| 10 | 10.9 | 在 Texlive 的 Texworks 里写 LaTeX 文档。 | 安装 Texlive |
+| 11 | 10.16 | 在 VSCode 里写 LaTeX 文档。 |  |
 | 12 | 11.23 | 使用 Git 做版本管理，介绍 github 与 gitee. | 安装 Git |
 | 13 | 11.30 | unicode 和 token 的基本知识。 |  |
 | 14 | 12.7 | 人工智能发展历史，神经网络模型基本知识。 |  |
