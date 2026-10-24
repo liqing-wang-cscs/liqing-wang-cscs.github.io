@@ -1,0 +1,294 @@
+<!-- Python 基本数据类型 - 进阶自测题（第 2 组） -->
+<div class="practice-container">
+    <h1 class="practice-title">Python 的基本数据类型 - 进阶自测题</h1>
+    <p class="practice-instructions">请回答以下14道单项选择题，进一步巩固 Python 基本数据类型。</p>
+
+    <div id="questions-container-2">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script-2" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    (function() {
+        const questions = [
+        {
+            id: 1,
+            topic: "整型（int）",
+            question: "表达式 2 ** 10 的结果是？",
+            options: { A: "20", B: "100", C: "1024", D: "512" },
+            answer: "C",
+            explanation: "** 是幂运算符，2 ** 10 表示 2 的 10 次方，结果为 1024。"
+        },
+        {
+            id: 2,
+            topic: "整型（int）",
+            question: "表达式 -7 // 2 在 Python 中的结果是？",
+            options: { A: "-3", B: "-4", C: "-3.5", D: "3" },
+            answer: "B",
+            explanation: "// 是向下取整（floor division），-7 // 2 等于 -3.5 向下取整，结果为 -4。这与 C 语言的截断除法不同。"
+        },
+        {
+            id: 3,
+            topic: "浮点型（float）",
+            question: "表达式 0.1 + 0.2 的结果在 Python 中显示为？",
+            options: { A: "0.3", B: "0.30000000000000004", C: "0.30000001", D: "报错" },
+            answer: "B",
+            explanation: "浮点数采用二进制表示，0.1 和 0.2 都无法精确表示，相加后得到 0.30000000000000004。"
+        },
+        {
+            id: 4,
+            topic: "浮点型（float）",
+            question: "表达式 9 / 3 的结果类型和值是？",
+            options: { A: "int 类型，值为 3", B: "float 类型，值为 3.0", C: "int 类型，值为 3.0", D: "float 类型，值为 3" },
+            answer: "B",
+            explanation: "Python 3 中 / 总是返回 float，9 / 3 得到 3.0，类型为 float。"
+        },
+        {
+            id: 5,
+            topic: "字符串（str）",
+            question: "已知 s = \"Python\"，表达式 s[-1] 的结果是？",
+            options: { A: "P", B: "n", C: "o", D: "报错" },
+            answer: "B",
+            explanation: "负索引从末尾开始计数，s[-1] 表示最后一个字符，即 'n'。"
+        },
+        {
+            id: 6,
+            topic: "字符串（str）",
+            question: "表达式 \"ab\" * 3 的结果是？",
+            options: { A: "\"ababab\"", B: "\"ab3\"", C: "报错", D: "\"ab ab ab\"" },
+            answer: "A",
+            explanation: "字符串与整数相乘表示重复拼接，\"ab\" * 3 得到 \"ababab\"。"
+        },
+        {
+            id: 7,
+            topic: "布尔型（bool）",
+            question: "表达式 bool(\"False\") 的结果是？",
+            options: { A: "True", B: "False", C: "报错", D: "None" },
+            answer: "A",
+            explanation: "非空字符串在布尔上下文中为 True。\"False\" 是一个非空字符串，因此 bool(\"False\") 返回 True。"
+        },
+        {
+            id: 8,
+            topic: "布尔型（bool）",
+            question: "表达式 1 == True 的结果是？",
+            options: { A: "True", B: "False", C: "报错", D: "None" },
+            answer: "A",
+            explanation: "bool 是 int 的子类，True 等价于 1，因此 1 == True 返回 True。"
+        },
+        {
+            id: 9,
+            topic: "列表（list）",
+            question: "已知 a = [1, 2, 3]，表达式 a[1:] 的结果是？",
+            options: { A: "[1]", B: "[1, 2]", C: "[2, 3]", D: "[3]" },
+            answer: "C",
+            explanation: "切片 a[1:] 从下标 1 开始取到末尾，即取下标 1 和 2 的元素，结果为 [2, 3]。"
+        },
+        {
+            id: 10,
+            topic: "列表（list）",
+            question: "已知 a = [3, 1, 2]，执行 a.sort() 后 a 的值是？",
+            options: { A: "[3, 1, 2]", B: "[1, 2, 3]", C: "None", D: "报错" },
+            answer: "B",
+            explanation: "list.sort() 原地排序，将列表按升序排列，a 变为 [1, 2, 3]。注意它返回 None，但 a 本身被修改。"
+        },
+        {
+            id: 11,
+            topic: "元组（tuple）",
+            question: "已知 t = (1, 2, 3)，表达式 t + (4,) 的结果是？",
+            options: { A: "(1, 2, 3, 4)", B: "(5, 2, 3)", C: "报错", D: "[1, 2, 3, 4]" },
+            answer: "A",
+            explanation: "元组的 + 表示拼接，(1, 2, 3) + (4,) 得到新元组 (1, 2, 3, 4)。注意 (4,) 是单元素元组。"
+        },
+        {
+            id: 12,
+            topic: "元组（tuple）",
+            question: "已知 t = (1, 2, 3, 4, 5)，表达式 t[1:4] 的结果是？",
+            options: { A: "(1, 2, 3)", B: "(2, 3, 4)", C: "(2, 3, 4, 5)", D: "(3, 4, 5)" },
+            answer: "B",
+            explanation: "切片 t[1:4] 取下标 1、2、3 的元素，不包含下标 4，结果为 (2, 3, 4)。"
+        },
+        {
+            id: 13,
+            topic: "字典（dict）",
+            question: "已知 d = {\"a\": 1, \"b\": 2}，执行 d[\"c\"] = 3 后，len(d) 的结果是？",
+            options: { A: "2", B: "3", C: "4", D: "报错" },
+            answer: "B",
+            explanation: "原字典有 2 个键值对，添加 \"c\": 3 后变为 3 个，len(d) 返回 3。"
+        },
+        {
+            id: 14,
+            topic: "字典（dict）",
+            question: "已知 d = {\"a\": 1, \"b\": 2}，表达式 d.get(\"c\", 0) 的结果是？",
+            options: { A: "报错 KeyError", B: "None", C: "0", D: "\"c\"" },
+            answer: "C",
+            explanation: "dict.get(key, default) 在键不存在时返回默认值，这里默认值为 0，因此返回 0，不会报错。"
+        }
+        ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container-2');
+            if (!container) return;
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option2-${index}-${optIndex}">
+                            <input type="radio" name="q2-${index}" value="${optIndex}" onclick="selectOption2(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation2-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        window.selectOption2 = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option2-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option2-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation2-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option2-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation2-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        renderQuestions();
+    })();
+</script>

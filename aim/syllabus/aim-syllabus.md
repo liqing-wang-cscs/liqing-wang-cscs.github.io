@@ -86,12 +86,14 @@
 | 3 | 9.21 | 在 VSCode 里用 Markdown 语言写三门数学课的笔记。 | 安装VSCode |
 | 4 | 9.28 | 使用 Edge 浏览器 + Markdown Viewer 扩展浏览 Markdown 数学笔记。|  |
 | 5 | 10.5 | 国庆节放假 |  |
-| 6 | 10.12 | 在 VSCode 里运行 Python numpy 程序。 | 安装 Python |
-| 7 | 10.19 | 运行 Python numpy + matplotlib 程序。 |  |
-| 8 | 10.26 | 运行 Python numpy + scipy + matplotlib 程序。 |  |
-| 9 | 11.2 | 在 VSCode 里用 Markdown 里总结常用的 LaTeX 数学公式。 | 布置课程论文 |
-| 10 | 10.9 | 在 Texlive 的 Texworks 里写 LaTeX 文档。 | 安装 Texlive |
-| 11 | 10.16 | 在 VSCode 里写 LaTeX 文档。 |  |
+<!-- -->
+| 6 | 10.12 | Python 基本数据结构 | 安装 Python |
+| 7 | 10.19 | Python Numpy 数组 | 布置课程论文 |
+| 8 | 10.26 | Python 市级考试大纲 |  |
+| 9 | 11.2 | Python 基本语法、结构、语句、组合数据类型 |  |
+| 10 | 11.9 | Python 文件、正则表达式  |  |
+| 11 | 11.16 | Python 函数、图形绘制 |  |
+<!-- -->
 | 12 | 11.23 | 使用 Git 做版本管理，介绍 github 与 gitee. | 安装 Git |
 | 13 | 11.30 | unicode 和 token 的基本知识。 |  |
 | 14 | 12.7 | 人工智能发展历史，神经网络模型基本知识。 |  |
@@ -102,3 +104,7 @@
 | 19 | 1.11 | 放假 |  |
 
 ---
+
+<!-- | 9 | 11.2 | 在 VSCode 里用 Markdown 里总结常用的 LaTeX 数学公式。 |  | -->
+<!-- | 10 | 10.9 | 在 Texlive 的 Texworks 里写 LaTeX 文档。 | 安装 Texlive | -->
+<!-- | 11 | 10.16 | 在 VSCode 里写 LaTeX 文档。 |  | -->
