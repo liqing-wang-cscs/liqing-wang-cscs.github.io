@@ -1,5 +1,7 @@
+% !TEX program = xelatex
 \documentclass{article}
-\usepackage{ctex, amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath, amssymb, array, booktabs, geometry,enumitem,tasks}
 \geometry{a4paper, margin=1.5cm}
 \usepackage{titling}\setlength{\droptitle}{-2cm}
 
@@ -9,7 +11,7 @@
 
 \author{学号：\underline{\hspace{4cm}} 姓名：\underline{\hspace{4cm}} }
 \title{偏微分方程与 Black-Scholes 期权定价公式}
-\date{2026年10月21日}
+\date{2026年10月28日}
 \begin{document}
 \maketitle
 
@@ -45,11 +47,11 @@ u(x, \tau) = \frac{1}{2\sqrt{\pi\tau}} e^{-\frac{x^2}{4\tau}}, \quad -\infty < x
 
 初始条件：
 \(
-u(x, 0) = 1, 
+u(x, 0) = 0, 
 \)
 边界条件：
 \(
-u(0, \tau) = 0, \quad u \to 0 \; (x \to +\infty). 
+u(0, \tau) = 1, \quad u \to 0 \; (x \to +\infty). 
 \)
 
 设解具有相似形式 \(u(x, \tau) = U(\xi)\)，其中 \(\xi = \frac{x}{\sqrt{\tau}}\). 
@@ -95,7 +97,7 @@ u(x, 0) = \delta(x).
 \begin{enumerate}[label=(\arabic*)]
     \item \(\int_{-\infty}^{+\infty} \delta(x - 3) (x^2 + 2x) dx\)；
     \item \(\int_{0}^{5} \delta(x - 2) e^{x} dx\)；
-    \item \(\int_{-\infty}^{+\infty} \delta(x) \cos(x) dx\)。
+    \item \(\int_{-\infty}^{+\infty} \delta(x) \cos(x) dx\) 。
 \end{enumerate}
 
 
@@ -236,7 +238,7 @@ P(S, t) = Ee^{-r(T-t)} N(-d_2) - SN(-d_1).
 
 已知 Black-Scholes 公式：
 \(
-C = SN(d_1) - Ee^{-r(T-t)}N(d_2)。 
+C = SN(d_1) - Ee^{-r(T-t)}N(d_2).  
 \)
 
 计算得 \(d_1 \approx 0.3005\)，\(d_2 \approx 0.0884\)，\(N(d_1) \approx 0.6181\)，\(N(d_2) \approx 0.5352\)。

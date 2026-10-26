@@ -90,13 +90,13 @@ $$
 初始条件：
 
 $$
-u(x, 0) = 1
+u(x, 0) = 0
 $$
 
 边界条件：
 
 $$
-u(0, \tau) = 0, \quad u \to 0 \; (x \to +\infty)
+u(0, \tau) = 1, \quad u \to 0 \; (x \to +\infty)
 $$
 
 设解具有相似形式 $u(x, \tau) = U(\xi)$，其中 $\xi = \frac{x}{\sqrt{\tau}}$。
