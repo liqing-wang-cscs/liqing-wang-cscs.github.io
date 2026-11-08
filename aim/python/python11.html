@@ -1,0 +1,507 @@
+<!-- Python 语言基本语法 - 基础自测题 -->
+<div class="practice-container">
+    <h1 class="practice-title">Python 语言基本语法 - 基础自测题</h1>
+    <p class="practice-instructions">单项选择题1-20，学习 Python 语言的基本语法；单项选择题21-25，学习在 VS Code 中运行 Python 程序。</p>
+
+    <div id="questions-container-2">
+        <!-- 问题将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<style>
+    .practice-container {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .practice-container .practice-title {
+        text-align: center;
+        color: blue;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .practice-container .practice-instructions {
+        text-align: center;
+        margin-bottom: 30px;
+        font-style: italic;
+        color: #555;
+    }
+
+    .practice-container .question-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .practice-container .options {
+        margin-top: 10px;
+    }
+
+    .practice-container .option {
+        display: block;
+        margin: 8px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .practice-container .option:hover {
+        background-color: #eef7ff;
+    }
+
+    .practice-container .option.correct {
+        background-color: #e8f5e8 !important;
+        border-color: #4CAF50 !important;
+    }
+
+    .practice-container .option.incorrect {
+        background-color: #fdeeee !important;
+        border-color: #f44336 !important;
+    }
+
+    .practice-container .explanation {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f0f8e0;
+        border-left: 4px solid #4CAF50;
+        display: none;
+    }
+
+    .practice-container h3 {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script-2" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+    (function() {
+        const questions = [
+            {
+                id: 1,
+                topic: "程序的书写格式",
+                question: "在Python中，关于代码缩进的说法，正确的是（ ）。",
+                options: {
+                A: "缩进可以使用任意数量的空格，且同一代码块中空格数可以不一致",
+                B: "缩进是Python语法的一部分，用于表示代码块的层次结构",
+                C: "缩进只能使用Tab键，不能使用空格",
+                D: "代码块必须缩进4个空格，多一个或少一个都会报错"
+                },
+                answer: "B",
+                explanation: "Python使用缩进来表示代码块，通常约定使用4个空格。同一代码块中的缩进量必须一致，否则会引发IndentationError。缩进是Python语法强制要求的。"
+            },
+            {
+                id: 2,
+                topic: "基本语法元素",
+                question: "下列选项中，不属于Python合法标识符的是（ ）。",
+                options: {
+                A: "_myVar",
+                B: "var123",
+                C: "123var",
+                D: "my_var"
+                },
+                answer: "C",
+                explanation: "Python标识符的命名规则：只能由字母、数字和下划线组成；不能以数字开头；不能是Python的关键字。因此'123var'以数字开头，是不合法的标识符。"
+            },
+            {
+                id: 3,
+                topic: "基本语法元素",
+                question: "下列哪个选项中的标识符是Python的保留关键字？（ ）",
+                options: {
+                A: "True",
+                B: "true",
+                C: "Print",
+                D: "input"
+                },
+                answer: "A",
+                explanation: "Python关键字是区分大小写的。'True'是Python的保留关键字（表示布尔真），而'true'不是；'Print'首字母大写也不是关键字（print是小写）；input是内置函数名，不是关键字。"
+            },
+            {
+                id: 4,
+                topic: "Python 语言输入输出",
+                question: "执行语句 `x = input('请输入:')` 后，变量 x 的数据类型是（ ）。",
+                options: {
+                A: "整型 (int)",
+                B: "浮点型 (float)",
+                C: "字符串 (str)",
+                D: "根据输入的内容自动推断类型"
+                },
+                answer: "C",
+                explanation: "Python的内置函数 input() 无论用户输入什么内容，其返回值始终是字符串类型（str）。若需要数值类型，必须使用 eval() 或 int()/float() 进行转换。"
+            },
+            {
+                id: 5,
+                topic: "Python 语言输入输出",
+                question: "若用户从键盘输入 `3+4`，则执行语句 `print(eval(input()))` 后的输出结果是（ ）。",
+                options: {
+                A: "3+4",
+                B: "34",
+                C: "7",
+                D: "报错"
+                },
+                answer: "C",
+                explanation: "input() 接收输入并返回字符串 '3+4'，eval() 函数会去掉字符串两边的引号并执行其中的Python表达式，即计算 3+4 的值，结果为7。"
+            },
+            {
+                id: 6,
+                topic: "Python 语言输入输出",
+                question: "在 print() 函数中，想要输出多个变量并用指定符号分隔，应使用的参数是（ ）。",
+                options: {
+                A: "end",
+                B: "sep",
+                C: "file",
+                D: "format"
+                },
+                answer: "B",
+                explanation: "print() 函数中，sep 参数用于指定多个输出项之间的分隔符（默认为空格）；end 参数用于指定输出结束后的字符（默认为换行符\\n）。"
+            },
+            {
+                id: 7,
+                topic: "数据类型",
+                question: "下列选项中，表示复数的是（ ）。",
+                options: {
+                A: "3i",
+                B: "3+4j",
+                C: "3+4i",
+                D: "complex(3,4i)"
+                },
+                answer: "B",
+                explanation: "Python中复数的虚部用字母 j 或 J 表示，格式为 a+bj。例如 3+4j。不能用 i 表示虚部。"
+            },
+            {
+                id: 8,
+                topic: "数据类型",
+                question: "Python中表示“空值”或“无”的特殊数据类型是（ ）。",
+                options: {
+                A: "0",
+                B: "Empty",
+                C: "None",
+                D: "null"
+                },
+                answer: "C",
+                explanation: "None 是Python中一个特殊的常量，表示空值或没有值，其数据类型为 NoneType。它不同于0、空字符串或False。"
+            },
+            {
+                id: 9,
+                topic: "数据类型",
+                question: "布尔值 `False` 在进行算术运算时，相当于整数（ ）。",
+                options: {
+                A: "0",
+                B: "1",
+                C: "-1",
+                D: "无法参与运算"
+                },
+                answer: "A",
+                explanation: "在Python中，布尔类型是整型的子类。True 在参与算术运算时等价于 1，False 等价于 0。"
+            },
+            {
+                id: 10,
+                topic: "变量对象",
+                question: "关于Python变量的说法，错误的是（ ）。",
+                options: {
+                A: "变量在使用前必须赋值",
+                B: "变量不需要事先声明类型",
+                C: "变量名可以随时改变指向的数据类型",
+                D: "变量被赋值后，其数据类型不可改变"
+                },
+                answer: "D",
+                explanation: "Python是动态类型语言，变量本身没有类型，它只是对象的引用。同一个变量可以在不同时刻指向不同类型的对象（如先赋值整数，后赋值字符串），因此其“类型”是可变的。"
+            },
+            {
+                id: 11,
+                topic: "变量对象",
+                question: "执行语句 `a = '123'` 和 `b = int(a)` 后，变量 `b` 的值是（ ）。",
+                options: {
+                A: "字符串 '123'",
+                B: "整数 123",
+                C: "浮点数 123.0",
+                D: "布尔值 True"
+                },
+                answer: "B",
+                explanation: "int() 函数将纯数字组成的字符串转换为整数。所以 int('123') 的结果是整数 123。"
+            },
+            {
+                id: 12,
+                topic: "运算符",
+                question: "下列运算符中，优先级最高的是（ ）。",
+                options: {
+                A: "加法运算符 `+`",
+                B: "逻辑与运算符 `and`",
+                C: "赋值运算符 `=`",
+                D: "幂运算符 `**`"
+                },
+                answer: "D",
+                explanation: "Python运算符优先级从高到低大致为：算术运算符（其中 ** 最高，其次是 * / // %，最后是 + -） > 比较运算符 > 逻辑运算符 > 赋值运算符。"
+            },
+            {
+                id: 13,
+                topic: "运算符",
+                question: "若 `x = 5`，则表达式 `x % 3 ** 2` 的值为（ ）。",
+                options: {
+                A: "2",
+                B: "5",
+                C: "1",
+                D: "4"
+                },
+                answer: "B",
+                explanation: "幂运算符 ** 的优先级高于取余运算符 %。所以先计算 3**2 = 9，再计算 5%9 = 5。"
+            },
+            {
+                id: 14,
+                topic: "比较、赋值和逻辑运算",
+                question: "关于Python中的 `=` 和 `==`，说法正确的是（ ）。",
+                options: {
+                A: "`=` 用于判断相等，`==` 用于赋值",
+                B: "`=` 用于赋值，`==` 用于判断相等",
+                C: "两者都可用于赋值和比较，没有区别",
+                D: "`==` 是严格比较，`=` 是宽松比较"
+                },
+                answer: "B",
+                explanation: "在Python中，单个等号 `=` 是赋值运算符，将右侧的值赋给左侧变量；双等号 `==` 是比较运算符，用于判断左右两边的值是否相等，返回布尔值。"
+            },
+            {
+                id: 15,
+                topic: "比较、赋值和逻辑运算",
+                question: "逻辑表达式 `not (3 > 5 or 4 < 6)` 的值是（ ）。",
+                options: {
+                A: "True",
+                B: "False",
+                C: "1",
+                D: "0"
+                },
+                answer: "B",
+                explanation: "首先计算括号内：3>5 为 False，4<6 为 True。False or True 结果为 True。最后进行 not 运算，not True 的结果是 False。"
+            },
+            {
+                id: 16,
+                topic: "比较、赋值和逻辑运算",
+                question: "在Python中，可以连续赋值，如 `a = b = c = 1`，此时（ ）。",
+                options: {
+                A: "a、b、c 是同一个变量",
+                B: "a、b、c 是三个不同的变量，但都指向值为1的同一个整数对象",
+                C: "只有 c 被赋值为1，a和b没有被赋值",
+                D: "语法错误，不能连续赋值"
+                },
+                answer: "B",
+                explanation: "Python支持链式赋值，`a = b = c = 1` 等价于分别执行 `a=1`, `b=1`, `c=1`。它们都是独立的变量名，只不过由于Python的整数对象缓存机制，此时可能指向内存中同一个值为1的整数对象。"
+            },
+            {
+                id: 17,
+                topic: "表达式",
+                question: "表达式 `3 + 4.0 * 2` 的结果类型是（ ）。",
+                options: {
+                A: "整型 (int)",
+                B: "浮点型 (float)",
+                C: "字符串 (str)",
+                D: "布尔型 (bool)"
+                },
+                answer: "B",
+                explanation: "在混合类型算术运算中，Python会自动将较低精度类型转换为较高精度类型。整型与浮点型运算，结果自动转换为浮点型。4.0 * 2 = 8.0（浮点型），3 + 8.0 = 11.0（浮点型）。"
+            },
+            {
+                id: 18,
+                topic: "表达式",
+                question: "表达式 `'12' + '34'` 的结果是（ ）。",
+                options: {
+                A: "46",
+                B: "1234",
+                C: "报错，字符串不能相加",
+                D: "'1234'"
+                },
+                answer: "B",
+                explanation: "对于字符串，`+` 运算符表示拼接操作。'12' + '34' 会将两个字符串连接起来，结果为 '1234'。"
+            },
+            {
+                id: 19,
+                topic: "表达式",
+                question: "关于混合模式运算中的自动类型转换，下列说法正确的是（ ）。",
+                options: {
+                A: "整型会自动转换为字符串型",
+                B: "布尔型会自动转换为浮点型",
+                C: "在整数和浮点数运算时，整数会自动转换为浮点数",
+                D: "所有类型都可以自动相互转换"
+                },
+                answer: "C",
+                explanation: "在混合算术运算中，Python遵循“向上转型”原则，即低精度类型自动转换为高精度类型。例如 bool -> int -> float -> complex。整数和浮点数运算时，整数会转为浮点数。"
+            },
+            {
+                id: 20,
+                topic: "Python 语言程序设计步骤",
+                question: "在Python编程环境中，要执行一段已经编写好的程序（例如保存为 test.py 的文件），通常使用的命令或操作是（ ）。",
+                options: {
+                A: "在交互式环境中输入 `import test`",
+                B: "在命令行终端执行 `python test.py`",
+                C: "在编辑器中直接按回车键",
+                D: "使用 `open('test.py')` 函数"
+                },
+                answer: "B",
+                explanation: "Python源文件通常以 .py 结尾。编辑保存后，可以通过命令行终端使用 `python 文件名.py` 的命令来运行该程序。在交互式环境中通常用于逐行测试代码。"
+            },
+            {
+                id: 21,
+                topic: "VS Code 中的 Python 交互方式",
+                question: "关于 VS Code 中的 Native REPL，下列说法正确的是（ ）。",
+                options: {
+                A: "它支持像 Jupyter Notebook 那样随意回头重跑之前的某一行代码",
+                B: "它遵循原生 REPL 规则，历史执行顺序和内容不可更改，但额外提供了 IntelliSense 代码补全和语法高亮",
+                C: "它功能最基础，没有任何智能提示，适合确保环境与外部终端完全一致",
+                D: "它必须依赖 Jupyter 内核才能启动，资源占用较高"
+                },
+                answer: "B",
+                explanation: "根据文档，Native REPL 是 VS Code 对经典 REPL 的增强版，启动快、占用低，提供 IntelliSense 和语法高亮，但历史执行顺序和内容不可更改。它不依赖 Jupyter 内核，也不像 Notebook 那样可以任意重跑之前的代码行。"
+            },
+            {
+                id: 22,
+                topic: "Jupyter 内核",
+                question: "关于 Jupyter 内核的工作原理，下列描述错误的是（ ）。",
+                options: {
+                A: "Jupyter 内核是一个独立的、运行特定编程语言代码的进程",
+                B: "前端界面与内核之间通过基于 ZeroMQ 套接字的特定消息协议进行通信",
+                C: "只要内核没有关闭，它就会一直保留用户定义的变量和状态",
+                D: "Python 内核直接内嵌在 VS Code 编辑器进程中，因此不需要单独选择 Python 解释器"
+                },
+                answer: "D",
+                explanation: "Jupyter 内核是独立于前端界面运行的进程。在 VS Code 中为 Notebook 或 Interactive Window 选择 Python 环境时，实际上就是在指定用哪个 Python 解释器来启动 ipykernel 进程，因此 D 项错误。"
+            },
+            {
+                id: 23,
+                topic: "VS Code 中预览 HTML",
+                question: "在较新版本的 VS Code（1.121 及以上）中，要以内置网页方式预览 HTML 文件，下列操作不正确的是（ ）。",
+                options: {
+                A: "在文件资源管理器中右键点击 HTML 文件，选择“Open in Integrated Browser”",
+                B: "在已打开的 HTML 文件标签页上右键，选择“Open in Integrated Browser”",
+                C: "HTML 文件处于激活状态时，点击编辑器右上角的“Preview”图标",
+                D: "在终端中执行命令 `python -m http.server`，VS Code 会自动在内置浏览器中打开该文件"
+                },
+                answer: "D",
+                explanation: "根据文档，VS Code 内置了预览 HTML 文件的功能，可通过右键文件、右键标签页或点击右上角“Preview”图标实现。启动本地 HTTP 服务器并不是 VS Code 内置浏览器预览功能的操作方式。"
+            },
+            {
+                id: 24,
+                topic: "Native REPL 多行输入",
+                question: "在 VS Code 的 Native REPL 中输入多行 Python 代码，文档最推荐的方式是（ ）。",
+                options: {
+                A: "在 REPL 输入框中手动逐行敲入，并按回车续行",
+                B: "从别处复制多行代码后直接粘贴到 REPL 输入框",
+                C: "在 .py 文件中写好完整代码块，将光标置于代码块内或选中部分代码后按 `Shift + Enter` 发送",
+                D: "在 REPL 中先输入 `%paste` 魔术命令再粘贴代码"
+                },
+                answer: "C",
+                explanation: "文档推荐利用编辑器的“智能发送”功能：在 .py 文件中写好代码，设置 `python.REPL.sendToNativeREPL` 为 true 后，将光标放在代码块内或选中代码，按 `Shift + Enter` 即可自动识别最小可运行代码块并发送到 Native REPL 执行，可避免手动处理缩进和换行的麻烦。"
+            },
+            {
+                id: 25,
+                topic: "VS Code 中的 Python 交互方式",
+                question: "如果需要做数据分析、探索性编程，并且希望单元格可以按任意顺序反复执行、支持 Markdown 说明和内嵌图表，最适合选择的方式是（ ）。",
+                options: {
+                A: "Native REPL",
+                B: "Terminal REPL",
+                C: "Jupyter Notebook",
+                D: "Python Interactive Window"
+                },
+                answer: "C",
+                explanation: "根据文档，Jupyter Notebook 是最“重”但功能最强大的方式，其核心优势是单元格可以按任意顺序反复执行，并支持 Markdown 说明、内嵌图表、变量查看器等，适合数据分析、探索性编程以及需要记录步骤和结果的工作。"
+            }
+        ];
+
+        function convertOptionsToArray(optionsObj) {
+            return [optionsObj.A, optionsObj.B, optionsObj.C, optionsObj.D];
+        }
+
+        function getAnswerIndex(answerChar) {
+            return ['A', 'B', 'C', 'D'].indexOf(answerChar);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container-2');
+            if (!container) return;
+            if (container.dataset.rendered === 'true') return;
+            container.dataset.rendered = 'true';
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-container';
+
+                const optionsArray = convertOptionsToArray(q.options);
+                let optionsHtml = '';
+
+                optionsArray.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option" id="option2-${index}-${optIndex}">
+                            <input type="radio" name="q2-${index}" value="${optIndex}" onclick="selectOption2(${index}, ${optIndex})">
+                            ${String.fromCharCode(65 + optIndex)}. ${opt}
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3>${index + 1}. [${q.topic}] ${q.question}</h3>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation2-${index}" class="explanation"></div>
+                `;
+
+                container.appendChild(qDiv);
+            });
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 100);
+        }
+
+        window.selectOption2 = function(questionIndex, selectedOption) {
+            const question = questions[questionIndex];
+            const answerIndex = getAnswerIndex(question.answer);
+            const optionLabels = document.querySelectorAll(`[id^="option2-${questionIndex}-"]`);
+
+            optionLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            if (selectedOption == answerIndex) {
+                document.getElementById(`option2-${questionIndex}-${selectedOption}`).classList.add('correct');
+                const explanationDiv = document.getElementById(`explanation2-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>正确！</strong> ${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#4CAF50';
+                explanationDiv.style.display = 'block';
+            } else {
+                document.getElementById(`option2-${questionIndex}-${selectedOption}`).classList.add('incorrect');
+                const explanationDiv = document.getElementById(`explanation2-${questionIndex}`);
+                explanationDiv.innerHTML = `<strong>错误。</strong> 正确答案是 ${question.answer}: ${question.options[question.answer]}<br><br>${question.explanation}`;
+                explanationDiv.style.borderLeftColor = '#f44336';
+                explanationDiv.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            }, 50);
+        };
+
+        renderQuestions();
+    })();
+</script>
